@@ -1,4 +1,0 @@
-make sure client and user photos are round
-make sure all project and portfolio project photos are square
-change 05 07 08 09 10 to include both client and project photos on the wireframes and not just one
-(just as they are in 13 14 15 16)
