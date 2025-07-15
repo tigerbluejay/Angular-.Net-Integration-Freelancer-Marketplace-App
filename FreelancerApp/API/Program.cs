@@ -1,4 +1,5 @@
 using API.Data;
+using API.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,16 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // SERVICES
 // Add services to the container.
 
-builder.Services.AddControllers();
-
-// builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<DataContext>(opt =>
- {
-     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
- });
-builder.Services.AddCors();
+// custom extension methods designed to make Program.cs shorter
+builder.Services.AddApplicationServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
 
 
 var app = builder.Build();
@@ -26,15 +20,8 @@ app.UseCors(x => x.AllowAnyHeader()
 .AllowAnyMethod()
 .WithOrigins("http://localhost:4200", "https://localhost:4200"));
 
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
-
-// app.UseHttpsRedirection();
-
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

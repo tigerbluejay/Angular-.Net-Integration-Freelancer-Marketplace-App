@@ -1,0 +1,37 @@
+# Ignore build results
+API/bin/
+API/obj/
+API/out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / VS Code settings
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Environment secrets
+.env
+*.env
+*.jwt
+*.token
+*.secret
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# SQLite and other local DBs
+*.db
+*.sqlite
+
+# Ignore personal test or temp files
+*.bak
+*.tmp
+*.cache
