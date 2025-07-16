@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs;
 
-public class RegisterDto
+public class RegisterDTO
 {
     [Required]
     [MaxLength(100)]

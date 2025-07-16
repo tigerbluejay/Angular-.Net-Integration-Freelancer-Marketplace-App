@@ -17,6 +17,8 @@ public class TokenService(IConfiguration config) : ITokenService
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
+        if (user.UserName == null) throw new Exception("No username for user");
+
         // populate claims contained in the JWT token
         var claims = new List<Claim>
         {
