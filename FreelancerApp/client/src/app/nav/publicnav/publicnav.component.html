@@ -1,0 +1,11 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark px-3">
+    <div class="container-fluid d-flex justify-content-between">
+        <a class="navbar-brand" href="#">Freelancer Marketplace</a>
+        <form #loginForm="ngForm" (ngSubmit)="login()" class="d-flex ms-auto">
+            <input name="username" [(ngModel)]="model.username" class="form-control me-2" placeholder="Username">
+            <input name="password" [(ngModel)]="model.password" class="form-control me-2" placeholder="Password"
+                type="password">
+            <button class="btn btn-outline-success" type="submit">Login</button>
+        </form>
+    </div>
+</nav>

@@ -1,6 +1,7 @@
 import { Component, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountService } from '../_services/account.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -17,6 +18,7 @@ export class RegisterComponent {
   // 2. create the cancel method in the child component to emit a value in the child component
   // 3. register the output value in the child component tag in the parent component
   // 4. create the function referenced in 3 in the parent (Home component)
+  private toastr = inject(ToastrService);
 
   model: any = {}
 
@@ -26,7 +28,7 @@ export class RegisterComponent {
         console.log(response);
         this.cancel();
       },
-      error: error => console.log(error)
+      error: error => this.toastr.error(error.error)
     });
   }
 

@@ -1,21 +1,21 @@
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NgIf, TitleCasePipe } from '@angular/common';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AccountService } from '../../_services/account.service';
 import { AuthService } from '../../_services/auth.service';
 import { User } from '../../_models/user';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-freelancernav',
+  selector: 'app-publicnav',
   standalone: true,
-  imports: [FormsModule, NgIf, BsDropdownModule, TitleCasePipe, RouterLink, RouterLinkActive],
-  templateUrl: './freelancernav.component.html',
-  styleUrl: './freelancernav.component.css'
+  imports: [FormsModule, NgIf, BsDropdownModule],
+  templateUrl: './publicnav.component.html',
+  styleUrl: './publicnav.component.css'
 })
-export class FreelancernavComponent {
+export class PublicnavComponent {
 accountService = inject(AccountService);
 authService = inject(AuthService);
 private router = inject(Router);
@@ -41,5 +41,6 @@ login() {
     this.accountService.logout();
     this.router.navigateByUrl('/');
   }
+
 
 }

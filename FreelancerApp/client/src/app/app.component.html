@@ -1,4 +1,8 @@
-<app-freelancernav></app-freelancernav>
+<app-publicnav *ngIf="!isLoggedIn"></app-publicnav>
+<app-freelancernav *ngIf="isLoggedIn"></app-freelancernav>
+<!-- <app-freelancernav *ngIf="isLoggedIn && userRole === 'freelancer'"></app-freelancernav> -->
+<!-- <app-clientnav *ngIf="isLoggedIn && userRole === 'client'"></app-clientnav> -->
+
 <div class="container" style="margin-top:100px;">
-    <app-home></app-home>
+    <router-outlet></router-outlet>
 </div>
