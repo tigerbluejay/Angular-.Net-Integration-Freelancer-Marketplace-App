@@ -16,19 +16,24 @@ public class AccountController(DataContext context, ITokenService tokenService) 
     {
         if (await UserExists(registerDTO.Username)) return BadRequest("Username is taken");
 
-        var user = new AppUser
-        {
-            UserName = registerDTO.Username.ToLower(),
-        };
+        return Ok();
 
-        context.Users.Add(user);
-        await context.SaveChangesAsync();
+        /* 
+                var user = new AppUser
+                {
+                    UserName = registerDTO.Username.ToLower(),
+                };
 
-        return new UserDTO
-        {
-            Username = user.UserName,
-            Token = tokenService.CreateToken(user)
-        };
+                context.Users.Add(user);
+                await context.SaveChangesAsync();
+
+                return new UserDTO
+                {
+                    Username = user.UserName,
+                    Token = tokenService.CreateToken(user)
+                };
+
+         */
     }
 
     [HttpPost("login")]

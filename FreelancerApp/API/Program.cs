@@ -29,7 +29,7 @@ using (var scope = app.Services.CreateScope())
         var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
         
         await context.Database.MigrateAsync();
-        await Seed.SeedUsers(userManager, roleManager);
+        await Seed.SeedUsers(userManager, roleManager, context);
     }
     catch (Exception ex)
     {

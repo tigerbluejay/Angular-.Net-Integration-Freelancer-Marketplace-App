@@ -9,6 +9,8 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<AppUser, 
 IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>,
 IdentityUserToken<int>>(options)
 {
+    public DbSet<Photo> Photos { get; set; }
+    public DbSet<Skill> Skills { get; set;}
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -25,6 +27,19 @@ IdentityUserToken<int>>(options)
             .WithOne(u => u.Role)
             .HasForeignKey(ur => ur.RoleId)
             .IsRequired();
+
+        builder.Entity<AppUser>()
+            .HasOne(u => u.Photo)
+            .WithOne(p => p.User)
+            .HasForeignKey<Photo>(p => p.UserId);
+
+        builder.Entity<AppUser>()
+            .HasMany(u => u.Skills)
+            .WithMany(s => s.Users)
+            .UsingEntity<Dictionary<string, object>>(
+                "UserSkill",
+                j => j.HasOne<Skill>().WithMany().HasForeignKey("SkillId"),
+                j => j.HasOne<AppUser>().WithMany().HasForeignKey("AppUserId"));
     }
 
 }

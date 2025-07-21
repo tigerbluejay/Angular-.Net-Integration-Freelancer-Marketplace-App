@@ -6,7 +6,8 @@ namespace API.Data;
 
 public class Seed
 {
-    public static async Task SeedUsers(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+    public static async Task SeedUsers(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager,
+        DataContext context)
     {
 
         // Delete existing users
@@ -23,12 +24,7 @@ public class Seed
             await roleManager.DeleteAsync(role);
         }
 
-        var userData = await File.ReadAllTextAsync("Data/UserSeedData.json");
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-        var users = JsonSerializer.Deserialize<List<AppUser>>(userData, options);
-
-        if (users == null) return;
-
+        // Seed roles
         var roles = new List<AppRole>
         {
             new AppRole { Name = "Freelancer" },
@@ -41,10 +37,31 @@ public class Seed
             await roleManager.CreateAsync(role);
         }
 
+        // Seed users
+        var userData = await File.ReadAllTextAsync("Data/UserSeedData.json");
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var users = JsonSerializer.Deserialize<List<AppUser>>(userData, options);
+
+        if (users == null) return;
+
+
+        // Seed skills
+        var skillData = await File.ReadAllTextAsync("Data/SkillSeedData.json");
+        var skills = JsonSerializer.Deserialize<List<Skill>>(skillData, options);
+        if (skills == null) return;
+
+        context.Skills.RemoveRange(context.Skills); // clear existing
+        await context.Skills.AddRangeAsync(skills);
+        await context.SaveChangesAsync();
+
+        var rnd = new Random();
+
         for (int i = 0; i < users.Count; i++)
         {
             var user = users[i];
             user.UserName = user.UserName!.ToLower();
+
+            user.Skills = skills.OrderBy(_ => rnd.Next()).Take(rnd.Next(2, 5)).ToList();
 
             await userManager.CreateAsync(user, "Pa$$w0rd");
 

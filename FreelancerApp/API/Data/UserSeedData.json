@@ -1,32 +1,162 @@
 [
   {
-    "UserName": "jose"
+    "userName": "freelancer001",
+    "email": "freelancer001@example.com",
+    "firstName": "Luca",
+    "lastName": "Martinez",
+    "dateOfBirth": "1991-04-23",
+    "gender": "Male",
+    "country": "Argentina",
+    "city": "Buenos Aires",
+    "bio": "Frontend developer with a passion for UI/UX design.",
+    "lookingFor": "remote gigs",
+    "website": "https://lucam.dev",
+    "linkedIn": "https://linkedin.com/in/lucam",
+    "gitHub": "https://github.com/lucam",
+    "isAvailable": true
   },
   {
-    "UserName": "maria"
+    "userName": "freelancer002",
+    "email": "freelancer002@example.com",
+    "firstName": "Sofia",
+    "lastName": "Klein",
+    "dateOfBirth": "1988-11-12",
+    "gender": "Female",
+    "country": "Germany",
+    "city": "Berlin",
+    "bio": "Full-stack engineer with experience in fintech.",
+    "lookingFor": "short-term contracts",
+    "website": "https://sofiak.codes",
+    "linkedIn": "https://linkedin.com/in/sofiaklein",
+    "gitHub": "https://github.com/sofiaklein",
+    "isAvailable": false
   },
   {
-    "UserName": "charlie"
+    "userName": "freelancer003",
+    "email": "freelancer003@example.com",
+    "firstName": "Marco",
+    "lastName": "Delgado",
+    "dateOfBirth": "1979-03-05",
+    "gender": "Male",
+    "country": "Mexico",
+    "city": "Guadalajara",
+    "bio": "Project manager looking for skilled developers.",
+    "lookingFor": null,
+    "website": null,
+    "linkedIn": "https://linkedin.com/in/marcodelgado",
+    "gitHub": null,
+    "isAvailable": true
   },
   {
-    "UserName": "diana"
+    "userName": "freelancer004",
+    "email": "freelancer004@example.com",
+    "firstName": "Ana",
+    "lastName": "Lopez",
+    "dateOfBirth": "1995-06-17",
+    "gender": "Female",
+    "country": "Spain",
+    "city": "Madrid",
+    "bio": "Backend developer specializing in .NET Core.",
+    "lookingFor": "long-term partnerships",
+    "website": "https://analo.dev",
+    "linkedIn": null,
+    "gitHub": "https://github.com/analo",
+    "isAvailable": true
   },
   {
-    "UserName": "edward"
+    "userName": "freelancer005",
+    "email": "freelancer005@example.com",
+    "firstName": "Tom",
+    "lastName": "Nguyen",
+    "dateOfBirth": "1992-09-14",
+    "gender": "Male",
+    "country": "USA",
+    "city": "San Francisco",
+    "bio": "Cloud-native specialist and DevOps consultant.",
+    "lookingFor": "remote gigs",
+    "website": null,
+    "linkedIn": "https://linkedin.com/in/tomng",
+    "gitHub": "https://github.com/tomng",
+    "isAvailable": false
   },
   {
-    "UserName": "fiona"
+    "userName": "client001",
+    "email": "client001@example.com",
+    "firstName": "Emily",
+    "lastName": "Chen",
+    "dateOfBirth": "1982-01-29",
+    "gender": "Female",
+    "country": "Canada",
+    "city": "Toronto",
+    "bio": "Entrepreneur building a SaaS tool for HR.",
+    "lookingFor": null,
+    "website": "https://emilychen.ca",
+    "linkedIn": "https://linkedin.com/in/emchen",
+    "gitHub": null,
+    "isAvailable": true
   },
   {
-    "UserName": "george"
+    "userName": "client002",
+    "email": "client002@example.com",
+    "firstName": "Raj",
+    "lastName": "Patel",
+    "dateOfBirth": "1990-07-02",
+    "gender": "Male",
+    "country": "India",
+    "city": "Bangalore",
+    "bio": "Mobile developer focusing on cross-platform apps.",
+    "lookingFor": "freelance work",
+    "website": "https://rajp.dev",
+    "linkedIn": null,
+    "gitHub": "https://github.com/rajp",
+    "isAvailable": true
   },
   {
-    "UserName": "hannah"
+    "userName": "client003",
+    "email": "client003@example.com",
+    "firstName": "Nina",
+    "lastName": "Svensson",
+    "dateOfBirth": "1985-10-30",
+    "gender": "Female",
+    "country": "Sweden",
+    "city": "Stockholm",
+    "bio": "Creative director launching a new app.",
+    "lookingFor": null,
+    "website": "https://ninadesign.se",
+    "linkedIn": null,
+    "gitHub": null,
+    "isAvailable": true
   },
   {
-    "UserName": "ian"
+    "userName": "client004",
+    "email": "client004@example.com",
+    "firstName": "Peter",
+    "lastName": "Kowalski",
+    "dateOfBirth": "1993-02-15",
+    "gender": "Male",
+    "country": "Poland",
+    "city": "Warsaw",
+    "bio": "Game developer and Unity expert.",
+    "lookingFor": "contract work",
+    "website": "https://peterk.games",
+    "linkedIn": "https://linkedin.com/in/pkowalski",
+    "gitHub": "https://github.com/pkowalski",
+    "isAvailable": true
   },
   {
-    "UserName": "julia"
+    "userName": "client005",
+    "email": "client005@example.com",
+    "firstName": "Maria",
+    "lastName": "Rossi",
+    "dateOfBirth": "1996-08-20",
+    "gender": "Female",
+    "country": "Italy",
+    "city": "Rome",
+    "bio": "UX designer with a focus on accessibility.",
+    "lookingFor": "design-oriented projects",
+    "website": "https://mariarossi.design",
+    "linkedIn": "https://linkedin.com/in/mariarossi",
+    "gitHub": null,
+    "isAvailable": true
   }
 ]
