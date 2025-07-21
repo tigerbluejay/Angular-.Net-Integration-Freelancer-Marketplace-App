@@ -1,6 +1,7 @@
 using API.Data;
 using API.Entities;
 using API.Extensions;
+using API.Middleware;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +40,7 @@ using (var scope = app.Services.CreateScope())
 
 // MIDDLEWARE
 
+app.UseMiddleware<ExceptionMiddleware>(); // uses our custom error handling middleware
 app.UseCors(x => x.AllowAnyHeader()
 .AllowAnyMethod()
 .WithOrigins("http://localhost:4200", "https://localhost:4200"));
