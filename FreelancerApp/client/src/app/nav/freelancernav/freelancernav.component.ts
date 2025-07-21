@@ -16,26 +16,26 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './freelancernav.component.css'
 })
 export class FreelancernavComponent {
-accountService = inject(AccountService);
-authService = inject(AuthService);
-private router = inject(Router);
-private toastr = inject(ToastrService);
+  accountService = inject(AccountService);
+  authService = inject(AuthService);
+  private router = inject(Router);
+  private toastr = inject(ToastrService);
 
-model:any = {};
+  model: any = {};
 
-login() {
-  this.accountService.login(this.model).subscribe({
-    next: (response: User) => {
-      const token = response.token;
-      if (token) {
-        this.authService.login(token);
-        console.log('Logged in:', response.username);
-        this.router.navigate(['/profile']);
-      }
-    },
-    error: error => this.toastr.error(error.error)
-  });
-}
+  login() {
+    this.accountService.login(this.model).subscribe({
+      next: (response: User) => {
+        const token = response.token;
+        if (token) {
+          this.authService.login(token);
+          console.log('Logged in:', response.username);
+          this.router.navigate(['/profile']);
+        }
+      },
+      error: error => this.toastr.error(error.error)
+    });
+  }
 
   logout() {
     this.accountService.logout();
