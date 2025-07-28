@@ -16,7 +16,7 @@ export const routes: Routes = [
   { path: 'not-found', component: NotFoundComponent},
   { path: 'server-error', component: ServerErrorComponent},
   // Protected route
-  { path: 'profile', component: ProfileComponent, canActivate: [authGuard]  },
+  { path: 'profile/:username', component: ProfileComponent, canActivate: [authGuard]  },
   // if all else fails
   { path: '**', component: HomeComponent, pathMatch: 'full'},
   

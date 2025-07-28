@@ -23,19 +23,19 @@ export class PublicnavComponent {
 
   model: any = {};
 
-  login() {
-    this.accountService.login(this.model).subscribe({
-      next: (response: User) => {
-        const token = response.token;
-        if (token) {
-          this.authService.login(token);
-          console.log('Logged in:', response.username);
-          this.router.navigate(['/profile']);
-        }
-      },
-      error: error => this.toastr.error(error.error)
-    });
-  }
+login() {
+  this.accountService.login(this.model).subscribe({
+    next: (response: User) => {
+      const token = response.token;
+      if (token) {
+        this.authService.login(token);
+        console.log('Logged in:', response.username);
+        this.router.navigate(['/profile', response.username]); // ✅ updated
+      }
+    },
+    error: error => this.toastr.error(error.error)
+  });
+}
 
   logout() {
     this.accountService.logout();
