@@ -11,6 +11,7 @@ IdentityUserToken<int>>(options)
 {
     public DbSet<Photo> Photos { get; set; }
     public DbSet<Skill> Skills { get; set;}
+    public DbSet<PortfolioItem> PortfolioItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -40,6 +41,11 @@ IdentityUserToken<int>>(options)
                 "UserSkill",
                 j => j.HasOne<Skill>().WithMany().HasForeignKey("SkillId"),
                 j => j.HasOne<AppUser>().WithMany().HasForeignKey("AppUserId"));
+
+        builder.Entity<AppUser>()
+            .HasMany(u => u.PortfolioItems)
+            .WithOne(p => p.User)
+            .HasForeignKey(p => p.UserId);
     }
 
 }

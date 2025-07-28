@@ -28,6 +28,9 @@ public class MemberDTO
     public ICollection<string> Skills { get; set; } = []; // Simplified skill names
 
     public ICollection<string> Roles { get; set; } = [];  // Flattened from AppUserRole
+
+    public ICollection<PortfolioItemDTO> PortfolioItems { get; set; } = new List<PortfolioItemDTO>();
+
 }
 /*
 Notes:

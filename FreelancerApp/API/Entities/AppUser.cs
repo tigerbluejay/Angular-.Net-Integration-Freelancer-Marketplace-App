@@ -35,6 +35,9 @@ public class AppUser : IdentityUser<int>
     // Identity role relationship
     public ICollection<AppUserRole> UserRoles { get; set; } = [];
 
+    // One-to-many relationship with PortfolioItems
+    public ICollection<PortfolioItem> PortfolioItems { get; set; } = [];
+
     // Project relationships
     // public ICollection<Project> ProjectsAsClient { get; set; } = [];
     // public ICollection<Project> ProjectsAsFreelancer { get; set; } = [];

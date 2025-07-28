@@ -36,6 +36,7 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
         .Include(x => x.Photo)
         .Include(x => x.Skills)
         .Include(x => x.UserRoles).ThenInclude(x => x.Role)
+        .Include(x => x.PortfolioItems)
         .SingleOrDefaultAsync(x => x.UserName == username);
     }
 
@@ -45,6 +46,7 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
          .Include(x => x.Photo)
          .Include(x => x.Skills)
          .Include(x => x.UserRoles).ThenInclude(x => x.Role)
+         .Include(x => x.PortfolioItems)
          .ToListAsync();
     }
 

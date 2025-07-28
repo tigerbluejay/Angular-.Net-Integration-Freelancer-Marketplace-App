@@ -99,8 +99,35 @@ public class Seed
             new Photo { Url = "https://randomuser.me/api/portraits/men/5.jpg", UserId = users[9].Id }
         };
 
+        // Clear existing photos (optional)
+        context.Photos.RemoveRange(context.Photos);
+        await context.SaveChangesAsync();
+
+        // save photos to DB
         context.Photos.AddRange(photos);
         await context.SaveChangesAsync();
+
+
+        // Seed PortfolioItems using created users
+        var portfolioItems = new List<PortfolioItem>
+        {
+            new PortfolioItem { Id = 1, PhotoUrl = "https://picsum.photos/id/237/600/400", Title = "Portofilio Item 1", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+            new PortfolioItem { Id = 2, PhotoUrl = "https://picsum.photos/id/238/600/400", Title = "Portofilio Item 2", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+            new PortfolioItem { Id = 3, PhotoUrl = "https://picsum.photos/id/239/600/400", Title = "Portofilio Item 3", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+            new PortfolioItem { Id = 4, PhotoUrl = "https://picsum.photos/id/240/600/400", Title = "Portofilio Item 4", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+            new PortfolioItem { Id = 5, PhotoUrl = "https://picsum.photos/id/241/600/400", Title = "Portofilio Item 5", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+            new PortfolioItem { Id = 6, PhotoUrl = "https://picsum.photos/id/242/600/400", Title = "Portofilio Item 6", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+            new PortfolioItem { Id = 7, PhotoUrl = "https://picsum.photos/id/243/600/400", Title = "Portofilio Item 7", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." }
+        };
+
+        // Clear existing portfolioItems (optional)
+        context.PortfolioItems.RemoveRange(context.PortfolioItems);
+        await context.SaveChangesAsync();
+
+        // Add portfolioItems to DB
+        context.PortfolioItems.AddRange(portfolioItems);
+        await context.SaveChangesAsync();
+
 
         // Seed skills
         // After you have created users and have the `users` list available

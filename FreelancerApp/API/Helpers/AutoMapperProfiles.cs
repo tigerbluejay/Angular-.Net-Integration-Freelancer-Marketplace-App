@@ -16,10 +16,15 @@ namespace API.Helpers
                 .ForMember(dest => dest.Skills,
                     opt => opt.MapFrom(src => src.Skills.Select(s => s.Name)))
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src =>
-                    src.UserRoles.Select(ur => ur.Role.Name)));
+                    src.UserRoles.Select(ur => ur.Role.Name)))
+                .ForMember(dest => dest.PortfolioItems, opt => opt.MapFrom(src =>
+                    src.PortfolioItems));
 
             // Photo → PhotoDTO
             CreateMap<Photo, PhotoDTO>();
+            // PortfolioItem → PortfolioItemDTO
+            CreateMap<PortfolioItem, PortfolioItemDTO>();
+
         }
     }
 }

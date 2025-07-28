@@ -1,3 +1,4 @@
+import { PortfolioItem } from "./portfolio-item";
 
 export interface Member {
   id: number;
@@ -26,4 +27,6 @@ export interface Member {
 
   skills: string[];
   roles: string[];
+
+  portfolioItems: PortfolioItem[];
 }
