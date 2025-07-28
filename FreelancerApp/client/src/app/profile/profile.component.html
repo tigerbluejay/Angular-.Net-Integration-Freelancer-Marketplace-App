@@ -1,1 +1,146 @@
-<p>Welcome to the profile of <strong>{{ username }}</strong>!</p>
+<p>Welcome to the profile of <strong>{{ member?.userName }}</strong>!</p>
+
+@if (member) {
+  <div class="row">
+    <div class="col-4">
+      <!-- FREELANCER PROFILE -->
+      <ng-container *ngIf="member.roles.includes('Freelancer'); else clientProfile">
+        <div class="card shadow-sm mb-4">
+          <img
+            src="{{ member.photoUrl || './assets/user.png' }}"
+            alt="{{ member.userName }}"
+            class="card-img-top profile-img rounded-circle mx-auto d-block mt-3"
+          />
+
+          <div class="card-body">
+            <h5 class="text-center">{{ member.firstName }} {{ member.lastName }}</h5>
+            <p class="text-muted text-center">{{ member.roles.join(', ') }}</p>
+
+            <hr />
+
+            <div class="mb-2">
+              <strong>Location:</strong>
+              <p>{{ member.city }}, {{ member.country }}</p>
+            </div>
+
+            <div class="mb-2" *ngIf="member.dateOfBirth">
+              <strong>Age:</strong>
+              <p>{{ member.dateOfBirth | age }}</p>
+            </div>
+
+            <div class="mb-2">
+              <strong>Skills:</strong>
+              <p>{{ member.skills.join(', ') }}</p>
+            </div>
+
+            <div class="mb-2">
+              <strong>Availability:</strong>
+              <p class="text-{{ member.isAvailable ? 'success' : 'danger' }}">
+                {{ member.isAvailable ? 'Available for work' : 'Not currently available' }}
+              </p>
+            </div>
+
+            <div class="mb-2">
+              <strong>Bio:</strong>
+              <p>{{ member.bio || 'No bio provided.' }}</p>
+            </div>
+
+            <div class="mb-2">
+              <strong>Looking For:</strong>
+              <p>{{ member.lookingFor || 'Not specified.' }}</p>
+            </div>
+
+            <hr />
+
+            <div class="mb-2">
+              <strong>Last Active:</strong>
+              <p>{{ member.lastActive | date:'short' }}</p>
+            </div>
+
+            <div class="mb-2">
+              <strong>Member Since:</strong>
+              <p>{{ member.created | date:'mediumDate' }}</p>
+            </div>
+          </div>
+
+          <div class="card-footer d-flex justify-content-center gap-3">
+            <a *ngIf="member.linkedIn" href="{{ member.linkedIn }}" target="_blank" class="btn btn-outline-primary btn-sm" title="LinkedIn">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a *ngIf="member.gitHub" href="{{ member.gitHub }}" target="_blank" class="btn btn-outline-dark btn-sm" title="GitHub">
+              <i class="fab fa-github"></i>
+            </a>
+            <a *ngIf="member.website" href="{{ member.website }}" target="_blank" class="btn btn-outline-secondary btn-sm" title="Website">
+              <i class="fas fa-globe"></i>
+            </a>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- CLIENT PROFILE -->
+      <ng-template #clientProfile>
+        <div class="card shadow-sm mb-4">
+          <img
+            src="{{ member.photoUrl || './assets/user.png' }}"
+            alt="{{ member.userName }}"
+            class="card-img-top profile-img rounded-circle mx-auto d-block mt-3"
+          />
+
+          <div class="card-body">
+            <h5 class="text-center">{{ member.firstName }} {{ member.lastName }}</h5>
+            <p class="text-muted text-center">Client</p>
+
+            <hr />
+
+            <div class="mb-2">
+              <strong>Location:</strong>
+              <p>{{ member.city }}, {{ member.country }}</p>
+            </div>
+
+            <div class="mb-2">
+              <strong>Company / Website:</strong>
+              <p *ngIf="member.website">
+                <a href="{{ member.website }}" target="_blank">{{ member.website }}</a>
+              </p>
+              <p *ngIf="!member.website" class="text-muted">Not provided</p>
+            </div>
+
+            <div class="mb-2">
+              <strong>Bio:</strong>
+              <p>{{ member.bio || 'No bio provided.' }}</p>
+            </div>
+
+            <div class="mb-2">
+              <strong>Looking For Freelancers:</strong>
+              <p>{{ member.lookingFor || 'Not specified.' }}</p>
+            </div>
+
+            <hr />
+
+            <div class="mb-2">
+              <strong>Last Active:</strong>
+              <p>{{ member.lastActive | date:'short' }}</p>
+            </div>
+
+            <div class="mb-2">
+              <strong>Member Since:</strong>
+              <p>{{ member.created | date:'mediumDate' }}</p>
+            </div>
+          </div>
+
+          <div class="card-footer d-flex justify-content-center gap-3">
+            <a *ngIf="member.linkedIn" href="{{ member.linkedIn }}" target="_blank" class="btn btn-outline-primary btn-sm" title="LinkedIn">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a *ngIf="member.website" href="{{ member.website }}" target="_blank" class="btn btn-outline-secondary btn-sm" title="Website">
+              <i class="fas fa-globe"></i>
+            </a>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+    <div class="col-8">
+        Portfolio Items go here!
+    </div>
+  </div>
+}

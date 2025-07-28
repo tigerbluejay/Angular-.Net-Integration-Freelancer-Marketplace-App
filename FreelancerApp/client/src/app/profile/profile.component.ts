@@ -1,20 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { MembersService } from '../_services/members.service';
+import { Member } from '../_models/member';
+import { DatePipe, NgIf } from '@angular/common';
+import { AgePipe } from '../_pipes/age.pipe';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, NgIf, DatePipe, AgePipe ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
+
+  private memberService = inject(MembersService);
+  private route = inject(ActivatedRoute);
+  member?: Member;
   username: string | null = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(route: ActivatedRoute) {}
 
   ngOnInit() : void {
-    this.username = this.route.snapshot.paramMap.get('username');
+    this.loadMember();
+  }
+   
+  loadMember() {
+    const username = this.route.snapshot.paramMap.get('username');
+
+    if (!username) return;
+
+    this.memberService.getMember(username).subscribe({
+      next: member => this.member = member
+    })
+
   }
 
 }
