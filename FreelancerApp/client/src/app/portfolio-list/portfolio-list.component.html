@@ -1,0 +1,41 @@
+<!-- <div class="portfolio-list">
+  <h4 class="mb-4">Portfolio</h4>
+  <ng-container *ngIf="items.length; else noItems">
+    <app-portfolio-item
+      *ngFor="let item of items"
+      [item]="item">
+    </app-portfolio-item>
+  </ng-container>
+
+  <ng-template #noItems>
+    <p class="text-muted">No portfolio items to display.</p>
+  </ng-template>
+</div> -->
+
+<div class="portfolio-list">
+  <h4 class="mb-4">Portfolio</h4>
+
+  <ng-container *ngIf="items.length; else noItems">
+    <div class="row">
+      <!-- Left column (first 3 items) -->
+      <div class="col-md-6">
+        <app-portfolio-item
+          *ngFor="let item of items.slice(0, 3)"
+          [item]="item">
+        </app-portfolio-item>
+      </div>
+
+      <!-- Right column (next 3 items) -->
+      <div class="col-md-6">
+        <app-portfolio-item
+          *ngFor="let item of items.slice(3, 6)"
+          [item]="item">
+        </app-portfolio-item>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #noItems>
+    <p class="text-muted">No portfolio items to display.</p>
+  </ng-template>
+</div>
