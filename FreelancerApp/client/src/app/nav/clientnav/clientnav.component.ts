@@ -1,27 +1,26 @@
 import { Component, computed, inject } from '@angular/core';
+import { AuthService } from '../../_services/auth.service';
+import { AccountService } from '../../_services/account.service';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgIf, TitleCasePipe } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { AccountService } from '../../_services/account.service';
-import { AuthService } from '../../_services/auth.service';
-import { User } from '../../_models/user';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-freelancernav',
+  selector: 'app-clientnav',
   standalone: true,
   imports: [FormsModule, NgIf, BsDropdownModule, TitleCasePipe, RouterLink, RouterLinkActive],
-  templateUrl: './freelancernav.component.html',
-  styleUrl: './freelancernav.component.css'
+  templateUrl: './clientnav.component.html',
+  styleUrl: './clientnav.component.css'
 })
-export class FreelancernavComponent {
+export class ClientnavComponent {
+
   accountService = inject(AccountService);
   authService = inject(AuthService);
   private router = inject(Router);
-   // Create a computed signal to get the username or null
   username = computed(() => this.accountService.currentUser()?.username ?? null);
-  
+
+
   logout() {
     this.accountService.logout();
     this.router.navigateByUrl('/');

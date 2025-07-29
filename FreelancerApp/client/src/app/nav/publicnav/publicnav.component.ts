@@ -25,13 +25,8 @@ export class PublicnavComponent {
 
 login() {
   this.accountService.login(this.model).subscribe({
-    next: (response: User) => {
-      const token = response.token;
-      if (token) {
-        this.authService.login(token);
-        console.log('Logged in:', response.username);
-        this.router.navigate(['/profile', response.username]); // ✅ updated
-      }
+    next: (user) => {
+      this.router.navigate(['/profile', user.username]);  
     },
     error: error => this.toastr.error(error.error)
   });
