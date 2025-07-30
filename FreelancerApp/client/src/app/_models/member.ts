@@ -1,4 +1,5 @@
 import { PortfolioItem } from "./portfolio-item";
+import { Project } from "./project";
 
 export interface Member {
   id: number;
@@ -29,4 +30,6 @@ export interface Member {
   roles: string[];
 
   portfolioItems: PortfolioItem[];
+  clientProjects: Project[];
+  freelancerProjects: Project[];
 }

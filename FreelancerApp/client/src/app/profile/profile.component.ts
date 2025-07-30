@@ -5,11 +5,12 @@ import { Member } from '../_models/member';
 import { DatePipe, NgIf } from '@angular/common';
 import { AgePipe } from '../_pipes/age.pipe';
 import { PortfolioListComponent } from '../portfolio-list/portfolio-list.component';
+import { ProfileProjectListComponent } from '../profile-project-list/profile-project-list.component';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RouterModule, NgIf, DatePipe, AgePipe, PortfolioListComponent],
+  imports: [RouterModule, NgIf, DatePipe, AgePipe, PortfolioListComponent, ProfileProjectListComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })

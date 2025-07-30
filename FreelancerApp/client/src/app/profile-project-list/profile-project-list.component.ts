@@ -1,0 +1,15 @@
+import { Component, Input } from '@angular/core';
+import { Project } from '../_models/project';
+import { CommonModule } from '@angular/common';
+import { ProfileProjectItemComponent } from '../profile-project-item/profile-project-item.component';
+
+@Component({
+  selector: 'app-profile-project-list',
+  standalone: true,
+  imports: [CommonModule, ProfileProjectItemComponent],
+  templateUrl: './profile-project-list.component.html',
+  styleUrl: './profile-project-list.component.css'
+})
+export class ProfileProjectListComponent {
+  @Input() projects: Project[] = [];
+}

@@ -1,0 +1,28 @@
+<div class="project-item d-flex shadow-sm rounded p-3 mb-3 small">
+  <img 
+    [src]="project.photoUrl || 'assets/fallback.png'" 
+    alt="{{ project.title || 'Portfolio item' }}" 
+    class="item-image me-3" />
+
+  <div class="item-content">
+    <h6 class="mb-1 fw-semibold">{{ project.title }}</h6>
+
+    <p class="mb-1 text-muted small" *ngIf="project.description">
+      {{ project.description }}
+    </p>
+
+    <div class="small mt-1">
+      <span class="badge bg-secondary me-1" *ngFor="let skill of project.skills">
+        {{ skill }}
+      </span>
+    </div>
+
+    <div class="mt-2">
+      <span 
+        class="badge" 
+        [ngClass]="project.isAssigned ? 'bg-success' : 'bg-warning text-dark'">
+        {{ project.isAssigned ? 'Assigned' : 'Open' }}
+      </span>
+    </div>
+  </div>
+</div>

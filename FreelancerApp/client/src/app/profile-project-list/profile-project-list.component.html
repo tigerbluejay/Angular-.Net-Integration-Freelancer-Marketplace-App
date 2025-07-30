@@ -1,0 +1,27 @@
+<div class="project-list">
+  <h4 class="mb-4">Projects</h4>
+
+  <ng-container *ngIf="projects?.length; else noProjects">
+    <div class="row">
+      <!-- Left column (first 3 projects) -->
+      <div class="col-md-6">
+        <app-profile-project-item
+          *ngFor="let project of projects.slice(0, 3)"
+          [project]="project">
+        </app-profile-project-item>
+      </div>
+
+      <!-- Right column (next 3 projects) -->
+      <div class="col-md-6">
+        <app-profile-project-item
+          *ngFor="let project of projects.slice(3, 6)"
+          [project]="project">
+        </app-profile-project-item>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #noProjects>
+    <p class="text-muted">No projects to display.</p>
+  </ng-template>
+</div>

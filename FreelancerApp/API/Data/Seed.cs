@@ -116,10 +116,10 @@ public class Seed
             new() { Title = "Project 1", PhotoUrl = "https://picsum.photos/id/537/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[0], skillData[1] }},
             new() { Title = "Project 2", PhotoUrl = "https://picsum.photos/id/538/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }},
             new() { Title = "Project 3", PhotoUrl = "https://picsum.photos/id/539/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[1], skillData[2] }},
-            new() { Title = "Project 4", PhotoUrl = "https://picsum.photos/id/540/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[4] }},
-            new() { Title = "Project 5", PhotoUrl = "https://picsum.photos/id/541/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[1] }},
-            new() { Title = "Project 6", PhotoUrl = "https://picsum.photos/id/542/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[0], skillData[4] }},
-            new() { Title = "Project 7", PhotoUrl = "https://picsum.photos/id/543/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }}
+            new() { Title = "Project 4", PhotoUrl = "https://picsum.photos/id/541/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[4] }},
+            new() { Title = "Project 5", PhotoUrl = "https://picsum.photos/id/542/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[1] }},
+            new() { Title = "Project 6", PhotoUrl = "https://picsum.photos/id/543/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[0], skillData[4] }},
+            new() { Title = "Project 7", PhotoUrl = "https://picsum.photos/id/544/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }}
         };
 
         context.Projects.AddRange(projectData);
