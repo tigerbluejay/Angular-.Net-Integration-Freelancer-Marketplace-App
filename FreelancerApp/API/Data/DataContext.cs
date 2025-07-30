@@ -10,8 +10,9 @@ IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>, IdentityRoleClaim<i
 IdentityUserToken<int>>(options)
 {
     public DbSet<Photo> Photos { get; set; }
-    public DbSet<Skill> Skills { get; set;}
+    public DbSet<Skill> Skills { get; set; }
     public DbSet<PortfolioItem> PortfolioItems { get; set; }
+    public DbSet<Project> Projects { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -46,6 +47,23 @@ IdentityUserToken<int>>(options)
             .HasMany(u => u.PortfolioItems)
             .WithOne(p => p.User)
             .HasForeignKey(p => p.UserId);
+
+        builder.Entity<Project>()
+            .HasOne(p => p.Client)
+            .WithMany(u => u.ClientProjects)
+            .HasForeignKey(p => p.ClientUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Project>()
+            .HasOne(p => p.Freelancer)
+            .WithMany(u => u.FreelancerProjects)
+            .HasForeignKey(p => p.FreelancerUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Project>()
+            .HasMany(p => p.Skills)
+            .WithMany(s => s.Projects)
+            .UsingEntity(j => j.ToTable("ProjectSkills"));
     }
 
 }

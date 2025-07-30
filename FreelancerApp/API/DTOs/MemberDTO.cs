@@ -31,6 +31,10 @@ public class MemberDTO
 
     public ICollection<PortfolioItemDTO> PortfolioItems { get; set; } = new List<PortfolioItemDTO>();
 
+    public List<ProjectDTO> ClientProjects { get; set; } = [];
+
+    public List<ProjectDTO> FreelancerProjects { get; set; } = [];
+
 }
 /*
 Notes:

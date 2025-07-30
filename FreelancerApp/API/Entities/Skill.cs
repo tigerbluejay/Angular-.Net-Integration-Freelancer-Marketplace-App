@@ -6,4 +6,6 @@ public class Skill
     public required string Name { get; set; }
 
     public ICollection<AppUser> Users { get; set; } = [];
+
+    public ICollection<Project> Projects { get; set; } = [];
 }

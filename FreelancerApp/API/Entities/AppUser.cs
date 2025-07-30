@@ -39,7 +39,7 @@ public class AppUser : IdentityUser<int>
     public ICollection<PortfolioItem> PortfolioItems { get; set; } = [];
 
     // Project relationships
-    // public ICollection<Project> ProjectsAsClient { get; set; } = [];
-    // public ICollection<Project> ProjectsAsFreelancer { get; set; } = [];
+    public ICollection<Project> ClientProjects { get; set; } = [];
+    public ICollection<Project> FreelancerProjects { get; set; } = [];
 
 }

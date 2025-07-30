@@ -18,12 +18,17 @@ namespace API.Helpers
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src =>
                     src.UserRoles.Select(ur => ur.Role.Name)))
                 .ForMember(dest => dest.PortfolioItems, opt => opt.MapFrom(src =>
-                    src.PortfolioItems));
+                    src.PortfolioItems))
+                .ForMember(dest => dest.ClientProjects, opt => opt.MapFrom(src => src.ClientProjects))
+                .ForMember(dest => dest.FreelancerProjects, opt => opt.MapFrom(src => src.FreelancerProjects));
 
             // Photo → PhotoDTO
             CreateMap<Photo, PhotoDTO>();
             // PortfolioItem → PortfolioItemDTO
             CreateMap<PortfolioItem, PortfolioItemDTO>();
+            CreateMap<Skill, string>().ConvertUsing(s => s.Name);
+            CreateMap<Project, ProjectDTO>()
+                .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.Skills));
 
         }
     }

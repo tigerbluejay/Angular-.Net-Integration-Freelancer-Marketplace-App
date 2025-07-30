@@ -10,44 +10,29 @@ public class Seed
     public static async Task SeedUsers(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager,
         DataContext context)
     {
-        // Delete Photos and Skills (dependent on Users)
+        // Remove dependent entities first
         context.Photos.RemoveRange(context.Photos);
         context.Skills.RemoveRange(context.Skills);
+        context.PortfolioItems.RemoveRange(context.PortfolioItems);
+        context.Projects.RemoveRange(context.Projects);
         await context.SaveChangesAsync();
 
-        // Delete existing users
-        var usersToDelete = userManager.Users.ToList();
-        foreach (var user in usersToDelete)
-        {
+        // Delete existing users and roles
+        foreach (var user in userManager.Users.ToList())
             await userManager.DeleteAsync(user);
-        }
 
-        // Delete existing roles
-        var rolesToDelete = roleManager.Roles.ToList();
-        foreach (var role in rolesToDelete)
-        {
+        foreach (var role in roleManager.Roles.ToList())
             await roleManager.DeleteAsync(role);
-        }
 
         // Seed roles
-        var roles = new List<AppRole>
-        {
-            new AppRole { Name = "Freelancer" },
-            new AppRole { Name = "Client" },
-            new AppRole { Name = "Admin" }
-        };
-
+        var roles = new[] { "Freelancer", "Client", "Admin" }.Select(r => new AppRole { Name = r });
         foreach (var role in roles)
-        {
             await roleManager.CreateAsync(role);
-        }
 
-        // Load user data from JSON
+        // Load users from JSON
         var userData = JsonSerializer.Deserialize<List<SeedingUserDTO>>(
-            await File.ReadAllTextAsync("Data/UserSeedData.json")
-        );
-
-        if (userData == null) return;
+            await File.ReadAllTextAsync("Data/UserSeedData.json"));
+        if (userData is null) return;
 
         var users = new List<AppUser>();
 
@@ -72,108 +57,88 @@ public class Seed
             };
 
             var result = await userManager.CreateAsync(user, "Pa$$w0rd");
-            if (!result.Succeeded)
-            {
-                Console.WriteLine($"Failed to create user {user.UserName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
-                continue;
-            }
+            if (!result.Succeeded) continue;
 
             var role = user.UserName.StartsWith("freelancer", StringComparison.OrdinalIgnoreCase) ? "Freelancer" : "Client";
             await userManager.AddToRoleAsync(user, role);
-
-            users.Add(user); // for use in seeding photos
+            users.Add(user);
         }
 
-        // Seed photos using created users
+        // Add photos
         var photos = new List<Photo>
         {
-            new Photo { Url = "https://randomuser.me/api/portraits/women/1.jpg", UserId = users[0].Id },
-            new Photo { Url = "https://randomuser.me/api/portraits/men/1.jpg", UserId = users[1].Id },
-            new Photo { Url = "https://randomuser.me/api/portraits/women/2.jpg", UserId = users[2].Id },
-            new Photo { Url = "https://randomuser.me/api/portraits/men/2.jpg", UserId = users[3].Id },
-            new Photo { Url = "https://randomuser.me/api/portraits/women/3.jpg", UserId = users[4].Id },
-            new Photo { Url = "https://randomuser.me/api/portraits/men/3.jpg", UserId = users[5].Id },
-            new Photo { Url = "https://randomuser.me/api/portraits/women/4.jpg", UserId = users[6].Id },
-            new Photo { Url = "https://randomuser.me/api/portraits/men/4.jpg", UserId = users[7].Id },
-            new Photo { Url = "https://randomuser.me/api/portraits/women/5.jpg", UserId = users[8].Id },
-            new Photo { Url = "https://randomuser.me/api/portraits/men/5.jpg", UserId = users[9].Id }
+            new Photo { Url = "https://randomuser.me/api/portraits/women/1.jpg", User = users[0] },
+            new Photo { Url = "https://randomuser.me/api/portraits/men/1.jpg", User = users[1] },
+            new Photo { Url = "https://randomuser.me/api/portraits/women/2.jpg", User = users[2] },
+            new Photo { Url = "https://randomuser.me/api/portraits/men/2.jpg", User = users[3] },
+            new Photo { Url = "https://randomuser.me/api/portraits/women/3.jpg", User = users[4] },
+            new Photo { Url = "https://randomuser.me/api/portraits/men/3.jpg", User = users[5] },
+            new Photo { Url = "https://randomuser.me/api/portraits/women/4.jpg", User = users[6] },
+            new Photo { Url = "https://randomuser.me/api/portraits/men/4.jpg", User = users[7] },
+            new Photo { Url = "https://randomuser.me/api/portraits/women/5.jpg", User = users[8] },
+            new Photo { Url = "https://randomuser.me/api/portraits/men/5.jpg", User = users[9] }
         };
-
-        // Clear existing photos (optional)
-        context.Photos.RemoveRange(context.Photos);
-        await context.SaveChangesAsync();
-
-        // save photos to DB
         context.Photos.AddRange(photos);
-        await context.SaveChangesAsync();
 
-
-        // Seed PortfolioItems using created users
-        var portfolioItems = new List<PortfolioItem>
-        {
-            new PortfolioItem { Id = 1, PhotoUrl = "https://picsum.photos/id/237/600/400", Title = "Portofilio Item 1", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-            new PortfolioItem { Id = 2, PhotoUrl = "https://picsum.photos/id/238/600/400", Title = "Portofilio Item 2", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-            new PortfolioItem { Id = 3, PhotoUrl = "https://picsum.photos/id/239/600/400", Title = "Portofilio Item 3", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-            new PortfolioItem { Id = 4, PhotoUrl = "https://picsum.photos/id/240/600/400", Title = "Portofilio Item 4", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-            new PortfolioItem { Id = 5, PhotoUrl = "https://picsum.photos/id/241/600/400", Title = "Portofilio Item 5", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-            new PortfolioItem { Id = 6, PhotoUrl = "https://picsum.photos/id/242/600/400", Title = "Portofilio Item 6", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-            new PortfolioItem { Id = 7, PhotoUrl = "https://picsum.photos/id/243/600/400", Title = "Portofilio Item 7", UserId = users[0].Id, Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." }
-        };
-
-        // Clear existing portfolioItems (optional)
-        context.PortfolioItems.RemoveRange(context.PortfolioItems);
-        await context.SaveChangesAsync();
-
-        // Add portfolioItems to DB
+        // Add portfolio items
+        var portfolioItems = Enumerable.Range(1, 7).Select(i =>
+            new PortfolioItem
+            {
+                Title = $"Portfolio Item {i}",
+                PhotoUrl = $"https://picsum.photos/id/{236 + i}/600/400",
+                Description = "Sample portfolio description.",
+                User = users[0]
+            }).ToList();
         context.PortfolioItems.AddRange(portfolioItems);
-        await context.SaveChangesAsync();
-
 
         // Seed skills
-        // After you have created users and have the `users` list available
-
-        // Example skill data - you could also load this from a JSON file like you do already
         var skillData = new List<Skill>
         {
-            new Skill { Name = "C#" },
-            new Skill { Name = "ASP.NET Core" },
-            new Skill { Name = "SQL" },
-            new Skill { Name = "Angular" },
-            new Skill { Name = "JavaScript" },
+            new() { Name = "C#" },
+            new() { Name = "ASP.NET Core" },
+            new() { Name = "SQL" },
+            new() { Name = "Angular" },
+            new() { Name = "JavaScript" }
+        };
+        context.Skills.AddRange(skillData);
+        await context.SaveChangesAsync(); // Track the skills
+
+        // Assign skills to users
+        users[0].Skills = new List<Skill> { skillData[0], skillData[1] };
+        users[1].Skills = new List<Skill> { skillData[2], skillData[3] };
+        users[2].Skills = new List<Skill> { skillData[0], skillData[4] };
+        users[3].Skills = new List<Skill> { skillData[1] };
+        users[4].Skills = new List<Skill> { skillData[2], skillData[3] };
+
+        // Add projects with tracked skills
+        var projectData = new List<Project>
+        {
+            new() { Title = "Project 1", PhotoUrl = "https://picsum.photos/id/537/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[0], skillData[1] }},
+            new() { Title = "Project 2", PhotoUrl = "https://picsum.photos/id/538/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }},
+            new() { Title = "Project 3", PhotoUrl = "https://picsum.photos/id/539/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[1], skillData[2] }},
+            new() { Title = "Project 4", PhotoUrl = "https://picsum.photos/id/540/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[4] }},
+            new() { Title = "Project 5", PhotoUrl = "https://picsum.photos/id/541/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[1] }},
+            new() { Title = "Project 6", PhotoUrl = "https://picsum.photos/id/542/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[0], skillData[4] }},
+            new() { Title = "Project 7", PhotoUrl = "https://picsum.photos/id/543/600/400", Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }}
         };
 
-        // Clear existing skills (optional)
-        context.Skills.RemoveRange(context.Skills);
+        context.Projects.AddRange(projectData);
         await context.SaveChangesAsync();
 
-        // Add skills to DB
-        await context.Skills.AddRangeAsync(skillData);
-        await context.SaveChangesAsync();
+        // Optional: assign freelancer projects later if needed
+        users[0].FreelancerProjects = new List<Project> { projectData[0], projectData[2] };
 
-        // Now assign some skills to your users
-        // Example: assign first skill to first user, second skill to second user, etc.
-        users[0].Skills = new List<Skill> { skillData[0], skillData[1] };  // user 0 knows C#, ASP.NET Core
-        users[1].Skills = new List<Skill> { skillData[2], skillData[3] };  // user 1 knows SQL, Angular
-        users[2].Skills = new List<Skill> { skillData[0], skillData[4] };  // user 0 knows C#, ASP.NET Core
-        users[3].Skills = new List<Skill> { skillData[1] };  // user 1 knows SQL, Angular
-        users[4].Skills = new List<Skill> { skillData[2], skillData[3] };  // user 1 knows SQL, Angular
- 
-        // For the rest, assign skills as needed or skip
-
-        // Update users to persist skill assignments
+        // Update users to track their relationships
         foreach (var user in users)
-        {
-            // This attaches skills to the user in the context's tracking
             context.Users.Update(user);
-        }
 
         await context.SaveChangesAsync();
 
-
-        // Create admin user
+        // Create admin
         var admin = new AppUser { UserName = "admin" };
         await userManager.CreateAsync(admin, "Pa$$w0rd");
         await userManager.AddToRolesAsync(admin, new[] { "Admin" });
+
         await context.SaveChangesAsync();
     }
 }
