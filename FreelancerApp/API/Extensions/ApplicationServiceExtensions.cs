@@ -27,6 +27,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPortfolioItemRepository, PortfolioItemRepository>();
+        services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         return services;
