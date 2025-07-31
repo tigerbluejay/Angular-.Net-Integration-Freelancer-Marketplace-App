@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Project } from '../_models/project';
 import { CommonModule } from '@angular/common';
 
@@ -11,4 +11,9 @@ import { CommonModule } from '@angular/common';
 })
 export class ProfileProjectItemComponent {
    @Input() project!: Project;
+   @Output() delete = new EventEmitter<number>();
+   
+     onDeleteClick() {
+       this.delete.emit(this.project.id);
+     }
 }

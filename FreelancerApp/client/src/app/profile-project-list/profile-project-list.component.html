@@ -7,7 +7,8 @@
       <div class="col-md-6">
         <app-profile-project-item
           *ngFor="let project of projects.slice(0, 3)"
-          [project]="project">
+          [project]="project"
+          (delete)="onDelete($event)">
         </app-profile-project-item>
       </div>
 
@@ -15,7 +16,8 @@
       <div class="col-md-6">
         <app-profile-project-item
           *ngFor="let project of projects.slice(3, 6)"
-          [project]="project">
+          [project]="project"
+          (delete)="onDelete($event)">
         </app-profile-project-item>
       </div>
     </div>

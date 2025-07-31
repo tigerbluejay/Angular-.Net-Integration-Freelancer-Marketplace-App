@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PortfolioItemComponent } from '../portfolio-item/portfolio-item.component';
 import { PortfolioItem } from '../_models/portfolio-item';
 
@@ -12,4 +12,9 @@ import { PortfolioItem } from '../_models/portfolio-item';
 })
 export class PortfolioListComponent {
   @Input() items: PortfolioItem[] = [];
+  @Output() delete = new EventEmitter<number>(); // item ID
+
+  onDelete(itemId: number) {
+    this.delete.emit(itemId);
+  }
 }

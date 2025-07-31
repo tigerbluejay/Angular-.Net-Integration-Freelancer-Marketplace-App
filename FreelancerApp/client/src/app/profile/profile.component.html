@@ -141,12 +141,12 @@
     </div>
     <!-- Freelancer content -->
     <div class="col-md-8" *ngIf="member.roles.includes('Freelancer')">
-      <app-portfolio-list [items]="member.portfolioItems"></app-portfolio-list>
+      <app-portfolio-list [items]="member.portfolioItems" (delete)="onDeletePortfolioItem($event)"></app-portfolio-list>
     </div>
 
     <!-- Client content -->
     <div class="col-md-8" *ngIf="member.roles.includes('Client')">
-      <app-profile-project-list [projects]="member.clientProjects"></app-profile-project-list>
+      <app-profile-project-list [projects]="member.clientProjects" (delete)="onDeleteProject($event)"></app-profile-project-list>
     </div>
   </div>
   }

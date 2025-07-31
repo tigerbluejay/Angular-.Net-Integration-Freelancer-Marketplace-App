@@ -7,7 +7,8 @@
       <div class="col-md-6">
         <app-portfolio-item
           *ngFor="let item of items.slice(0, 3)"
-          [item]="item">
+          [item]="item"
+          (delete)="onDelete($event)">
         </app-portfolio-item>
       </div>
 
@@ -15,7 +16,8 @@
       <div class="col-md-6">
         <app-portfolio-item
           *ngFor="let item of items.slice(3, 6)"
-          [item]="item">
+          [item]="item"
+          (delete)="onDelete($event)">
         </app-portfolio-item>
       </div>
     </div>

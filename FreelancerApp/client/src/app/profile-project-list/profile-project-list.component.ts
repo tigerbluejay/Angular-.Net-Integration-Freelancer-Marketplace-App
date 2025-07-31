@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Project } from '../_models/project';
 import { CommonModule } from '@angular/common';
 import { ProfileProjectItemComponent } from '../profile-project-item/profile-project-item.component';
@@ -12,4 +12,9 @@ import { ProfileProjectItemComponent } from '../profile-project-item/profile-pro
 })
 export class ProfileProjectListComponent {
   @Input() projects: Project[] = [];
+  @Output() delete = new EventEmitter<number>(); // item ID
+  
+    onDelete(itemId: number) {
+      this.delete.emit(itemId);
+    }
 }

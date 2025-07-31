@@ -6,6 +6,10 @@ import { DatePipe, NgIf } from '@angular/common';
 import { AgePipe } from '../_pipes/age.pipe';
 import { PortfolioListComponent } from '../portfolio-list/portfolio-list.component';
 import { ProfileProjectListComponent } from '../profile-project-list/profile-project-list.component';
+import { PortfolioItemService } from '../_services/portfolio-item.service';
+import { PortfolioItem } from '../_models/portfolio-item';
+import { ToastrService } from 'ngx-toastr';
+import { ProjectService } from '../_services/project.service';
 
 @Component({
   selector: 'app-profile',
@@ -17,16 +21,19 @@ import { ProfileProjectListComponent } from '../profile-project-list/profile-pro
 export class ProfileComponent implements OnInit {
 
   private memberService = inject(MembersService);
+  private portfolioItemService = inject(PortfolioItemService);
+  private projectService = inject(ProjectService);
   private route = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
   member?: Member;
   username: string | null = null;
 
-  constructor(route: ActivatedRoute) {}
+  constructor(route: ActivatedRoute) { }
 
-  ngOnInit() : void {
+  ngOnInit(): void {
     this.loadMember();
   }
-   
+
   loadMember() {
     const username = this.route.snapshot.paramMap.get('username');
 
@@ -37,5 +44,38 @@ export class ProfileComponent implements OnInit {
     })
 
   }
+
+  onDeletePortfolioItem(id: number) {
+    this.portfolioItemService.deletePortfolioItem(id).subscribe({
+      next: () => {
+        // THIS is what your view is using!
+        if (this.member) {
+          this.member.portfolioItems = this.member.portfolioItems.filter(item => item.id !== id);
+        }
+        this.toastr.success('Portfolio item deleted successfully', 'Deleted');
+      },
+      error: err => {
+        this.toastr.error('Failed to delete portfolio item', 'Error');
+      }
+    });
+  }
+
+  onDeleteProject(id: number) {
+    this.projectService.deleteProject(id).subscribe({
+      next: () => {
+        // THIS is what your view is using!
+        if (this.member) {
+          this.member.clientProjects = this.member.clientProjects.filter(item => item.id !== id);
+        }
+        this.toastr.success('Project deleted successfully', 'Deleted');
+      },
+      error: err => {
+        this.toastr.error('Failed to delete project', 'Error');
+      }
+    });
+  }
+
+
+
 
 }

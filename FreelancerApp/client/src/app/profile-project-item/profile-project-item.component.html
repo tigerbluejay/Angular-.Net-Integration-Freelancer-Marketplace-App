@@ -1,13 +1,11 @@
-<div class="project-item d-flex shadow-sm rounded p-3 mb-3 small">
-  <img 
-    [src]="project.photoUrl || 'assets/fallback.png'" 
-    alt="{{ project.title || 'Portfolio item' }}" 
+<div class="project-item d-flex shadow-sm rounded p-3 mb-3 small align-items-center">
+  <img [src]="project.photoUrl || 'assets/fallback.png'" alt="{{ project.title || 'Portfolio item' }}"
     class="item-image me-3" />
 
-  <div class="item-content">
+  <div class="item-content flex-grow-1">
     <h6 class="mb-1 fw-semibold">{{ project.title }}</h6>
 
-    <p class="mb-1 text-muted small" *ngIf="project.description">
+    <p class="mb-0 text-muted small" *ngIf="project.description">
       {{ project.description }}
     </p>
 
@@ -18,11 +16,13 @@
     </div>
 
     <div class="mt-2">
-      <span 
-        class="badge" 
-        [ngClass]="project.isAssigned ? 'bg-success' : 'bg-warning text-dark'">
+      <span class="badge" [ngClass]="project.isAssigned ? 'bg-success' : 'bg-warning text-dark'">
         {{ project.isAssigned ? 'Assigned' : 'Open' }}
       </span>
     </div>
   </div>
+
+  <button class="btn btn-sm btn-outline-danger float-end ms-3" (click)="onDeleteClick()" title="Delete">
+    <i class="fas fa-trash"></i>
+  </button>
 </div>

@@ -16,28 +16,21 @@ public class PortfolioItemController(
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeletePortfolioItem(int id)
     {
-        // foreach (var claim in User.Claims)
-        // {
-        //     Console.WriteLine($"CLAIM: {claim.Type} = {claim.Value}");
-        // }
-
-        // 1. Get username from token
         var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (username == null) return Unauthorized();
 
-        // 2. Get the portfolio item
-        var item = await portfolioRepository.GetPortfolioItemByIdAsync(id);
-        if (item == null) return NotFound("Portfolio item not found");
-
-        // 3. Get the current user (with portfolio items loaded)
         var user = await userRepository.GetUserByUsernameAsync(username);
         if (user == null) return Unauthorized();
 
-        portfolioRepository.DeletePortfolioItem(item);
+        var item = await portfolioRepository.GetPortfolioItemByIdAsync(id);
 
-        if (await portfolioRepository.SaveAllAsync())
-            return NoContent();
+        if (item != null)
+        {
+            portfolioRepository.DeletePortfolioItem(item);
+            await portfolioRepository.SaveAllAsync();
+        }
 
-        return BadRequest("Failed to delete the portfolio item.");
+        // Even if item was null, act like it’s gone
+        return NoContent();
     }
 }
