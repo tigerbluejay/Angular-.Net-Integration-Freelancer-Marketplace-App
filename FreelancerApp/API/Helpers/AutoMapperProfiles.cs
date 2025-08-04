@@ -29,6 +29,7 @@ namespace API.Helpers
             CreateMap<Skill, string>().ConvertUsing(s => s.Name);
             CreateMap<Project, ProjectDTO>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.Skills));
+            CreateMap<MemberUpdateDTO, AppUser>();
 
         }
     }
