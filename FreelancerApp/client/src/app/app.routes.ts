@@ -7,6 +7,9 @@ import { authGuard } from './auth.guard';  // You may not have this yet
 import { TestErrorsComponent } from './errors/test-errors/test-errors.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
+import { ProfileEditFreelancerComponent } from './profile-edit-freelancer/profile-edit-freelancer.component';
+import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
+import { ProfileEditClientComponent } from './profile-edit-client/profile-edit-client.component';
 
 export const routes: Routes = [
   // Public routes
@@ -15,6 +18,11 @@ export const routes: Routes = [
   { path: 'errors', component: TestErrorsComponent},
   { path: 'not-found', component: NotFoundComponent},
   { path: 'server-error', component: ServerErrorComponent},
+  { path: 'profile-edit-freelancer', component: ProfileEditFreelancerComponent, 
+    canDeactivate: [preventUnsavedChangesGuard]},
+  { path: 'profile-edit-client', component: ProfileEditClientComponent, 
+    canDeactivate: [preventUnsavedChangesGuard]},
+
   // Protected route
   { path: 'profile/:username', component: ProfileComponent, canActivate: [authGuard]  },
   // if all else fails

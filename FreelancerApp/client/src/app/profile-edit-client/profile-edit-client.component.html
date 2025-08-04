@@ -1,0 +1,78 @@
+@if (member) {
+<div class="container mt-4">
+
+    <!-- Header and Dirty Form Alert -->
+    <div class="row align-items-center mb-3">
+        <div class="col-4"></div>
+        <div class="col-8" *ngIf="editForm?.dirty">
+            <div class="alert alert-info pb-0">
+                <p><strong>Information:</strong> You have made changes. Any unsaved changes will be lost.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>Edit Client Profile</h2>
+
+    <form (ngSubmit)="onSubmit()" #editForm="ngForm" class="row g-4">
+
+        <!-- Left Column -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input id="firstName" name="firstName" class="form-control" [(ngModel)]="member.firstName" />
+            </div>
+
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input id="lastName" name="lastName" class="form-control" [(ngModel)]="member.lastName" />
+            </div>
+
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input id="country" name="country" class="form-control" [(ngModel)]="member.country" />
+            </div>
+
+            <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input id="city" name="city" class="form-control" [(ngModel)]="member.city" />
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="bio" class="form-label">Bio</label>
+                <textarea id="bio" name="bio" class="form-control" rows="3" [(ngModel)]="member.bio"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="website" class="form-label">Website</label>
+                <input id="website" name="website" class="form-control" [(ngModel)]="member.website" />
+            </div>
+
+            <div class="mb-3">
+                <label for="linkedIn" class="form-label">LinkedIn</label>
+                <input id="linkedIn" name="linkedIn" class="form-control" [(ngModel)]="member.linkedIn" />
+            </div>
+
+            <div class="mb-3">
+                <label for="lookingFor" class="form-label">What Are You Looking For?</label>
+                <textarea id="lookingFor" name="lookingFor" class="form-control" rows="2"
+                    [(ngModel)]="member.lookingFor"></textarea>
+            </div>
+
+        </div>
+
+        <!-- Buttons Centered Below Columns -->
+        <div class="col-12 d-flex justify-content-center gap-3 mt-3 mb-5">
+            <button type="submit" class="btn btn-primary px-5" [disabled]="editForm.invalid">
+                Update Profile
+            </button>
+
+            <button type="button" class="btn btn-secondary px-5" (click)="goToProfile()">
+                Back to Profile
+            </button>
+        </div>
+    </form>
+</div>
+}

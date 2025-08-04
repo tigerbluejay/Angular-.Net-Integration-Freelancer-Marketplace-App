@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MembersService } from '../_services/members.service';
 import { Member } from '../_models/member';
 import { DatePipe, NgIf } from '@angular/common';
@@ -25,6 +25,7 @@ export class ProfileComponent implements OnInit {
   private projectService = inject(ProjectService);
   private route = inject(ActivatedRoute);
   private toastr = inject(ToastrService);
+  private router = inject(Router);
   member?: Member;
   username: string | null = null;
 
@@ -74,6 +75,12 @@ export class ProfileComponent implements OnInit {
       }
     });
   }
+
+  onEditClick() {
+    this.router.navigate(['/profile-edit-client'], {
+    });
+  }
+
 
 
 

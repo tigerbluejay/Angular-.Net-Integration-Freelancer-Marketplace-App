@@ -1,0 +1,10 @@
+/* Just add a bit of breathing room */
+form {
+  max-width: 900px;
+  margin: auto;
+}
+
+h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
