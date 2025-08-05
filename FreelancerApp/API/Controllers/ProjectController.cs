@@ -1,15 +1,20 @@
 using System.Security.Claims;
+using API.Data;
+using API.DTOs;
+using API.Entities;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ProjectController(IProjectRepository projectRepository) : BaseApiController
+public class ProjectController(IProjectRepository projectRepository,
+IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiController
 {
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProject(int id)
@@ -33,5 +38,70 @@ public class ProjectController(IProjectRepository projectRepository) : BaseApiCo
             return NoContent();
 
         return BadRequest("Failed to delete the project");
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<ProjectDTO>> CreateProject(ProjectCreateDTO dto)
+    {
+        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (username == null) return Unauthorized();
+
+        var user = await userRepository.GetUserByUsernameAsync(username);
+        if (user == null) return NotFound("User not found");
+
+        // Lookup skill IDs by names
+        var skillIds = await context.Skills
+            .Where(s => dto.Skills.Contains(s.Name))
+            .Select(s => s.Id)
+            .ToListAsync();
+
+        var project = mapper.Map<Project>(dto);
+        project.ClientUserId = user.Id;
+
+        var createdProject = await projectRepository.CreateAsync(project, skillIds);
+
+        var projectDto = mapper.Map<ProjectDTO>(createdProject);
+
+        return CreatedAtAction(nameof(GetProjectById), new { id = createdProject.Id }, projectDto);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<ProjectDTO>> GetProjectById(int id)
+    {
+        var project = await projectRepository.GetProjectByIdAsync(id);
+
+        if (project == null)
+            return NotFound();
+
+        var projectDto = mapper.Map<ProjectDTO>(project);
+        return Ok(projectDto);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<ProjectDTO>> UpdateProject(int id, ProjectUpdateDTO dto)
+    {
+        if (id != dto.Id)
+            return BadRequest("Project ID mismatch");
+
+        var existingProject = await projectRepository.GetProjectByIdAsync(id);
+        if (existingProject == null)
+            return NotFound();
+
+        // Lookup skill IDs by names
+        var skillIds = await context.Skills
+            .Where(s => dto.Skills.Contains(s.Name))
+            .Select(s => s.Id)
+            .ToListAsync();
+
+        // Map non-skills properties from DTO to existing entity
+        mapper.Map(dto, existingProject);
+
+        var updatedProject = await projectRepository.UpdateAsync(existingProject, skillIds);
+
+        if (updatedProject == null)
+            return NotFound();
+
+        var projectDto = mapper.Map<ProjectDTO>(updatedProject);
+        return Ok(projectDto);
     }
 }

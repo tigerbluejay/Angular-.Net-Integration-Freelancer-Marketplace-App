@@ -30,6 +30,12 @@ namespace API.Helpers
             CreateMap<Project, ProjectDTO>()
                 .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.Skills));
             CreateMap<MemberUpdateDTO, AppUser>();
+            CreateMap<PortfolioItemCreateDTO, PortfolioItem>();
+            CreateMap<PortfolioItemUpdateDTO, PortfolioItem>();
+            CreateMap<ProjectCreateDTO, Project>()
+                .ForMember(dest => dest.Skills, opt => opt.Ignore());
+            CreateMap<ProjectUpdateDTO, Project>()
+                .ForMember(dest => dest.Skills, opt => opt.Ignore());  
 
         }
     }
