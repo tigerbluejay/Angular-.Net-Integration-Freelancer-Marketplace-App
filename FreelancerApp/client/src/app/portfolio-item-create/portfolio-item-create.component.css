@@ -1,0 +1,6 @@
+.my-form {
+  max-width: 600px;   /* limit width */
+  width: 100%;        /* allow responsiveness */
+  margin-left: auto;  /* center horizontally */
+  margin-right: auto; /* center horizontally */
+}

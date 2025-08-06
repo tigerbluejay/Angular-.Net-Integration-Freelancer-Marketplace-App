@@ -1,0 +1,35 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 text-center mt-4">
+      <h3 class="mb-4">{{ isEditMode ? 'Edit' : 'Create' }} Portfolio Item</h3>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+      <form *ngIf="portfolioItem; else loading" #portfolioForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" id="title" name="title" class="form-control" [(ngModel)]="portfolioItem.title" required />
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="description" class="form-label">Description</label>
+          <textarea id="description" name="description" rows="4" class="form-control"
+            [(ngModel)]="portfolioItem.description"></textarea>
+        </div>
+
+        <div class="d-flex">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary ms-2" (click)="goToProfile()">
+            Go back to Profile
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <p>Loading portfolio item...</p>
+  </ng-template>
+</div>

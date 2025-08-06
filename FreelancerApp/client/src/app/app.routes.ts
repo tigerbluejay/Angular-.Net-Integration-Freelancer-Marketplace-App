@@ -10,6 +10,8 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
 import { ProfileEditFreelancerComponent } from './profile-edit-freelancer/profile-edit-freelancer.component';
 import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 import { ProfileEditClientComponent } from './profile-edit-client/profile-edit-client.component';
+import { PortfolioItemCreateComponent } from './portfolio-item-create/portfolio-item-create.component';
+import { ProjectCreateComponent } from './project-create/project-create.component';
 
 export const routes: Routes = [
   // Public routes
@@ -22,6 +24,10 @@ export const routes: Routes = [
     canDeactivate: [preventUnsavedChangesGuard]},
   { path: 'profile-edit-client', component: ProfileEditClientComponent, 
     canDeactivate: [preventUnsavedChangesGuard]},
+  { path: 'portfolio-item/create', component: PortfolioItemCreateComponent },
+  { path: 'portfolio-item/edit/:id', component: PortfolioItemCreateComponent },
+  { path: 'project/create', component: ProjectCreateComponent },
+  { path: 'project/edit/:id', component: ProjectCreateComponent },
 
   // Protected route
   { path: 'profile/:username', component: ProfileComponent, canActivate: [authGuard]  },

@@ -1,15 +1,21 @@
-<div class="portfolio-item d-flex shadow-sm rounded p-3 mb-3 small">
+<div class="portfolio-item d-flex justify-content-between align-items-start shadow-sm rounded p-3 mb-3 small">
   <img [src]="item.photoUrl || 'assets/fallback.png'" alt="{{ item.title || 'Portfolio item' }}"
     class="item-image me-3" />
 
-  <div class="item-content">
+  <div class="item-content flex-grow-1">
     <h6 class="mb-1 fw-semibold">{{ item.title }}</h6>
     <p class="mb-0 text-muted small">{{ item.description }}</p>
   </div>
 
-  <!-- Delete icon -->
-  <button class="btn btn-sm btn-outline-danger float-end ms-3" 
-          (click)="onDeleteClick()" title="Delete">
-    <i class="fas fa-trash"></i>
-  </button>
+  <div class="d-flex flex-column align-items-end ms-3">
+    <!-- Edit icon -->
+    <a [routerLink]="['/portfolio-item/edit', item.id]" class="btn btn-sm btn-outline-primary mb-1" title="Edit">
+      <i class="fas fa-edit"></i>
+    </a>
+
+    <!-- Delete icon -->
+    <button class="btn btn-sm btn-outline-danger" (click)="onDeleteClick()" title="Delete">
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
 </div>

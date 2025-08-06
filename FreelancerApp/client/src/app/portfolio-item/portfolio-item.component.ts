@@ -1,12 +1,12 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { PortfolioItem } from '../_models/portfolio-item';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-portfolio-item',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './portfolio-item.component.html',
   styleUrl: './portfolio-item.component.css'
 })

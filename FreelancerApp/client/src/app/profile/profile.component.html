@@ -149,19 +149,31 @@
             <button class="btn btn-primary" (click)="onEditClick()">
               <i class="fas fa-edit me-2"></i> Edit Profile
             </button>
-          </div>          
+          </div>
         </div>
       </ng-template>
     </div>
     <!-- Freelancer content -->
     <div class="col-md-8" *ngIf="member.roles.includes('Freelancer')">
       <app-portfolio-list [items]="member.portfolioItems" (delete)="onDeletePortfolioItem($event)"></app-portfolio-list>
+
+      <div class="d-flex justify-content-center mt-3">
+        <button class="btn btn-success" [routerLink]="['/portfolio-item/create']">
+          <i class="fas fa-plus me-2"></i>Create Portfolio Item
+        </button>
+      </div>
     </div>
 
     <!-- Client content -->
     <div class="col-md-8" *ngIf="member.roles.includes('Client')">
       <app-profile-project-list [projects]="member.clientProjects"
         (delete)="onDeleteProject($event)"></app-profile-project-list>
+
+        <div class="d-flex justify-content-center mt-3">
+        <button class="btn btn-success" [routerLink]="['/project/create']">
+          <i class="fas fa-plus me-2"></i>Create Project
+        </button>
+      </div>
     </div>
   </div>
   }

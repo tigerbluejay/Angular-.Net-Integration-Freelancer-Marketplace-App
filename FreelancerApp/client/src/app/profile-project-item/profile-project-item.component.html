@@ -22,7 +22,15 @@
     </div>
   </div>
 
-  <button class="btn btn-sm btn-outline-danger float-end ms-3" (click)="onDeleteClick()" title="Delete">
-    <i class="fas fa-trash"></i>
-  </button>
+  <div class="d-flex flex-column align-items-end ms-3">
+    <!-- Edit icon -->
+    <a [routerLink]="['/project/edit', project.id]" class="btn btn-sm btn-outline-primary mb-1" title="Edit">
+      <i class="fas fa-edit"></i>
+    </a>
+
+    <!-- Delete icon -->
+    <button class="btn btn-sm btn-outline-danger" (click)="onDeleteClick()" title="Delete">
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
 </div>
