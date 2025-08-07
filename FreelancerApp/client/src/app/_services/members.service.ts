@@ -24,11 +24,15 @@ export class MembersService {
   getMember(username: string) {
     const member = this.members().find(x => x.userName === username);
     if (member) return of(member);
-    return this.http.get<Member>(this.baseUrl + 'users/' + username);
+
+    const headers = new HttpHeaders({ 'skip-spinner': 'true' });
+
+    return this.http.get<Member>(this.baseUrl + 'users/' + username, {headers});
   }
 
   // PUT update for currently logged-in member
   updateMember(member: Member) {
+
     return this.http.put(this.baseUrl + 'users/update-profile', member).pipe(
       tap(() => {
         this.members.update(members =>

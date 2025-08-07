@@ -9,11 +9,13 @@ import { AuthService } from './_services/auth.service';
 import { PublicnavComponent } from './nav/publicnav/publicnav.component';
 import { ClientnavComponent } from './nav/clientnav/clientnav.component';
 import { map } from 'rxjs';
+import { NgxSpinnerComponent } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgFor, FreelancernavComponent, NgIf, HomeComponent, PublicnavComponent, ClientnavComponent],
+  imports: [RouterOutlet, NgFor, FreelancernavComponent, NgIf, HomeComponent, 
+    PublicnavComponent, ClientnavComponent, NgxSpinnerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

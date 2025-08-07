@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit {
   constructor(route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    if(this.memberService.members().length === 0)
     this.loadMember();
   }
 
