@@ -1,3 +1,6 @@
+# Ignore appsettings.json
+**/appsettings.json
+
 # Ignore build results
 API/bin/
 API/obj/
@@ -35,3 +38,49 @@ Thumbs.db
 *.bak
 *.tmp
 *.cache
+
+# Node modules
+/node_modules/
+
+# Environment files
+/src/environments/environment*.ts
+
+# Output folders
+/dist/
+/out-tsc/
+
+# IDE files
+.vscode/
+.idea/
+
+# Angular build cache
+/.angular/cache/
+/.angular/cache/
+
+# Compiled files
+/**/*.js
+/**/*.js.map
+/**/*.d.ts
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Package lock files (optional — include only if you prefer not to commit them)
+# Uncomment one if you don’t want to track lock files
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Test coverage reports
+/coverage/
+
+# Optional: temporary files
+*.tmp
+*.swp
+*.bak
