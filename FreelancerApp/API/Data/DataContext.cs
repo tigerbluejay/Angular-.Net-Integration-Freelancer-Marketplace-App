@@ -64,6 +64,18 @@ IdentityUserToken<int>>(options)
             .HasMany(p => p.Skills)
             .WithMany(s => s.Projects)
             .UsingEntity(j => j.ToTable("ProjectSkills"));
+
+        builder.Entity<Project>()
+            .HasOne(p => p.Photo)
+            .WithOne(photo => photo.Project)
+            .HasForeignKey<Project>(p => p.PhotoId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<PortfolioItem>()
+            .HasOne(p => p.Photo)
+            .WithOne(photo => photo.PortfolioItem)
+            .HasForeignKey<PortfolioItem>(p => p.PhotoId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 
 }

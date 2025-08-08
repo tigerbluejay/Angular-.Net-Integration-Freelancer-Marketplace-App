@@ -11,9 +11,6 @@ public class Project
     public string Title { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
-
-    public string? PhotoUrl { get; set; }
-
     public bool IsAssigned => FreelancerUserId.HasValue;
 
     // Skills (you might split this into a separate join table later)
@@ -26,4 +23,8 @@ public class Project
     // Foreign key and navigation for Freelancer (nullable)
     public int? FreelancerUserId { get; set; }
     public AppUser? Freelancer { get; set; }
+
+    // Foreign key and navigation for Photo
+    public int? PhotoId { get; set; }
+    public Photo? Photo { get; set; }
 }

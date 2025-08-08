@@ -4,8 +4,6 @@ public class PortfolioItem
 {
     public int Id { get; set; }
 
-    public string PhotoUrl { get; set; } = string.Empty;
-
     public string? Title { get; set; }
 
     public string? Description { get; set; }
@@ -17,4 +15,9 @@ public class PortfolioItem
 
     // Navigation property
     public AppUser User { get; set; } = null!;
+
+        // Foreign key and navigation for Photo
+    public int? PhotoId { get; set; }
+    public Photo? Photo { get; set; }
+
 }

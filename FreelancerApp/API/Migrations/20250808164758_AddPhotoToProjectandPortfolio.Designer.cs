@@ -3,6 +3,7 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250808164758_AddPhotoToProjectandPortfolio")]
+    partial class AddPhotoToProjectandPortfolio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.18");
@@ -210,6 +213,13 @@ namespace API.Migrations
                     b.Property<int?>("PhotoId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("PhotoId1")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PhotoUrl")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .HasColumnType("TEXT");
 
@@ -219,6 +229,9 @@ namespace API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PhotoId")
+                        .IsUnique();
+
+                    b.HasIndex("PhotoId1")
                         .IsUnique();
 
                     b.HasIndex("UserId");
@@ -245,6 +258,12 @@ namespace API.Migrations
                     b.Property<int?>("PhotoId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("PhotoId1")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -256,6 +275,9 @@ namespace API.Migrations
                     b.HasIndex("FreelancerUserId");
 
                     b.HasIndex("PhotoId")
+                        .IsUnique();
+
+                    b.HasIndex("PhotoId1")
                         .IsUnique();
 
                     b.ToTable("Projects");
@@ -421,9 +443,13 @@ namespace API.Migrations
             modelBuilder.Entity("API.Entities.PortfolioItem", b =>
                 {
                     b.HasOne("API.Entities.Photo", "Photo")
-                        .WithOne("PortfolioItem")
+                        .WithOne()
                         .HasForeignKey("API.Entities.PortfolioItem", "PhotoId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("API.Entities.Photo", null)
+                        .WithOne("PortfolioItem")
+                        .HasForeignKey("API.Entities.PortfolioItem", "PhotoId1");
 
                     b.HasOne("API.Entities.AppUser", "User")
                         .WithMany("PortfolioItems")
@@ -450,9 +476,13 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("API.Entities.Photo", "Photo")
-                        .WithOne("Project")
+                        .WithOne()
                         .HasForeignKey("API.Entities.Project", "PhotoId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("API.Entities.Photo", null)
+                        .WithOne("Project")
+                        .HasForeignKey("API.Entities.Project", "PhotoId1");
 
                     b.Navigation("Client");
 

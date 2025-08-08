@@ -11,6 +11,7 @@ public class ProjectRepository(DataContext context) : IProjectRepository
         return await context.Projects
         .Include(p => p.Skills)
         .Include(p => p.Client)
+        .Include(p => p.Photo)
         .FirstOrDefaultAsync(p => p.Id == id);
     }
 
@@ -28,6 +29,7 @@ public class ProjectRepository(DataContext context) : IProjectRepository
     {
         return await context.Projects
             .Include(p => p.Skills)
+            .Include(P => P.Photo)
             .ToListAsync();
     }
 
@@ -57,7 +59,6 @@ public class ProjectRepository(DataContext context) : IProjectRepository
         // Update scalar properties
         existingProject.Title = project.Title;
         existingProject.Description = project.Description;
-        existingProject.PhotoUrl = project.PhotoUrl;
 
         // Update skills: clear current and assign new
         var newSkills = await context.Skills

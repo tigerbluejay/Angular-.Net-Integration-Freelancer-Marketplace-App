@@ -25,10 +25,12 @@ namespace API.Helpers
             // Photo → PhotoDTO
             CreateMap<Photo, PhotoDTO>();
             // PortfolioItem → PortfolioItemDTO
-            CreateMap<PortfolioItem, PortfolioItemDTO>();
+            CreateMap<PortfolioItem, PortfolioItemDTO>()
+                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : string.Empty));
             CreateMap<Skill, string>().ConvertUsing(s => s.Name);
             CreateMap<Project, ProjectDTO>()
-                .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.Skills));
+                .ForMember(dest => dest.Skills, opt => opt.MapFrom(src => src.Skills))
+                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : null));
             CreateMap<MemberUpdateDTO, AppUser>();
             CreateMap<PortfolioItemCreateDTO, PortfolioItem>();
             CreateMap<PortfolioItemUpdateDTO, PortfolioItem>();
@@ -36,7 +38,8 @@ namespace API.Helpers
                 .ForMember(dest => dest.Skills, opt => opt.Ignore());
             CreateMap<ProjectUpdateDTO, Project>()
                 .ForMember(dest => dest.Skills, opt => opt.Ignore());  
-
+            CreateMap<AppUser, UserDTO>()
+                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : string.Empty));
         }
     }
 }

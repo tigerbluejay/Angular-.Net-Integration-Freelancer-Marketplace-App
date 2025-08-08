@@ -13,7 +13,8 @@ public class Photo
     public AppUser? User { get; set; }
     public int? UserId { get; set; }
 
-    // Navigation for project photo (optional one-to-one)
-    // public Project? Project { get; set; }
-    // public int? ProjectId { get; set; }
+    // Navigation for project (optional one-to-one)
+    public Project? Project { get; set; }
+    // Navigation for portfolio item (optional one-to-one)
+    public PortfolioItem? PortfolioItem { get; set; }
 }

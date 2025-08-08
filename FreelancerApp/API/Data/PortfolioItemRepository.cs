@@ -10,6 +10,7 @@ public class PortfolioItemRepository(DataContext context) : IPortfolioItemReposi
     {
         return await context.PortfolioItems
         .Include(p => p.User)
+        .Include(p => p.Photo)
         .FirstOrDefaultAsync(p => p.Id == id);
     }
 
