@@ -131,7 +131,7 @@ export class ProfileEditClientComponent {
         if (user) {
           this.accountService.setCurrentUser({ ...user, photoUrl: '' });
         }
-        this.editForm?.form.markAsDirty(); // optional, to mark form dirty
+        this.editForm?.reset(this.member);
       },
       error: err => {
         console.error('Failed to delete photo', err);
