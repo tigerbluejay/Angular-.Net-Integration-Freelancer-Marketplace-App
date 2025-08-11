@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf, TitleCasePipe } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -15,16 +15,27 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './freelancernav.component.html',
   styleUrl: './freelancernav.component.css'
 })
+
 export class FreelancernavComponent {
   accountService = inject(AccountService);
   authService = inject(AuthService);
   private router = inject(Router);
-   // Create a computed signal to get the username or null
+
   username = computed(() => this.accountService.currentUser()?.username ?? null);
-  
+  photoTimestamp = Date.now();
+
+  constructor() {
+    // Create an effect that runs whenever currentUser changes
+    effect(() => {
+      // Access the signal to register dependency
+      const user = this.accountService.currentUser();
+      // Update timestamp to bust cache on user change
+      this.photoTimestamp = Date.now();
+    });
+  }
+
   logout() {
     this.accountService.logout();
     this.router.navigateByUrl('/');
   }
-
 }

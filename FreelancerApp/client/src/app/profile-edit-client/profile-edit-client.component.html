@@ -13,6 +13,31 @@
 
     <h2>Edit Client Profile</h2>
 
+  <!-- Photo Upload Section -->
+    <div class="row mb-4 justify-content-center">
+        <div class="col-md-6 d-flex align-items-center">
+            <!-- Preview -->
+            <div class="me-3">
+                <img [src]="photoPreviewUrl || './assets/user.png'" alt="Profile preview" class="img-thumbnail"
+                    style="width: 80px; height: 80px; object-fit: cover;">
+            </div>
+
+            <!-- File input -->
+            <div class="flex-grow-1">
+                <label for="photo" class="form-label">Profile Photo</label>
+                <input type="file" id="photo" class="form-control" (change)="onFileSelected($event)" accept="image/*">
+            </div>
+
+            <!-- Delete button -->
+            <div class="ms-3 d-flex align-items-center">
+                <button type="button" class="btn btn-outline-danger" (click)="onDeletePhoto()"
+                    [disabled]="!photoPreviewUrl">
+                    Delete Photo
+                </button>
+            </div>
+        </div>
+    </div>
+
     <form (ngSubmit)="onSubmit()" #editForm="ngForm" class="row g-4">
 
         <!-- Left Column -->

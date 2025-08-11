@@ -7,6 +7,35 @@
 
     <div class="row justify-content-center">
         <div class="col-12 col-md-8 col-lg-6">
+
+
+            <!-- Photo Upload Section -->
+            <div class="row mb-4 justify-content-center">
+                <div class="d-flex align-items-center">
+                    <!-- Preview -->
+                    <div class="me-3">
+                        <img [src]="photoPreviewUrl || './assets/fallback.png'" alt="Project preview"
+                            class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;" />
+                    </div>
+
+                    <!-- File input -->
+                    <div class="flex-grow-1">
+                        <label for="photo" class="form-label">Project Photo</label>
+                        <input type="file" id="photo" class="form-control" (change)="onFileSelected($event)"
+                            accept="image/*" />
+                    </div>
+
+                    <!-- Delete button -->
+                    <div class="ms-3 d-flex align-items-center">
+                        <button type="button" class="btn btn-outline-danger" (click)="onDeletePhoto()"
+                            [disabled]="!photoPreviewUrl">
+                            Delete Photo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
             <form *ngIf="project; else loading" #projectForm="ngForm" (ngSubmit)="onSubmit()">
                 <div class="form-group mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -24,7 +53,8 @@
                     <label class="form-label">Skills</label>
                     <div class="form-check" *ngFor="let skill of availableSkills">
                         <input type="checkbox" class="form-check-input" [id]="skill"
-                            [checked]="(project?.skills ?? []).includes(skill)" (change)="onSkillChange($event, skill)" />
+                            [checked]="(project?.skills ?? []).includes(skill)"
+                            (change)="onSkillChange($event, skill)" />
                         <label class="form-check-label" [for]="skill">{{ skill }}</label>
                     </div>
                 </div>

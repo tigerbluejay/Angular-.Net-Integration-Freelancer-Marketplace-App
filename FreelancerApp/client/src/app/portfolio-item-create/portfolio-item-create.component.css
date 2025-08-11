@@ -4,3 +4,12 @@
   margin-left: auto;  /* center horizontally */
   margin-right: auto; /* center horizontally */
 }
+
+h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.btn-outline-danger {
+  min-width: 110px;
+}

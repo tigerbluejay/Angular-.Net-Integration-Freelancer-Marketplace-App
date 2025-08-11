@@ -32,19 +32,19 @@ export class ProfileComponent implements OnInit {
   constructor(route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    if(this.memberService.members().length === 0)
-    this.loadMember();
+    this.route.paramMap.subscribe((params) => {
+      this.loadMember();
+    });
   }
 
-  loadMember() {
+   loadMember() {
     const username = this.route.snapshot.paramMap.get('username');
-
     if (!username) return;
 
     this.memberService.getMember(username).subscribe({
-      next: member => this.member = member
-    })
-
+      next: member => this.member = member,
+      error: err => console.error('Failed to load member', err)
+    });
   }
 
   onDeletePortfolioItem(id: number) {
@@ -77,11 +77,15 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  onEditClick() {
+  onEditClientClick() {
     this.router.navigate(['/profile-edit-client'], {
     });
   }
 
+  onEditFreelancerClick() {
+    this.router.navigate(['/profile-edit-freelancer'], {
+    });
+  }
 
 
 

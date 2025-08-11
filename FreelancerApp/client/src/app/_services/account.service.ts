@@ -26,8 +26,7 @@ export class AccountService {
           const decoded = getDecodedToken(user.token);
           user.roles = Array.isArray(decoded.role) ? decoded.role : [decoded.role];
 
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUser.set(user);
+          this.setCurrentUser(user);
           this.authService.login(user.token);
         }
         return user; // <-- RETURN user
@@ -45,8 +44,7 @@ export class AccountService {
         const decoded = getDecodedToken(user.token);
         user.roles = decoded.role instanceof Array ? decoded.role : [decoded.role];
 
-        localStorage.setItem('user', JSON.stringify(user));
-        this.currentUser.set(user);
+        this.setCurrentUser(user);
         this.authService.login(user.token);
       }
       return user;
@@ -55,7 +53,9 @@ export class AccountService {
 }
 
 setCurrentUser(user: User) {
+  localStorage.setItem('user', JSON.stringify(user));
   this.currentUser.set(user);
+
 }
 
   logout() {

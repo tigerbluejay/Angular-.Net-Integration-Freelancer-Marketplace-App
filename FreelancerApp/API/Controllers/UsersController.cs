@@ -13,7 +13,7 @@ namespace API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class UsersController(IUserRepository userRepository, IMapper mapper) : BaseApiController
+public class UsersController(IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiController
 {
     [AllowAnonymous]
     [HttpGet]
@@ -49,6 +49,9 @@ public class UsersController(IUserRepository userRepository, IMapper mapper) : B
             return NotFound("User not found");
 
         mapper.Map(memberUpdateDTO, user);
+
+        // Force EF to detect changes or mark as modified
+        context.Entry(user).State = EntityState.Modified;
 
         if (await userRepository.SaveAllAsync())
             return NoContent();
