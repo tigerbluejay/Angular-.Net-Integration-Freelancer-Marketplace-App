@@ -1,0 +1,19 @@
+<div class="mb-3">
+  <label>{{ label }}</label>
+  <input
+    [type]="type"
+    [value]="value"
+    class="form-control"
+    [class.is-invalid]="control.touched && control.invalid"
+    [placeholder]="label"
+    (input)="onInputChange($event)"
+    (blur)="onBlur()"
+  />
+
+  <div *ngIf="control.touched && control.invalid" class="invalid-feedback text-start">
+    <div *ngIf="control.errors?.['required']">{{ label }} is required</div>
+    <div *ngIf="control.errors?.['minlength']">{{ label }} is too short</div>
+    <div *ngIf="control.errors?.['maxlength']">{{ label }} is too long</div>
+    <div *ngIf="control.errors?.['isMatching']">{{ label }} must match</div>
+  </div>
+</div>

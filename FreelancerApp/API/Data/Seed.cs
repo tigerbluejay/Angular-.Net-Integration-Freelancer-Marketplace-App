@@ -45,6 +45,7 @@ public class Seed
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 DateOfBirth = dto.DateOfBirth,
+                KnownAs = dto.KnownAs,
                 Gender = dto.Gender,
                 Country = dto.Country,
                 City = dto.City,
@@ -143,7 +144,7 @@ public class Seed
         await context.SaveChangesAsync();
 
         // Create admin
-        var admin = new AppUser { UserName = "admin" };
+        var admin = new AppUser { UserName = "admin", KnownAs = "admin" };
         await userManager.CreateAsync(admin, "Pa$$w0rd");
         await userManager.AddToRolesAsync(admin, new[] { "Admin" });
 

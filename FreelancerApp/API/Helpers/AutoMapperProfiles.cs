@@ -37,9 +37,11 @@ namespace API.Helpers
             CreateMap<ProjectCreateDTO, Project>()
                 .ForMember(dest => dest.Skills, opt => opt.Ignore());
             CreateMap<ProjectUpdateDTO, Project>()
-                .ForMember(dest => dest.Skills, opt => opt.Ignore());  
+                .ForMember(dest => dest.Skills, opt => opt.Ignore());
             CreateMap<AppUser, UserDTO>()
                 .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : string.Empty));
+            CreateMap<RegisterDTO, AppUser>();
+            CreateMap<string, DateOnly>().ConvertUsing(s => DateOnly.Parse(s));
         }
     }
 }

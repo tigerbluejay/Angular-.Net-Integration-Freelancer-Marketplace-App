@@ -7,8 +7,8 @@
   isLoggedIn: {{ isLoggedIn }} | userRole: {{ userRole() }}
 </div>
 
-<app-publicnav *ngIf="!isLoggedIn"></app-publicnav>
-<app-freelancernav *ngIf="isLoggedIn && userRole() === 'Freelancer'"></app-freelancernav>
-<app-clientnav *ngIf="isLoggedIn && userRole() === 'Client'"></app-clientnav>
+<app-publicnav *ngIf="!isLoggedIn()"></app-publicnav>
+<app-freelancernav *ngIf="isLoggedIn() && userRole() === 'Freelancer'"></app-freelancernav>
+<app-clientnav *ngIf="isLoggedIn() && userRole() === 'Client'"></app-clientnav>
 
 <router-outlet></router-outlet>

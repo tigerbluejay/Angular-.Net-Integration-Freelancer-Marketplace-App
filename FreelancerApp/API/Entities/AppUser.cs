@@ -10,10 +10,10 @@ public class AppUser : IdentityUser<int>
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public DateOnly? DateOfBirth { get; set; }
+    public required string KnownAs { get; set; }
     public string? Gender { get; set; }
     public string? Country { get; set; }
     public string? City { get; set; }
-
     public string? Bio { get; set; }              // Brief intro
     public string? LookingFor { get; set; }       // Optional: e.g., “remote gigs”, “short-term contracts”
     public string? Website { get; set; }          // Optional portfolio URL
