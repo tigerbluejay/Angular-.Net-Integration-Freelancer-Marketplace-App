@@ -1,8 +1,10 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient, HttpHeaders, HttpXhrBackend } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpXhrBackend } from '@angular/common/http';
 import { Member } from '../_models/member';
 import { of, tap } from 'rxjs';
+import { ProjectDTO } from '../_DTOs/projectDTO';
+import { PortfolioItemDTO } from '../_DTOs/portfolioItemDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class MembersService {
   baseUrl = environment.apiUrl;
   // Signal to hold cached members
   members = signal<Member[]>([]);
-  
+
   // Get all members and cache them
   getMembers() {
     return this.http.get<Member[]>(this.baseUrl + 'users').pipe(
@@ -27,7 +29,7 @@ export class MembersService {
 
     const headers = new HttpHeaders({ 'skip-spinner': 'true' });
 
-    return this.http.get<Member>(this.baseUrl + 'users/' + username, {headers});
+    return this.http.get<Member>(this.baseUrl + 'users/' + username, { headers });
   }
 
   // PUT update for currently logged-in member
@@ -40,6 +42,24 @@ export class MembersService {
         );
       })
     );
+  }
+
+  // Fetch client projects paginated
+  getClientProjects(username: string, pageNumber: number = 1, pageSize: number = 6) {
+    let params = new HttpParams()
+      .set('PageNumber', pageNumber.toString())
+      .set('PageSize', pageSize.toString());
+
+    return this.http.get<ProjectDTO[]>(`${this.baseUrl}users/${username}/projects`, { observe: 'response', params });
+  }
+
+  // Fetch freelancer portfolio paginated
+  getFreelancerPortfolio(username: string, pageNumber: number = 1, pageSize: number = 6) {
+    let params = new HttpParams()
+      .set('PageNumber', pageNumber.toString())
+      .set('PageSize', pageSize.toString());
+
+    return this.http.get<PortfolioItemDTO[]>(`${this.baseUrl}users/${username}/portfolio`, { observe: 'response', params });
   }
 
 

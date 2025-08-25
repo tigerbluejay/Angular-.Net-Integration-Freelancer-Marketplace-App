@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PortfolioItemComponent } from '../portfolio-item/portfolio-item.component';
 import { PortfolioItem } from '../_models/portfolio-item';
+import { PortfolioItemDTO } from '../_DTOs/portfolioItemDTO';
 
 @Component({
   selector: 'app-portfolio-list',
@@ -11,7 +12,7 @@ import { PortfolioItem } from '../_models/portfolio-item';
   styleUrl: './portfolio-list.component.css'
 })
 export class PortfolioListComponent {
-  @Input() items: PortfolioItem[] = [];
+  @Input() items: PortfolioItemDTO[] = [];
   @Output() delete = new EventEmitter<number>(); // item ID
 
   onDelete(itemId: number) {

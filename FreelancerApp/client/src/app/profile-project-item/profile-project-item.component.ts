@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Project } from '../_models/project';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ProjectDTO } from '../_DTOs/projectDTO';
 
 @Component({
   selector: 'app-profile-project-item',
@@ -11,7 +12,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './profile-project-item.component.css'
 })
 export class ProfileProjectItemComponent {
-   @Input() project!: Project;
+   @Input() project!: ProjectDTO;
    @Output() delete = new EventEmitter<number>();
    
      onDeleteClick() {

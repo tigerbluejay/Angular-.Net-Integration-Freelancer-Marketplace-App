@@ -155,7 +155,27 @@
     </div>
     <!-- Freelancer content -->
     <div class="col-md-8" *ngIf="member.roles.includes('Freelancer')">
-      <app-portfolio-list [items]="member.portfolioItems" (delete)="onDeletePortfolioItem($event)"></app-portfolio-list>
+      <app-portfolio-list [items]="portfolio" (delete)="onDeletePortfolioItem($event)"></app-portfolio-list>
+
+      <!-- Portfolio Pagination -->
+      <div class="d-flex justify-content-center mt-3" *ngIf="portfolioTotalPages() > 1">
+        <nav>
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="portfolioPageNumber === 1">
+              <button class="page-link" (click)="changePortfolioPage(portfolioPageNumber - 1)">Previous</button>
+            </li>
+
+            <li class="page-item" *ngFor="let page of portfolioPages()" [class.active]="portfolioPageNumber === page">
+              <button class="page-link" (click)="changePortfolioPage(page)">{{ page }}</button>
+            </li>
+
+            <li class="page-item" [class.disabled]="portfolioPageNumber === portfolioTotalPages()">
+              <button class="page-link" (click)="changePortfolioPage(portfolioPageNumber + 1)">Next</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
 
       <div class="d-flex justify-content-center mt-3">
         <button class="btn btn-success" [routerLink]="['/portfolio-item/create']">
@@ -166,10 +186,29 @@
 
     <!-- Client content -->
     <div class="col-md-8" *ngIf="member.roles.includes('Client')">
-      <app-profile-project-list [projects]="member.clientProjects"
-        (delete)="onDeleteProject($event)"></app-profile-project-list>
+      <app-profile-project-list [projects]="projects" (delete)="onDeleteProject($event)"></app-profile-project-list>
 
-        <div class="d-flex justify-content-center mt-3">
+      <!-- Projects Pagination -->
+      <div class="d-flex justify-content-center mt-3" *ngIf="projectTotalPages() > 1">
+        <nav>
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="projectPageNumber === 1">
+              <button class="page-link" (click)="changeProjectPage(projectPageNumber - 1)">Previous</button>
+            </li>
+
+            <li class="page-item" *ngFor="let page of projectPages()" [class.active]="projectPageNumber === page">
+              <button class="page-link" (click)="changeProjectPage(page)">{{ page }}</button>
+            </li>
+
+            <li class="page-item" [class.disabled]="projectPageNumber === projectTotalPages()">
+              <button class="page-link" (click)="changeProjectPage(projectPageNumber + 1)">Next</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+
+      <div class="d-flex justify-content-center mt-3">
         <button class="btn btn-success" [routerLink]="['/project/create']">
           <i class="fas fa-plus me-2"></i>Create Project
         </button>

@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { PortfolioItem } from '../_models/portfolio-item';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { PortfolioItemDTO } from '../_DTOs/portfolioItemDTO';
 
 @Component({
   selector: 'app-portfolio-item',
@@ -11,7 +12,7 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './portfolio-item.component.css'
 })
 export class PortfolioItemComponent {
-  @Input() item!: PortfolioItem;
+  @Input() item!: PortfolioItemDTO;
   @Output() delete = new EventEmitter<number>();
   private router = inject(Router);  // <-- inject Router here
 
