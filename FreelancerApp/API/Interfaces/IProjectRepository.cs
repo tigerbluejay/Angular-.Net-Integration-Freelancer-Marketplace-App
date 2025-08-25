@@ -1,4 +1,6 @@
+using API.DTOs;
 using API.Entities;
+using API.Helpers;
 
 namespace API.Interfaces;
 
@@ -10,5 +12,6 @@ public interface IProjectRepository
     Task<Project> CreateAsync(Project project, List<int> skillIds);
     Task<Project?> UpdateAsync(Project project, List<int> skillIds);
     Task<IEnumerable<Project>> GetProjectsAsync();
+    Task<PagedList<ProjectBrowseDTO>> GetProjectsAsync(ProjectParams projectParams);
 
 }

@@ -42,6 +42,12 @@ namespace API.Helpers
                 .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : string.Empty));
             CreateMap<RegisterDTO, AppUser>();
             CreateMap<string, DateOnly>().ConvertUsing(s => DateOnly.Parse(s));
+            CreateMap<Project, ProjectBrowseDTO>()
+            .ForMember(d => d.SkillNames, opt => opt.MapFrom(s => s.Skills.Select(sk => sk.Name)))
+            .ForMember(d => d.ClientUserName, opt => opt.MapFrom(s => s.Client.KnownAs))
+            .ForMember(d => d.PhotoUrl, opt => opt.MapFrom(s => s.Photo != null ? s.Photo.Url : null))
+            .ForMember(dest => dest.ClientPhotoUrl, opt => opt.MapFrom(src => src.Client.Photo.Url));
+
         }
     }
 }

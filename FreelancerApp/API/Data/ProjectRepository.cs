@@ -1,10 +1,13 @@
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class ProjectRepository(DataContext context) : IProjectRepository
+public class ProjectRepository(DataContext context, IMapper mapper) : IProjectRepository
 {
     public async Task<Project?> GetProjectByIdAsync(int id)
     {
@@ -74,5 +77,50 @@ public class ProjectRepository(DataContext context) : IProjectRepository
         return existingProject;
     }
 
-    
+    public async Task<PagedList<ProjectBrowseDTO>> GetProjectsAsync(ProjectParams projectParams)
+    {
+        var query = context.Projects.AsQueryable();
+
+        // By default, show only open (unassigned) projects
+        if (!projectParams.IncludeAssigned)
+        {
+            query = query.Where(p => p.FreelancerUserId == null); // p.IsAssigned => FreelancerUserId.HasValue
+        }
+
+        // Skills filtering
+        if (projectParams.SkillNames != null && projectParams.SkillNames.Any())
+        {
+            var skillNames = projectParams.SkillNames
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Select(s => s.Trim().ToLower())
+                .ToList();
+
+            if (skillNames.Any())
+            {
+                if (projectParams.MatchAllSkills)
+                {
+                    // Require project to contain ALL requested skills (AND)
+                    // Translate into repeated Where + Any for each skill to keep things EF-translatable
+                    foreach (var s in skillNames)
+                    {
+                        var skill = s; // avoid closure problems
+                        query = query.Where(p => p.Skills.Any(sk => sk.Name.ToLower() == skill));
+                    }
+                }
+                else
+                {
+                    // Require project to contain ANY of the requested skills (OR)
+                    query = query.Where(p => p.Skills.Any(sk => skillNames.Contains(sk.Name.ToLower())));
+                }
+            }
+        }
+
+        // Projection & paging
+        var projected = query.ProjectTo<ProjectBrowseDTO>(mapper.ConfigurationProvider);
+
+        return await PagedList<ProjectBrowseDTO>.CreateAsync(projected,
+            projectParams.PageNumber, projectParams.PageSize);
+    }
+
+
 }

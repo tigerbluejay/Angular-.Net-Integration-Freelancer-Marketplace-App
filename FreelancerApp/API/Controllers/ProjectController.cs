@@ -2,6 +2,8 @@ using System.Security.Claims;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -103,5 +105,15 @@ IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiCo
 
         var projectDto = mapper.Map<ProjectDTO>(updatedProject);
         return Ok(projectDto);
+    }
+
+     [HttpGet]
+    public async Task<ActionResult<IEnumerable<ProjectBrowseDTO>>> GetProjects([FromQuery]ProjectParams projectParams)
+    {
+        var projects = await projectRepository.GetProjectsAsync(projectParams);
+
+        Response.AddPaginationHeader(projects);
+
+        return Ok(projects);
     }
 }
