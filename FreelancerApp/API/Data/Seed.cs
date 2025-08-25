@@ -81,24 +81,29 @@ public class Seed
         };
         context.Photos.AddRange(photos);
 
-        // Add portfolio items
-        var portfolioItems = Enumerable.Range(1, 7).Select(i =>
-{
-    var photo = new Photo
-    {
-        Url = $"https://picsum.photos/id/{236 + i}/600/400"
-    };
 
-    return new PortfolioItem
-    {
-        Title = $"Portfolio Item {i}",
-        Description = "Sample portfolio description.",
-        User = users[0],
-        Photo = photo
-    };
-}).ToList();
+        // Add porfolio items with tracked skills
+        var portfolioData = new List<PortfolioItem>
+        {
+            new() { Title = "Portfolio Item 1", Photo = new Photo { Url = "https://picsum.photos/id/236/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 2", Photo = new Photo { Url = "https://picsum.photos/id/237/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 3", Photo = new Photo { Url = "https://picsum.photos/id/238/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 4", Photo = new Photo { Url = "https://picsum.photos/id/239/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 5", Photo = new Photo { Url = "https://picsum.photos/id/240/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 6", Photo = new Photo { Url = "https://picsum.photos/id/241/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 7", Photo = new Photo { Url = "https://picsum.photos/id/242/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 8", Photo = new Photo { Url = "https://picsum.photos/id/243/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 9", Photo = new Photo { Url = "https://picsum.photos/id/247/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 10", Photo = new Photo { Url = "https://picsum.photos/id/248/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 11", Photo = new Photo { Url = "https://picsum.photos/id/249/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 12", Photo = new Photo { Url = "https://picsum.photos/id/251/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 13", Photo = new Photo { Url = "https://picsum.photos/id/252/600/400" }, Description = "Description", User = users[0] },
+            new() { Title = "Portfolio Item 14", Photo = new Photo { Url = "https://picsum.photos/id/253/600/400" }, Description = "Description", User = users[0] }
 
-        context.PortfolioItems.AddRange(portfolioItems);
+        };
+
+        context.PortfolioItems.AddRange(portfolioData);
+
 
         // Seed skills
         var skillData = new List<Skill>
@@ -128,7 +133,15 @@ public class Seed
             new() { Title = "Project 4", Photo = new Photo { Url = "https://picsum.photos/id/541/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[4] }},
             new() { Title = "Project 5", Photo = new Photo { Url = "https://picsum.photos/id/542/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[1] }},
             new() { Title = "Project 6", Photo = new Photo { Url = "https://picsum.photos/id/543/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[0], skillData[4] }},
-            new() { Title = "Project 7", Photo = new Photo { Url = "https://picsum.photos/id/544/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }}
+            new() { Title = "Project 7", Photo = new Photo { Url = "https://picsum.photos/id/544/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }},
+            new() { Title = "Project 8", Photo = new Photo { Url = "https://picsum.photos/id/545/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[0], skillData[1] }},
+            new() { Title = "Project 9", Photo = new Photo { Url = "https://picsum.photos/id/546/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }},
+            new() { Title = "Project 10", Photo = new Photo { Url = "https://picsum.photos/id/547/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[1], skillData[2] }},
+            new() { Title = "Project 11", Photo = new Photo { Url = "https://picsum.photos/id/548/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[4] }},
+            new() { Title = "Project 12", Photo = new Photo { Url = "https://picsum.photos/id/549/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[1] }},
+            new() { Title = "Project 13", Photo = new Photo { Url = "https://picsum.photos/id/551/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[0], skillData[4] }},
+            new() { Title = "Project 14", Photo = new Photo { Url = "https://picsum.photos/id/552/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }}
+
         };
 
         context.Projects.AddRange(projectData);
