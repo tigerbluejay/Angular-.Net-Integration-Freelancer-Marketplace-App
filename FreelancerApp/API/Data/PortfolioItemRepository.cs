@@ -1,10 +1,14 @@
+using API.DTOs;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
-public class PortfolioItemRepository(DataContext context) : IPortfolioItemRepository
+public class PortfolioItemRepository(DataContext context, IMapper mapper) : IPortfolioItemRepository
 {
     public async Task<PortfolioItem?> GetPortfolioItemByIdAsync(int id)
     {
@@ -36,5 +40,14 @@ public class PortfolioItemRepository(DataContext context) : IPortfolioItemReposi
     {
         context.Entry(item).State = EntityState.Modified;
         return await context.SaveChangesAsync() > 0;
+    }
+
+    public async Task<PagedList<PortfolioItemDTO>> GetFreelancerPortfolioAsync(int freelancerUserId, PortfolioParams portfolioParams)
+    {
+        var query = context.PortfolioItems
+            .Where(p => p.UserId == freelancerUserId); // FK to freelancer
+
+        var projected = query.ProjectTo<PortfolioItemDTO>(mapper.ConfigurationProvider);
+        return await PagedList<PortfolioItemDTO>.CreateAsync(projected, portfolioParams.PageNumber, portfolioParams.PageSize);
     }
 }

@@ -13,5 +13,6 @@ public interface IProjectRepository
     Task<Project?> UpdateAsync(Project project, List<int> skillIds);
     Task<IEnumerable<Project>> GetProjectsAsync();
     Task<PagedList<ProjectBrowseDTO>> GetProjectsAsync(ProjectParams projectParams);
+    Task<PagedList<ProjectDTO>> GetClientProjectsAsync(int clientUserId, ProjectParams projectParams);
 
 }

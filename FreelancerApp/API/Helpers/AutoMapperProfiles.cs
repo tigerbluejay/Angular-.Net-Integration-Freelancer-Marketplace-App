@@ -47,7 +47,6 @@ namespace API.Helpers
             .ForMember(d => d.ClientUserName, opt => opt.MapFrom(s => s.Client.KnownAs))
             .ForMember(d => d.PhotoUrl, opt => opt.MapFrom(s => s.Photo != null ? s.Photo.Url : null))
             .ForMember(dest => dest.ClientPhotoUrl, opt => opt.MapFrom(src => src.Client.Photo.Url));
-
         }
     }
 }

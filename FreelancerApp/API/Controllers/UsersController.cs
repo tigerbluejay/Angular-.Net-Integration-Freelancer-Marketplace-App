@@ -2,6 +2,8 @@ using System.Security.Claims;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +15,8 @@ namespace API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class UsersController(IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiController
+public class UsersController(IUserRepository userRepository, IProjectRepository projectRepository,
+    IPortfolioItemRepository portfolioItemRepository, IMapper mapper, DataContext context) : BaseApiController
 {
     [AllowAnonymous]
     [HttpGet]
@@ -57,6 +60,28 @@ public class UsersController(IUserRepository userRepository, IMapper mapper, Dat
             return NoContent();
 
         return BadRequest("Failed to update the user");
+    }
+
+    [HttpGet("{username}/projects")]
+    public async Task<ActionResult> GetClientProjects(string username, [FromQuery] ProjectParams projectParams)
+    {
+        var user = await userRepository.GetUserByUsernameAsync(username);
+        if (user == null) return NotFound();
+
+        var projects = await projectRepository.GetClientProjectsAsync(user.Id, projectParams);
+        Response.AddPaginationHeader(projects);
+        return Ok(projects);
+    }
+
+    [HttpGet("{username}/portfolio")]
+    public async Task<ActionResult> GetFreelancerPortfolio(string username, [FromQuery] PortfolioParams portfolioParams)
+    {
+        var user = await userRepository.GetUserByUsernameAsync(username);
+        if (user == null) return NotFound();
+
+        var portfolio = await portfolioItemRepository.GetFreelancerPortfolioAsync(user.Id, portfolioParams);
+        Response.AddPaginationHeader(portfolio);
+        return Ok(portfolio);
     }
 
 }

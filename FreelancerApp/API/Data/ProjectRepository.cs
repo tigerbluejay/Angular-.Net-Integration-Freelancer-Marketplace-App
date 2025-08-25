@@ -1,3 +1,4 @@
+using API.DTOs;
 using API.Entities;
 using API.Helpers;
 using API.Interfaces;
@@ -122,5 +123,14 @@ public class ProjectRepository(DataContext context, IMapper mapper) : IProjectRe
             projectParams.PageNumber, projectParams.PageSize);
     }
 
+
+    public async Task<PagedList<ProjectDTO>> GetClientProjectsAsync(int clientUserId, ProjectParams projectParams)
+    {
+        var query = context.Projects
+            .Where(p => p.ClientUserId == clientUserId);
+
+        var projected = query.ProjectTo<ProjectDTO>(mapper.ConfigurationProvider);
+        return await PagedList<ProjectDTO>.CreateAsync(projected, projectParams.PageNumber, projectParams.PageSize);
+    }
 
 }
