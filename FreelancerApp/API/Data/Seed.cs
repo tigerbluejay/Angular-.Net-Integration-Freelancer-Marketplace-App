@@ -140,7 +140,15 @@ public class Seed
             new() { Title = "Project 11", Photo = new Photo { Url = "https://picsum.photos/id/548/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[4] }},
             new() { Title = "Project 12", Photo = new Photo { Url = "https://picsum.photos/id/549/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[1] }},
             new() { Title = "Project 13", Photo = new Photo { Url = "https://picsum.photos/id/551/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[0], skillData[4] }},
-            new() { Title = "Project 14", Photo = new Photo { Url = "https://picsum.photos/id/552/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }}
+            new() { Title = "Project 14", Photo = new Photo { Url = "https://picsum.photos/id/552/600/400" }, Description = "Description", ClientUserId = users[5].Id, Skills = new List<Skill> { skillData[2], skillData[3] }},
+            new() { Title = "Project 15", Photo = new Photo { Url = "https://picsum.photos/id/544/600/400" }, Description = "Description", ClientUserId = users[6].Id, Skills = new List<Skill> { skillData[1], skillData[2] }},
+            new() { Title = "Project 16", Photo = new Photo { Url = "https://picsum.photos/id/545/600/400" }, Description = "Description", ClientUserId = users[6].Id, Skills = new List<Skill> { skillData[2], skillData[3] }},
+            new() { Title = "Project 17", Photo = new Photo { Url = "https://picsum.photos/id/546/600/400" }, Description = "Description", ClientUserId = users[7].Id, Skills = new List<Skill> { skillData[3], skillData[4] }},
+            new() { Title = "Project 18", Photo = new Photo { Url = "https://picsum.photos/id/547/600/400" }, Description = "Description", ClientUserId = users[7].Id, Skills = new List<Skill> { skillData[0], skillData[1] }},
+            new() { Title = "Project 19", Photo = new Photo { Url = "https://picsum.photos/id/548/600/400" }, Description = "Description", ClientUserId = users[8].Id, Skills = new List<Skill> { skillData[2] }},
+            new() { Title = "Project 20", Photo = new Photo { Url = "https://picsum.photos/id/549/600/400" }, Description = "Description", ClientUserId = users[8].Id, Skills = new List<Skill> { skillData[3] }},
+            new() { Title = "Project 21", Photo = new Photo { Url = "https://picsum.photos/id/551/600/400" }, Description = "Description", ClientUserId = users[9].Id, Skills = new List<Skill> { skillData[1], skillData[3] }},
+            new() { Title = "Project 22", Photo = new Photo { Url = "https://picsum.photos/id/552/600/400" }, Description = "Description", ClientUserId = users[9].Id, Skills = new List<Skill> { skillData[2], skillData[4] }}
 
         };
 

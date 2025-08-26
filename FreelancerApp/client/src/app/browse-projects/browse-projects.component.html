@@ -1,0 +1,74 @@
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <!-- 🔹 Section 1: Skill filter buttons -->
+      <div class="mb-4 text-center">
+        <div class="btn-group flex-wrap">
+          <button *ngFor="let skill of availableSkills" class="btn me-2 mb-2"
+            [ngClass]="isSkillSelected(skill) ? 'btn-primary' : 'btn-outline-primary'" (click)="toggleSkill(skill)">
+            {{ skill }}
+          </button>
+        </div>
+      </div>
+
+      <!-- 🔹 Section 2: Project list (2 columns) -->
+      <div class="row g-3" *ngIf="projects?.length; else noProjects">
+        <div class="col-md-6" *ngFor="let project of projects">
+          <div class="card h-100 shadow-sm rounded-3">
+            <div class="card-body d-flex align-items-center">
+              <!-- client avatar -->
+              <img [src]="project.clientPhotoUrl" alt="client photo" class="rounded-circle me-3"
+                style="width:50px;height:50px;object-fit:cover;" />
+
+              <!-- project photo -->
+              <img *ngIf="project.photoUrl" [src]="project.photoUrl" alt="project photo" class="rounded me-3"
+                style="width:60px;height:60px;object-fit:cover;" />
+
+              <!-- project info -->
+              <div class="flex-grow-1">
+                <h6 class="fw-bold mb-1">{{ project.title }}</h6>
+                <p class="text-muted small mb-2">{{ project.description }}</p>
+
+                <!-- 🔹 Skills pills -->
+                <div *ngIf="project.skillNames?.length" class="mb-2">
+                  <span *ngFor="let skill of project.skillNames" class="badge rounded-pill bg-dark me-1">
+                    {{ skill }}
+                  </span>
+                </div>
+
+                <button class="btn btn-sm btn-success">Submit Proposal</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔹 Section 3: Pagination -->
+      <nav *ngIf="pagination?.totalPages > 1" class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="pagination.currentPage === 1">
+            <a class="page-link" (click)="pageChanged(pagination.currentPage - 1)">Previous</a>
+          </li>
+
+          <li class="page-item" *ngFor="let p of [].constructor(pagination.totalPages); let i = index"
+            [class.active]="pagination.currentPage === i+1">
+            <a class="page-link" (click)="pageChanged(i+1)">{{ i+1 }}</a>
+          </li>
+
+          <li class="page-item" [class.disabled]="pagination.currentPage === pagination.totalPages">
+            <a class="page-link" (click)="pageChanged(pagination.currentPage + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
+
+    </div>
+  </div>
+</div>
+
+<!-- Fallback template -->
+<ng-template #noProjects>
+  <div class="text-center text-muted my-4">
+    No projects match the selected filter criteria.
+  </div>
+</ng-template>

@@ -12,6 +12,8 @@ import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.gu
 import { ProfileEditClientComponent } from './profile-edit-client/profile-edit-client.component';
 import { PortfolioItemCreateComponent } from './portfolio-item-create/portfolio-item-create.component';
 import { ProjectCreateComponent } from './project-create/project-create.component';
+import { BrowseProjectsComponent } from './browse-projects/browse-projects.component';
+
 
 export const routes: Routes = [
   // Public routes
@@ -29,16 +31,12 @@ export const routes: Routes = [
   { path: 'project/create', component: ProjectCreateComponent },
   { path: 'project/edit/:id', component: ProjectCreateComponent },
 
+  // ✅ New freelancer route
+  { path: 'browse-projects', component: BrowseProjectsComponent, canActivate: [authGuard] },
+
   // Protected route
   { path: 'profile/:username', component: ProfileComponent, canActivate: [authGuard]  },
-  // if all else fails
+
+  // fallback
   { path: '**', component: HomeComponent, pathMatch: 'full'},
-  
-
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
