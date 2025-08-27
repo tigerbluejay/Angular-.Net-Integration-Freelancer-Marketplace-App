@@ -47,6 +47,15 @@ namespace API.Helpers
             .ForMember(d => d.ClientUserName, opt => opt.MapFrom(s => s.Client.KnownAs))
             .ForMember(d => d.PhotoUrl, opt => opt.MapFrom(s => s.Photo != null ? s.Photo.Url : null))
             .ForMember(dest => dest.ClientPhotoUrl, opt => opt.MapFrom(src => src.Client.Photo.Url));
+            CreateMap<ProposalCreateDTO, Proposal>()
+            .ForMember(dest => dest.Created, opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForMember(dest => dest.IsAccepted, opt => opt.MapFrom(src => (bool?)null))
+            .ForMember(dest => dest.Photo, opt => opt.Ignore()); // keep ignoring, attach manually in controller
+            CreateMap<Proposal, ProposalDTO>()
+            .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : null))
+            .ForMember(dest => dest.FreelancerUsername, opt => opt.MapFrom(src => src.Freelancer != null ? src.Freelancer.UserName : null))
+            .ForMember(dest => dest.ClientUsername, opt => opt.MapFrom(src => src.Client != null ? src.Client.UserName : null))
+            .ForMember(dest => dest.ProjectTitle, opt => opt.MapFrom(src => src.Project != null ? src.Project.Title : null));
         }
     }
 }

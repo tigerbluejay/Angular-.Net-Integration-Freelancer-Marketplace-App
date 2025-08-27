@@ -27,4 +27,5 @@ public class Project
     // Foreign key and navigation for Photo
     public int? PhotoId { get; set; }
     public Photo? Photo { get; set; }
+    public ICollection<Proposal> Proposals { get; set; } = [];
 }

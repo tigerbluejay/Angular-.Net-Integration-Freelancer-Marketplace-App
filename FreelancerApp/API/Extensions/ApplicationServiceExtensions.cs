@@ -30,6 +30,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IPortfolioItemRepository, PortfolioItemRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IPhotoService, PhotoService>();
+        services.AddScoped<IProposalRepository, ProposalRepository>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
 

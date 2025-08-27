@@ -17,4 +17,7 @@ public class Photo
     public Project? Project { get; set; }
     // Navigation for portfolio item (optional one-to-one)
     public PortfolioItem? PortfolioItem { get; set; }
+
+    // Navigation for proposal (optional one-to-one)
+    public Proposal? Proposal { get; set; }
 }

@@ -14,8 +14,8 @@ namespace API.Controllers;
 [ApiController]
 [Route("api/photos")]
 public class PhotosController(IUserRepository userRepository, IProjectRepository projectRepository,
-    IPortfolioItemRepository portfolioItemRepository, IPhotoService photoService,
-    IMapper mapper) : BaseApiController
+    IPortfolioItemRepository portfolioItemRepository, IProposalRepository proposalRepository,
+    IPhotoService photoService, IMapper mapper) : BaseApiController
 {
 
     [HttpPost("user")]

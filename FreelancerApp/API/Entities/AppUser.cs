@@ -42,4 +42,7 @@ public class AppUser : IdentityUser<int>
     public ICollection<Project> ClientProjects { get; set; } = [];
     public ICollection<Project> FreelancerProjects { get; set; } = [];
 
+    public ICollection<Proposal> ClientProposals { get; set; } = [];     // Proposals received (as client)
+    public ICollection<Proposal> FreelancerProposals { get; set; } = []; // Proposals submitted (as freelancer)
+
 }
