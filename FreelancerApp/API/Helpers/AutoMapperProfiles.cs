@@ -46,10 +46,12 @@ namespace API.Helpers
             .ForMember(d => d.SkillNames, opt => opt.MapFrom(s => s.Skills.Select(sk => sk.Name)))
             .ForMember(d => d.ClientUserName, opt => opt.MapFrom(s => s.Client.KnownAs))
             .ForMember(d => d.PhotoUrl, opt => opt.MapFrom(s => s.Photo != null ? s.Photo.Url : null))
-            .ForMember(dest => dest.ClientPhotoUrl, opt => opt.MapFrom(src => src.Client.Photo.Url));
+            .ForMember(d => d.ClientPhotoUrl, opt => opt.MapFrom(src => src.Client.Photo.Url))
+            .ForMember(d => d.ClientUserId, opt => opt.MapFrom(src => src.Client.Id));
             CreateMap<ProposalCreateDTO, Proposal>()
             .ForMember(dest => dest.Created, opt => opt.MapFrom(src => DateTime.UtcNow))
             .ForMember(dest => dest.IsAccepted, opt => opt.MapFrom(src => (bool?)null))
+            .ForMember(dest => dest.Bid, opt => opt.MapFrom(src => src.Bid))
             .ForMember(dest => dest.Photo, opt => opt.Ignore()); // keep ignoring, attach manually in controller
             CreateMap<Proposal, ProposalDTO>()
             .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : null))

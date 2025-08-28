@@ -1,9 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, inject, OnInit } from "@angular/core";
 import { ProjectBrowseDTO } from "../_DTOs/projectBrowseDTO";
 import { ProjectParams } from "../_models/projectParams";
 import { ProjectService } from "../_services/project.service";
 import { PaginatedResult } from "../_models/pagination";
 import { CommonModule } from "@angular/common";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-browse-projects',
@@ -22,11 +23,12 @@ export class BrowseProjectsComponent implements OnInit {
     matchAllSkills: true
   };
   pagination: any;
+  router = inject(Router);
 
   // available filter buttons
   availableSkills: string[] = ['C#', 'ASP.NET Core', 'Angular', 'SQL', 'JavaScript'];
 
-  constructor(private projectService: ProjectService) {}
+  constructor(private projectService: ProjectService) { }
 
   ngOnInit(): void {
     this.loadProjects();
@@ -61,5 +63,9 @@ export class BrowseProjectsComponent implements OnInit {
 
   isSkillSelected(skill: string) {
     return this.projectParams.skillNames?.includes(skill);
+  }
+
+  goToCreateProposal(project: ProjectBrowseDTO) {
+    this.router.navigate(['/create-proposal', project.id]);
   }
 }

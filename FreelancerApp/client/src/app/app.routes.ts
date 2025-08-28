@@ -13,6 +13,7 @@ import { ProfileEditClientComponent } from './profile-edit-client/profile-edit-c
 import { PortfolioItemCreateComponent } from './portfolio-item-create/portfolio-item-create.component';
 import { ProjectCreateComponent } from './project-create/project-create.component';
 import { BrowseProjectsComponent } from './browse-projects/browse-projects.component';
+import { ProposalCreateComponent } from './create-proposal/create-proposal.component';
 
 
 export const routes: Routes = [
@@ -30,6 +31,7 @@ export const routes: Routes = [
   { path: 'portfolio-item/edit/:id', component: PortfolioItemCreateComponent },
   { path: 'project/create', component: ProjectCreateComponent },
   { path: 'project/edit/:id', component: ProjectCreateComponent },
+  { path: 'create-proposal/:id', component: ProposalCreateComponent },
 
   // ✅ New freelancer route
   { path: 'browse-projects', component: BrowseProjectsComponent, canActivate: [authGuard] },

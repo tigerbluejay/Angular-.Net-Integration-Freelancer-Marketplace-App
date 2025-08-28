@@ -11,6 +11,7 @@ public class Proposal
     public string Title { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
+    public decimal Bid { get; set; }
 
     // Proposal Status (null = pending, true = accepted, false = rejected)
     public bool? IsAccepted { get; set; }

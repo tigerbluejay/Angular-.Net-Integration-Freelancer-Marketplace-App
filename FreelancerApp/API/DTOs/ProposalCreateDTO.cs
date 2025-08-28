@@ -6,6 +6,7 @@ public class ProposalCreateDTO
     public string Title { get; set; } = string.Empty;
 
     public string? Description { get; set; }
+    public decimal Bid { get; set; } // NEW FIELD
 
     [Required]
     public int ProjectId { get; set; }

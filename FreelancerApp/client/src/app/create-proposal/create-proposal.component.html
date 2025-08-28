@@ -1,0 +1,97 @@
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <!-- Title -->
+            <h2 class="text-center mb-4">Submit Proposal</h2>
+
+            <!-- Project Preview -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body d-flex align-items-center">
+                    <!-- client avatar -->
+                    <img [src]="project?.clientPhotoUrl || 'assets/user.png'" alt="client photo"
+                        class="rounded-circle me-3" style="width:50px;height:50px;object-fit:cover;" />
+
+                    <!-- project photo -->
+                    <img *ngIf="project?.photoUrl" [src]="project?.photoUrl" alt="project photo" class="rounded me-3"
+                        style="width:60px;height:60px;object-fit:cover;" />
+
+                    <!-- project info -->
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold mb-1">{{ project?.title }}</h6>
+                        <p class="text-muted small mb-0">{{ project?.description }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proposal Form -->
+            <form #proposalForm="ngForm" (ngSubmit)="onSubmit(proposalForm)">
+
+                <!-- Photo Upload -->
+                <div class="row mb-4 justify-content-center">
+                    <div class="col-md-8 d-flex align-items-center">
+
+                        <!-- Preview -->
+                        <div class="me-3">
+                            <img [src]="photoPreviewUrl || './assets/user.png'" alt="Profile preview"
+                                class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+                        </div>
+
+                        <!-- File input -->
+                        <div class="flex-grow-1">
+                            <label for="photo" class="form-label">Attach Photo (optional)</label>
+                            <input type="file" id="photo" class="form-control" (change)="onFileSelected($event)"
+                                accept="image/*">
+                        </div>
+
+                        <!-- Delete button -->
+                        <div class="ms-3 d-flex align-items-center">
+                            <button type="button" class="btn btn-outline-danger" (click)="onDeletePhoto()"
+                                [disabled]="!photoPreviewUrl">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Title & Bid -->
+                <div class="row mb-3">
+                    <!-- Title -->
+                    <div class="col-md-8">
+                        <label for="title" class="form-label">Title</label>
+                        <input id="title" name="title" [(ngModel)]="model.title" required class="form-control" />
+                        <div *ngIf="proposalForm.submitted && !model.title" class="text-danger small mt-1">
+                            Title is required
+                        </div>
+                    </div>
+
+                    <!-- Bid -->
+                    <div class="col-md-4">
+                        <label for="bid" class="form-label">Bid</label>
+                        <input id="bid" name="bid" type="number" [(ngModel)]="model.bid" required min="0" step="0.01"
+                            class="form-control" />
+                        <div *ngIf="proposalForm.submitted && !model.bid" class="text-danger small mt-1">
+                            Bid is required
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" class="form-control" rows="4" name="description"
+                        [(ngModel)]="model.description" required></textarea>
+                    <div *ngIf="proposalForm.submitted && !model.description" class="text-danger small mt-1">
+                        Description is required.
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <button class="btn btn-success">Submit Proposal</button>
+                    <button class="btn btn-outline-secondary" (click)="goBack()">Go Back</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Project } from '../_models/project';
 import { PaginatedResult, Pagination } from '../_models/pagination';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ProjectParams } from '../_models/projectParams';
 import { ProjectBrowseDTO } from '../_DTOs/projectBrowseDTO';
 
@@ -71,4 +71,8 @@ export class ProjectService {
   updateProject(id: number, project: Project) {
     return this.http.put(this.baseUrl + 'project/' + id, project);
   }
+
+  getProjectById(id: number): Observable<ProjectBrowseDTO> {
+  return this.http.get<ProjectBrowseDTO>(`${this.baseUrl}project/${id}`);
+}
 }

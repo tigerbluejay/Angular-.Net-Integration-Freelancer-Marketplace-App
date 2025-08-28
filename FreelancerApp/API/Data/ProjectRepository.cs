@@ -13,10 +13,11 @@ public class ProjectRepository(DataContext context, IMapper mapper) : IProjectRe
     public async Task<Project?> GetProjectByIdAsync(int id)
     {
         return await context.Projects
-        .Include(p => p.Skills)
-        .Include(p => p.Client)
-        .Include(p => p.Photo)
-        .FirstOrDefaultAsync(p => p.Id == id);
+       .Include(p => p.Skills)
+       .Include(p => p.Client)
+           .ThenInclude(c => c.Photo) // <-- include client photo
+       .Include(p => p.Photo)
+       .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public void DeleteProject(Project project)

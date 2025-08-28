@@ -68,14 +68,13 @@ IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiCo
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProjectDTO>> GetProjectById(int id)
+    public async Task<ActionResult<ProjectBrowseDTO>> GetProjectById(int id)
     {
         var project = await projectRepository.GetProjectByIdAsync(id);
-
         if (project == null)
             return NotFound();
 
-        var projectDto = mapper.Map<ProjectDTO>(project);
+        var projectDto = mapper.Map<ProjectBrowseDTO>(project);
         return Ok(projectDto);
     }
 
@@ -107,8 +106,8 @@ IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiCo
         return Ok(projectDto);
     }
 
-     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProjectBrowseDTO>>> GetProjects([FromQuery]ProjectParams projectParams)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<ProjectBrowseDTO>>> GetProjects([FromQuery] ProjectParams projectParams)
     {
         var projects = await projectRepository.GetProjectsAsync(projectParams);
 
@@ -116,4 +115,5 @@ IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiCo
 
         return Ok(projects);
     }
+
 }
