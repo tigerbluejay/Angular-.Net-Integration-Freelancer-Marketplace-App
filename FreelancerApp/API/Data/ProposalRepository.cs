@@ -1,3 +1,4 @@
+using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +39,42 @@ namespace API.Data
         public void Add(Proposal proposal)
         {
             _context.Proposals.Add(proposal);
+        }
+
+        public async Task<List<ProposalWithProjectCombinedDTO>> GetProposalsWithProjectsByFreelancerIdAsync(int freelancerId)
+        {
+            return await _context.Proposals
+                .Where(p => p.FreelancerUserId == freelancerId)
+                .Select(p => new ProposalWithProjectCombinedDTO
+                {
+                    Proposal = new ProposalDTO
+                    {
+                        Id = p.Id,
+                        Title = p.Title,
+                        Description = p.Description,
+                        Bid = p.Bid,
+                        ProjectId = p.ProjectId,
+                        FreelancerUserId = p.FreelancerUserId,
+                        ClientUserId = p.ClientUserId,
+                        FreelancerUsername = p.Freelancer.KnownAs,
+                        ClientUsername = p.Client.KnownAs,
+                        IsAccepted = p.IsAccepted,
+                        PhotoUrl = p.Photo != null ? p.Photo.Url : null
+                    },
+                    Project = new ProjectBrowseDTO
+                    {
+                        Id = p.Project.Id,
+                        Title = p.Project.Title,
+                        Description = p.Project.Description,
+                        IsAssigned = p.Project.IsAssigned,
+                        SkillNames = p.Project.Skills.Select(s => s.Name).ToList(),
+                        ClientUserId = p.Project.ClientUserId,
+                        ClientUserName = p.Project.Client.KnownAs,
+                        PhotoUrl = p.Project.Photo != null ? p.Project.Photo.Url : null,
+                        ClientPhotoUrl = p.Project.Client.Photo.Url
+                    }
+                })
+                .ToListAsync();
         }
     }
 }

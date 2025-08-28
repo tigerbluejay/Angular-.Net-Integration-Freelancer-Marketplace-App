@@ -58,4 +58,11 @@ public class ProposalsController(IProposalRepository proposalRepository, IUserRe
         var proposalDto = mapper.Map<ProposalDTO>(proposal);
         return Ok(proposalDto);
     }
+
+    [HttpGet("proposals-with-projects/{freelancerId}")]
+    public async Task<IActionResult> GetProposalsWithProjects(int freelancerId)
+    {
+        var result = await proposalRepository.GetProposalsWithProjectsByFreelancerIdAsync(freelancerId);
+        return Ok(result); // always OK, could be empty []
+    }
 }

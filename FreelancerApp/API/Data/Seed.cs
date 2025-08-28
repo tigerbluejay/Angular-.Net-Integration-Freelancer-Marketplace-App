@@ -155,6 +155,69 @@ public class Seed
         context.Projects.AddRange(projectData);
         await context.SaveChangesAsync();
 
+        // Seed proposals
+        var proposals = new List<Proposal>
+{
+    new()
+    {
+        Title = "Proposal 1 for Project 14",
+        Description = "I have strong experience in C# and ASP.NET Core. I can deliver this project efficiently.",
+        Bid = 1000,
+        Photo = new Photo { Url = "https://picsum.photos/id/801/600/400" },
+        ProjectId = projectData[13].Id,   // Project 14
+        FreelancerUserId = users[0].Id,  // Freelancer
+        ClientUserId = users[5].Id,       // Project 14’s client
+        IsAccepted = true
+    },
+    new()
+    {
+        Title = "Proposal 2 for Project 16",
+        Description = "I’ve built multiple Angular + .NET applications. I can implement this quickly.",
+        Bid = 1200,
+        Photo = new Photo { Url = "https://picsum.photos/id/802/600/400" },
+        ProjectId = projectData[15].Id,   // Project 2
+        FreelancerUserId = users[0].Id,  // Freelancer
+        ClientUserId = users[6].Id,
+        IsAccepted = false
+    },
+    new()
+    {
+        Title = "Proposal 3 for Project 18",
+        Description = "SQL optimization and backend expertise. I’ll ensure high performance.",
+        Bid = 900,
+        Photo = new Photo { Url = "https://picsum.photos/id/803/600/400" },
+        ProjectId = projectData[17].Id,   // Project 3
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[7].Id,
+        IsAccepted = null
+    },
+    new()
+    {
+        Title = "Proposal 4 for Project 20",
+        Description = "Extensive Angular front-end experience. I’ll deliver a responsive UI.",
+        Bid = 1500,
+        Photo = new Photo { Url = "https://picsum.photos/id/804/600/400" },
+        ProjectId = projectData[19].Id,   // Project 5
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[8].Id,
+        IsAccepted = true
+    },
+    new()
+    {
+        Title = "Proposal 5 for Project 22",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 800,
+        Photo = new Photo { Url = "https://picsum.photos/id/805/600/400" },
+        ProjectId = projectData[21].Id,   // Project 7
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[9].Id,
+        IsAccepted = false
+    }
+};
+
+        context.Proposals.AddRange(proposals);
+        await context.SaveChangesAsync();
+
         // Optional: assign freelancer projects later if needed
         users[0].FreelancerProjects = new List<Project> { projectData[0], projectData[2] };
 

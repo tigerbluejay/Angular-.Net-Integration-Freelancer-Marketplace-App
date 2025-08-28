@@ -1,3 +1,4 @@
+using API.DTOs;
 using API.Entities;
 using System.Threading.Tasks;
 
@@ -9,5 +10,7 @@ namespace API.Interfaces
         Task<Proposal?> GetProposalByIdAsync(int id);
         void Add(Proposal proposal);
         Task<bool> SaveAllAsync();
+        Task<List<ProposalWithProjectCombinedDTO>> GetProposalsWithProjectsByFreelancerIdAsync(int freelancerId);
+
     }
 }
