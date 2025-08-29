@@ -1,8 +1,7 @@
 <div class="container mt-4">
-  <!-- Title -->
   <h1 class="mb-4">Submitted Proposals</h1>
 
-  <!-- Tabs using buttons -->
+  <!-- Tabs -->
   <ul class="nav nav-pills mb-3">
     <li class="nav-item">
       <button class="nav-link" [class.active]="activeTab() === 'accepted'"
@@ -13,153 +12,60 @@
         (click)="setTab('rejected')">Rejected</button>
     </li>
     <li class="nav-item">
-      <button class="nav-link" [class.active]="activeTab() === 'pending'" (click)="setTab('pending')">Pending</button>
+      <button class="nav-link" [class.active]="activeTab() === 'pending'"
+        (click)="setTab('pending')">Pending</button>
     </li>
   </ul>
 
-  <!-- Cards container -->
+  <!-- Cards -->
   <div class="d-flex flex-column gap-3" style="max-width: 75%; margin: auto;">
+    <ng-container *ngIf="loading()">Loading proposals...</ng-container>
 
-    <!-- Accepted proposals -->
-    <ng-container *ngIf="activeTab() === 'accepted'">
-      <ng-container *ngIf="!loading() && accepted().length === 0">
-        <p class="text-muted">No accepted proposals yet.</p>
-      </ng-container>
-      <ng-container *ngFor="let item of accepted()">
-        <div class="card mb-3 shadow-sm" style="border-radius: 1rem;">
-          <div class="row g-0 align-items-center">
-
-            <!-- Proposal Thumbnail -->
-            <div class="col-auto p-2">
-              <img *ngIf="item.proposal.photoUrl" [src]="item.proposal.photoUrl" class="img-thumbnail"
-                style="width:80px; height:80px; object-fit:cover;">
-            </div>
-
-            <!-- Proposal Info -->
-            <div class="col p-2">
-              <h5 class="card-title">{{ item.proposal.title }}</h5>
-              <p class="card-text">{{ item.proposal.description }}</p>
-              <p class="card-text"><small class="text-muted">Bid: ${{ item.proposal.bid }}</small></p>
-            </div>
-
-            <!-- Project Info -->
-            <div class="col p-2 d-flex justify-content-between align-items-start border-start">
-              <div class="flex-grow-1">
-                <h6>{{ item.project.title }}</h6>
-                <p>{{ item.project.description }}</p>
-                <!-- Skills -->
-                <div class="mb-2">
-                  <span *ngFor="let skill of item.project.skillNames" class="badge bg-secondary me-1">{{ skill }}</span>
-                </div>
-              </div>
-
-              <!-- Project/Client Thumbnails on right -->
-              <div class="d-flex flex-column gap-2 ms-3">
-                <img *ngIf="item.project.photoUrl" [src]="item.project.photoUrl" class="img-thumbnail"
-                  style="width:50px; height:50px; object-fit:cover;">
-                <img *ngIf="item.project.clientPhotoUrl" [src]="item.project.clientPhotoUrl" class="rounded-circle"
-                  style="width:50px; height:50px; object-fit:cover;">
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </ng-container>
+    <ng-container *ngIf="!loading() && proposals().length === 0">
+      <p class="text-muted">No proposals in this tab yet.</p>
     </ng-container>
 
-    <!-- Rejected proposals -->
-    <ng-container *ngIf="activeTab() === 'rejected'">
-      <ng-container *ngIf="!loading() && rejected().length === 0">
-        <p class="text-muted">No rejected proposals yet.</p>
-      </ng-container>
-      <ng-container *ngFor="let item of rejected()">
-        <div class="card mb-3 shadow-sm" style="border-radius: 1rem;">
-          <div class="row g-0 align-items-center">
-
-            <!-- Proposal Thumbnail -->
-            <div class="col-auto p-2">
-              <img *ngIf="item.proposal.photoUrl" [src]="item.proposal.photoUrl" class="img-thumbnail"
-                style="width:80px; height:80px; object-fit:cover;">
-            </div>
-
-            <!-- Proposal Info -->
-            <div class="col p-2">
-              <h5 class="card-title">{{ item.proposal.title }}</h5>
-              <p class="card-text">{{ item.proposal.description }}</p>
-              <p class="card-text"><small class="text-muted">Bid: ${{ item.proposal.bid }}</small></p>
-            </div>
-
-            <!-- Project Info -->
-            <div class="col p-2 d-flex justify-content-between align-items-start border-start">
-              <div class="flex-grow-1">
-                <h6>{{ item.project.title }}</h6>
-                <p>{{ item.project.description }}</p>
-                <!-- Skills -->
-                <div class="mb-2">
-                  <span *ngFor="let skill of item.project.skillNames" class="badge bg-secondary me-1">{{ skill }}</span>
-                </div>
-              </div>
-
-              <!-- Project/Client Thumbnails on right -->
-              <div class="d-flex flex-column gap-2 ms-3">
-                <img *ngIf="item.project.photoUrl" [src]="item.project.photoUrl" class="img-thumbnail"
-                  style="width:50px; height:50px; object-fit:cover;">
-                <img *ngIf="item.project.clientPhotoUrl" [src]="item.project.clientPhotoUrl" class="rounded-circle"
-                  style="width:50px; height:50px; object-fit:cover;">
+    <ng-container *ngFor="let item of proposals()">
+      <div class="card mb-3 shadow-sm" style="border-radius: 1rem;">
+        <div class="row g-0 align-items-center">
+          <!-- Proposal Thumbnail -->
+          <div class="col-auto p-2">
+            <img *ngIf="item.proposal.photoUrl" [src]="item.proposal.photoUrl" class="img-thumbnail"
+              style="width:80px; height:80px; object-fit:cover;">
+          </div>
+          <!-- Proposal Info -->
+          <div class="col p-2">
+            <h5 class="card-title">{{ item.proposal.title }}</h5>
+            <p class="card-text">{{ item.proposal.description }}</p>
+            <p class="card-text"><small class="text-muted">Bid: ${{ item.proposal.bid }}</small></p>
+          </div>
+          <!-- Project Info -->
+          <div class="col p-2 d-flex justify-content-between align-items-start border-start">
+            <div class="flex-grow-1">
+              <h6>{{ item.project.title }}</h6>
+              <p>{{ item.project.description }}</p>
+              <div class="mb-2">
+                <span *ngFor="let skill of item.project.skillNames" class="badge bg-secondary me-1">{{ skill }}</span>
               </div>
             </div>
-
+            <div class="d-flex flex-column gap-2 ms-3">
+              <img *ngIf="item.project.photoUrl" [src]="item.project.photoUrl" class="img-thumbnail"
+                style="width:50px; height:50px; object-fit:cover;">
+              <img *ngIf="item.project.clientPhotoUrl" [src]="item.project.clientPhotoUrl" class="rounded-circle"
+                style="width:50px; height:50px; object-fit:cover;">
+            </div>
           </div>
         </div>
-      </ng-container>
+      </div>
     </ng-container>
 
-    <!-- Pending proposals -->
-    <ng-container *ngIf="activeTab() === 'pending'">
-      <ng-container *ngIf="!loading() && pending().length === 0">
-        <p class="text-muted">No pending proposals yet.</p>
-      </ng-container>
-      <ng-container *ngFor="let item of pending()">
-        <div class="card mb-3 shadow-sm" style="border-radius: 1rem;">
-          <div class="row g-0 align-items-center">
-
-            <!-- Proposal Thumbnail -->
-            <div class="col-auto p-2">
-              <img *ngIf="item.proposal.photoUrl" [src]="item.proposal.photoUrl" class="img-thumbnail"
-                style="width:80px; height:80px; object-fit:cover;">
-            </div>
-
-            <!-- Proposal Info -->
-            <div class="col p-2">
-              <h5 class="card-title">{{ item.proposal.title }}</h5>
-              <p class="card-text">{{ item.proposal.description }}</p>
-              <p class="card-text"><small class="text-muted">Bid: ${{ item.proposal.bid }}</small></p>
-            </div>
-
-            <!-- Project Info -->
-            <div class="col p-2 d-flex justify-content-between align-items-start border-start">
-              <div class="flex-grow-1">
-                <h6>{{ item.project.title }}</h6>
-                <p>{{ item.project.description }}</p>
-                <!-- Skills -->
-                <div class="mb-2">
-                  <span *ngFor="let skill of item.project.skillNames" class="badge bg-secondary me-1">{{ skill }}</span>
-                </div>
-              </div>
-
-              <!-- Project/Client Thumbnails on right -->
-              <div class="d-flex flex-column gap-2 ms-3">
-                <img *ngIf="item.project.photoUrl" [src]="item.project.photoUrl" class="img-thumbnail"
-                  style="width:50px; height:50px; object-fit:cover;">
-                <img *ngIf="item.project.clientPhotoUrl" [src]="item.project.clientPhotoUrl" class="rounded-circle"
-                  style="width:50px; height:50px; object-fit:cover;">
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </ng-container>
-    </ng-container>
-
+    <!-- Pagination buttons -->
+    <div class="d-flex justify-content-between mt-3">
+      <button class="btn btn-outline-primary" (click)="prevPage()"
+        [disabled]="currentPage()[activeTab()] === 1">Previous</button>
+      <span>Page {{ currentPage()[activeTab()] }} of {{ totalPages()[activeTab()] }}</span>
+      <button class="btn btn-outline-primary" (click)="nextPage()"
+        [disabled]="currentPage()[activeTab()] === totalPages()[activeTab()]">Next</button>
+    </div>
   </div>
 </div>

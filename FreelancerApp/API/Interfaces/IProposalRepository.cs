@@ -1,5 +1,6 @@
 using API.DTOs;
 using API.Entities;
+using API.Helpers;
 using System.Threading.Tasks;
 
 namespace API.Interfaces
@@ -10,7 +11,7 @@ namespace API.Interfaces
         Task<Proposal?> GetProposalByIdAsync(int id);
         void Add(Proposal proposal);
         Task<bool> SaveAllAsync();
-        Task<List<ProposalWithProjectCombinedDTO>> GetProposalsWithProjectsByFreelancerIdAsync(int freelancerId);
+        Task<PagedList<ProposalWithProjectCombinedDTO>> GetProposalsWithProjectsByFreelancerIdAsync(int freelancerId, ProposalWithProjectParams propprojParams);
 
     }
 }

@@ -1,5 +1,7 @@
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -60,9 +62,25 @@ public class ProposalsController(IProposalRepository proposalRepository, IUserRe
     }
 
     [HttpGet("proposals-with-projects/{freelancerId}")]
-    public async Task<IActionResult> GetProposalsWithProjects(int freelancerId)
+    public async Task<IActionResult> GetProposalsWithProjects(
+        int freelancerId,
+        [FromQuery] ProposalWithProjectParams propprojParams)
     {
-        var result = await proposalRepository.GetProposalsWithProjectsByFreelancerIdAsync(freelancerId);
-        return Ok(result); // always OK, could be empty []
+        var result = await proposalRepository
+            .GetProposalsWithProjectsByFreelancerIdAsync(freelancerId, propprojParams);
+
+        Response.AddPaginationHeader(result);
+
+        return Ok(new
+        {
+            result = result,
+            pagination = new
+            {
+                currentPage = result.CurrentPage,
+                itemsPerPage = result.PageSize,
+                totalItems = result.TotalCount,
+                totalPages = result.TotalPages
+            }
+        });
     }
 }

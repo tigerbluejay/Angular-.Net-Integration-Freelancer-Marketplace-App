@@ -4,6 +4,8 @@ import { AccountService } from '../_services/account.service';
 import { MembersService } from '../_services/members.service';
 import { ProposalService } from '../_services/proposal.service';
 import { ProposalWithProjectCombinedDTO } from '../_DTOs/proposalWithProjectCombinedDTO';
+import { PaginatedResult, Pagination } from '../_models/pagination';
+import { PaginatedResult2 } from '../_models/pagination2';
 
 @Component({
   selector: 'app-submitted-proposals',
@@ -22,57 +24,92 @@ export class SubmittedProposalsComponent implements OnInit {
   activeTab = signal<'accepted' | 'rejected' | 'pending'>('accepted');
   loading = signal(true);
 
-  // Computed signals for each category
-  accepted = computed(() =>
-    this.proposals().filter(p => p.proposal.isAccepted === true)
-  );
-  rejected = computed(() =>
-    this.proposals().filter(p => p.proposal.isAccepted === false)
-  );
-  pending = computed(() =>
-    this.proposals().filter(p => p.proposal.isAccepted === undefined)
-  );
+  // Pagination signals per tab
+  currentPage = signal<{ [key in 'accepted' | 'rejected' | 'pending']: number }>({
+    accepted: 1,
+    rejected: 1,
+    pending: 1
+  });
+
+  totalPages = signal<{ [key in 'accepted' | 'rejected' | 'pending']: number }>({
+    accepted: 1,
+    rejected: 1,
+    pending: 1
+  });
+
+  pageSize = 10; // items per page
 
   ngOnInit(): void {
-    const currentUser = this.accountService.currentUser();
+    this.loadProposals(this.activeTab());
+  }
 
+  setTab(tab: 'accepted' | 'rejected' | 'pending') {
+    this.activeTab.set(tab);
+    // If first time loading this tab, start at page 1
+    if (this.currentPage()[tab] === 1) {
+      this.loadProposals(tab);
+    } else {
+      this.loadProposals(tab);
+    }
+  }
+
+  loadProposals(tab: 'accepted' | 'rejected' | 'pending') {
+    const currentUser = this.accountService.currentUser();
+    console.log('Current user:', currentUser);
     if (!currentUser) {
       console.error('No logged-in user found.');
       this.loading.set(false);
       return;
     }
 
-    // fetch Member by username to get the actual ID
+    this.loading.set(true);
+
     this.membersService.getMember(currentUser.username).subscribe({
       next: member => {
+        console.log('Member fetched:', member);
         const freelancerId = member.id;
-        this.proposalsService.getProposalsWithProjects(freelancerId).subscribe({
-          next: proposals => {
-            const normalized = proposals.map(p => ({
-              ...p,
-              proposal: {
-                ...p.proposal,
-                isAccepted: this.normalizeIsAccepted(p.proposal.isAccepted)
-              }
-            }));
-            this.proposals.set(normalized);
-            this.loading.set(false);  // ✅ mark loading complete
-          },
-          error: err => console.error('Error fetching proposals:', err)
+        const page = this.currentPage()[tab];
+
+        console.log('Loading proposals', {
+          freelancerId,
+          tab,
+          page: this.currentPage()[tab],
+          pageSize: this.pageSize
         });
+        this.proposalsService.getProposalsWithProjects(freelancerId, page, this.pageSize, tab)
+          .subscribe({
+            next: (paginatedResult: PaginatedResult2<ProposalWithProjectCombinedDTO>) => {
+              console.log('Paginated result:', paginatedResult);
+              this.proposals.set(paginatedResult.result);
+              this.totalPages()[tab] = paginatedResult.pagination.totalPages;
+              this.loading.set(false);
+            },
+            error: err => {
+              console.error(err);
+              this.loading.set(false);
+            }
+          });
       },
-      error: err => console.error('Error fetching member:', err)
+      error: err => {
+        console.error(err);
+        this.loading.set(false);
+      }
     });
   }
 
-  setTab(tab: 'accepted' | 'rejected' | 'pending') {
-    this.activeTab.set(tab);
+  nextPage() {
+    const tab = this.activeTab();
+    if (this.currentPage()[tab] < this.totalPages()[tab]) {
+      this.currentPage()[tab]++;
+      this.loadProposals(tab);
+    }
   }
 
-  // Helper to safely normalize isAccepted to boolean | undefined
-  private normalizeIsAccepted(value: boolean | undefined | number): boolean | undefined {
-    if (value === true || value === 1) return true;
-    if (value === false || value === 0) return false;
-    return undefined;
+  prevPage() {
+    const tab = this.activeTab();
+    if (this.currentPage()[tab] > 1) {
+      this.currentPage()[tab]--;
+      this.loadProposals(tab);
+    }
   }
 }

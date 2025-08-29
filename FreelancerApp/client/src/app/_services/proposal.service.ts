@@ -5,6 +5,8 @@ import { ProposalCreateDTO } from '../_DTOs/proposalCreateDTO';
 import { Proposal } from '../_models/proposal';
 import { ProposalWithProjectCombinedDTO } from '../_DTOs/proposalWithProjectCombinedDTO';
 import { environment } from '../../environments/environment';
+import { PaginatedResult } from '../_models/pagination';
+import { PaginatedResult2 } from '../_models/pagination2';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ export class ProposalService {
 
   baseUrl = environment.apiUrl + 'proposals/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   createProposal(dto: ProposalCreateDTO): Observable<Proposal> {
     const formData = new FormData();
@@ -39,9 +41,14 @@ export class ProposalService {
   }
 
   // ✅ New endpoint: get proposals + associated projects for a freelancer
-  getProposalsWithProjects(freelancerId: number): Observable<ProposalWithProjectCombinedDTO[]> {
-    return this.http.get<ProposalWithProjectCombinedDTO[]>(
-      `${this.baseUrl}proposals-with-projects/${freelancerId}`
+  getProposalsWithProjects(
+    freelancerId: number,
+    pageNumber: number,
+    pageSize: number,
+    status: 'accepted' | 'rejected' | 'pending'
+  ): Observable<PaginatedResult2<ProposalWithProjectCombinedDTO>> {
+    return this.http.get<PaginatedResult2<ProposalWithProjectCombinedDTO>>(
+      `${this.baseUrl}proposals-with-projects/${freelancerId}?PageNumber=${pageNumber}&PageSize=${pageSize}&Status=${status}`
     );
   }
 }

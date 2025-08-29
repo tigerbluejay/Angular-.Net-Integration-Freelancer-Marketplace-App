@@ -175,7 +175,7 @@ public class Seed
         Description = "I’ve built multiple Angular + .NET applications. I can implement this quickly.",
         Bid = 1200,
         Photo = new Photo { Url = "https://picsum.photos/id/802/600/400" },
-        ProjectId = projectData[15].Id,   // Project 2
+        ProjectId = projectData[15].Id,
         FreelancerUserId = users[0].Id,  // Freelancer
         ClientUserId = users[6].Id,
         IsAccepted = false
@@ -186,7 +186,7 @@ public class Seed
         Description = "SQL optimization and backend expertise. I’ll ensure high performance.",
         Bid = 900,
         Photo = new Photo { Url = "https://picsum.photos/id/803/600/400" },
-        ProjectId = projectData[17].Id,   // Project 3
+        ProjectId = projectData[17].Id,
         FreelancerUserId = users[0].Id,
         ClientUserId = users[7].Id,
         IsAccepted = null
@@ -197,7 +197,7 @@ public class Seed
         Description = "Extensive Angular front-end experience. I’ll deliver a responsive UI.",
         Bid = 1500,
         Photo = new Photo { Url = "https://picsum.photos/id/804/600/400" },
-        ProjectId = projectData[19].Id,   // Project 5
+        ProjectId = projectData[19].Id,
         FreelancerUserId = users[0].Id,
         ClientUserId = users[8].Id,
         IsAccepted = true
@@ -208,10 +208,65 @@ public class Seed
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 800,
         Photo = new Photo { Url = "https://picsum.photos/id/805/600/400" },
-        ProjectId = projectData[21].Id,   // Project 7
+        ProjectId = projectData[21].Id,
         FreelancerUserId = users[0].Id,
         ClientUserId = users[9].Id,
         IsAccepted = false
+    },
+        new()
+    {
+        Title = "Proposal 6 for Project 13",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 800,
+        Photo = new Photo { Url = "https://picsum.photos/id/806/600/400" },
+        ProjectId = projectData[12].Id,
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[5].Id,
+        IsAccepted = null
+    },
+        new()
+    {
+        Title = "Proposal 7 for Project 15",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 900,
+        Photo = new Photo { Url = "https://picsum.photos/id/807/600/400" },
+        ProjectId = projectData[14].Id,
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[6].Id,
+        IsAccepted = null
+    },
+        new()
+    {
+        Title = "Proposal 8 for Project 17",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 100,
+        Photo = new Photo { Url = "https://picsum.photos/id/808/600/400" },
+        ProjectId = projectData[16].Id,
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[7].Id,
+        IsAccepted = null
+    },
+        new()
+    {
+        Title = "Proposal 9 for Project 19",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 300,
+        Photo = new Photo { Url = "https://picsum.photos/id/809/600/400" },
+        ProjectId = projectData[18].Id,
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[8].Id,
+        IsAccepted = null
+    },
+        new()
+    {
+        Title = "Proposal 10 for Project 21",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 500,
+        Photo = new Photo { Url = "https://picsum.photos/id/811/600/400" },
+        ProjectId = projectData[20].Id,
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[9].Id,
+        IsAccepted = null
     }
 };
 
