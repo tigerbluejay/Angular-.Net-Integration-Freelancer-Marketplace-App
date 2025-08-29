@@ -14,6 +14,7 @@ import { PortfolioItemCreateComponent } from './portfolio-item-create/portfolio-
 import { ProjectCreateComponent } from './project-create/project-create.component';
 import { BrowseProjectsComponent } from './browse-projects/browse-projects.component';
 import { ProposalCreateComponent } from './create-proposal/create-proposal.component';
+import { SubmittedProposalsComponent } from './submitted-proposals/submitted-proposals.component';
 
 
 export const routes: Routes = [
@@ -32,6 +33,9 @@ export const routes: Routes = [
   { path: 'project/create', component: ProjectCreateComponent },
   { path: 'project/edit/:id', component: ProjectCreateComponent },
   { path: 'create-proposal/:id', component: ProposalCreateComponent },
+  { path: 'submitted-proposals', component: SubmittedProposalsComponent },
+
+
 
   // ✅ New freelancer route
   { path: 'browse-projects', component: BrowseProjectsComponent, canActivate: [authGuard] },

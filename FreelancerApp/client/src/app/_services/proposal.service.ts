@@ -1,9 +1,9 @@
-// src/app/services/proposal.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProposalCreateDTO } from '../_DTOs/proposalCreateDTO';
 import { Proposal } from '../_models/proposal';
+import { ProposalWithProjectCombinedDTO } from '../_DTOs/proposalWithProjectCombinedDTO';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -36,5 +36,12 @@ export class ProposalService {
 
   getProposalById(id: number): Observable<Proposal> {
     return this.http.get<Proposal>(this.baseUrl + id);
+  }
+
+  // ✅ New endpoint: get proposals + associated projects for a freelancer
+  getProposalsWithProjects(freelancerId: number): Observable<ProposalWithProjectCombinedDTO[]> {
+    return this.http.get<ProposalWithProjectCombinedDTO[]>(
+      `${this.baseUrl}proposals-with-projects/${freelancerId}`
+    );
   }
 }
