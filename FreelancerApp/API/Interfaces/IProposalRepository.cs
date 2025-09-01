@@ -12,6 +12,7 @@ namespace API.Interfaces
         void Add(Proposal proposal);
         Task<bool> SaveAllAsync();
         Task<PagedList<ProposalWithProjectCombinedDTO>> GetProposalsWithProjectsByFreelancerIdAsync(int freelancerId, ProposalWithProjectParams propprojParams);
+        Task<PagedList<ProposalWithProjectCombinedDTO>> GetProposalsWithProjectsInboxByClientIdAsync(int freelancerId, ProposalWithProjectParams propprojParams);
 
     }
 }

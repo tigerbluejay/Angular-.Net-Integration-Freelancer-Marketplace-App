@@ -98,5 +98,55 @@ namespace API.Data
             return await PagedList<ProposalWithProjectCombinedDTO>.CreateAsync(
                 projected, propprojParams.PageNumber, propprojParams.PageSize);
         }
+
+        public async Task<PagedList<ProposalWithProjectCombinedDTO>> GetProposalsWithProjectsInboxByClientIdAsync(
+int clientId, ProposalWithProjectParams propprojParams)
+        {
+            var query = _context.Proposals
+                .Where(p => p.ClientUserId == clientId);
+
+            // Filter by status
+            if (!string.IsNullOrEmpty(propprojParams.Status))
+            {
+                query = query.Where(p => p.IsAccepted == null);
+            
+            }
+            
+            var projected = query.Select(p => new ProposalWithProjectCombinedDTO
+            {
+                Proposal = new ProposalDTO
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Description = p.Description,
+                    Bid = p.Bid,
+                    ProjectId = p.ProjectId,
+                    FreelancerUserId = p.FreelancerUserId,
+                    ClientUserId = p.ClientUserId,
+                    FreelancerUsername = p.Freelancer.KnownAs,
+                    ClientUsername = p.Client.KnownAs,
+                    IsAccepted = p.IsAccepted,
+                    PhotoUrl = p.Photo != null ? p.Photo.Url : null,
+                    FreelancerPhotoUrl = p.Freelancer.Photo != null ? p.Freelancer.Photo.Url : null
+
+                },
+                Project = new ProjectBrowseDTO
+                {
+                    Id = p.Project.Id,
+                    Title = p.Project.Title,
+                    Description = p.Project.Description,
+                    IsAssigned = p.Project.IsAssigned,
+                    SkillNames = p.Project.Skills.Select(s => s.Name).ToList(),
+                    ClientUserId = p.Project.ClientUserId,
+                    ClientUserName = p.Project.Client.KnownAs,
+                    PhotoUrl = p.Project.Photo != null ? p.Project.Photo.Url : null,
+                    ClientPhotoUrl = p.Project.Client.Photo.Url
+                    
+                }
+            });
+
+            return await PagedList<ProposalWithProjectCombinedDTO>.CreateAsync(
+                projected, propprojParams.PageNumber, propprojParams.PageSize);
+        }
     }
 }

@@ -1,0 +1,73 @@
+<div class="container mt-4">
+  <h1 class="mb-4">Proposals Inbox</h1>
+
+  <div class="d-flex flex-column gap-3" style="max-width: 75%; margin: auto;">
+    <ng-container *ngIf="loading()">Loading proposals...</ng-container>
+
+    <ng-container *ngIf="!loading() && proposals().length === 0">
+      <p class="text-muted">No pending proposals.</p>
+    </ng-container>
+
+    <ng-container *ngFor="let item of proposals()">
+      <div class="card mb-3 shadow-sm" style="border-radius: 1rem;">
+        <div class="row g-0 align-items-center">
+          
+          <!-- Proposal Section -->
+          <div class="col-auto p-2 d-flex flex-column align-items-center">
+            <!-- Proposal Photo (smaller now) -->
+            <img *ngIf="item.proposal.photoUrl" [src]="item.proposal.photoUrl"
+                 class="img-thumbnail mb-2"
+                 style="width:50px; height:50px; object-fit:cover;">
+
+            <!-- Freelancer Photo below proposal -->
+            <img *ngIf="item.proposal.freelancerPhotoUrl" [src]="item.proposal.freelancerPhotoUrl"
+                 class="rounded-circle"
+                 style="width:50px; height:50px; object-fit:cover;">
+          </div>
+
+          <!-- Proposal Info -->
+          <div class="col p-2">
+            <h5 class="card-title">{{ item.proposal.title }}</h5>
+            <p class="card-text">{{ item.proposal.description }}</p>
+            <p class="card-text">
+              <small class="text-muted">Bid: ${{ item.proposal.bid }}</small>
+            </p>
+          </div>
+
+          <!-- Project Section -->
+          <div class="col p-2 d-flex justify-content-between align-items-start border-start">
+            <div class="flex-grow-1">
+              <h6>{{ item.project.title }}</h6>
+              <p>{{ item.project.description }}</p>
+              <div class="mb-2">
+                <span *ngFor="let skill of item.project.skillNames"
+                      class="badge bg-secondary me-1">{{ skill }}</span>
+              </div>
+            </div>
+            <div class="d-flex flex-column gap-2 ms-3">
+              <!-- Project Photo (bigger now) -->
+              <img *ngIf="item.project.photoUrl" [src]="item.project.photoUrl"
+                   class="img-thumbnail"
+                   style="width:80px; height:80px; object-fit:cover;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Pagination buttons -->
+    <div class="d-flex justify-content-between mt-3">
+      <button class="btn btn-outline-primary"
+              (click)="prevPage()"
+              [disabled]="currentPage() === 1">
+        Previous
+      </button>
+      <span>Page {{ currentPage() }} of {{ totalPages() }}</span>
+      <button class="btn btn-outline-primary"
+              (click)="nextPage()"
+              [disabled]="currentPage() === totalPages()">
+        Next
+      </button>
+    </div>
+  </div>
+</div>

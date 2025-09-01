@@ -6,13 +6,14 @@ import { PhotoService } from '../_services/photo.service';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'app-profile-edit-freelancer',
   templateUrl: './profile-edit-freelancer.component.html',
   styleUrls: ['./profile-edit-freelancer.component.css'],
-  imports: [FormsModule]
+  imports: [FormsModule, CommonModule]
 })
 export class ProfileEditFreelancerComponent implements OnInit {
   @ViewChild('editForm') editForm?: NgForm;

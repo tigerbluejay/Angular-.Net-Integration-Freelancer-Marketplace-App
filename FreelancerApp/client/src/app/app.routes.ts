@@ -15,6 +15,7 @@ import { ProjectCreateComponent } from './project-create/project-create.componen
 import { BrowseProjectsComponent } from './browse-projects/browse-projects.component';
 import { ProposalCreateComponent } from './create-proposal/create-proposal.component';
 import { SubmittedProposalsComponent } from './submitted-proposals/submitted-proposals.component';
+import { ProposalInboxComponent } from './proposal-inbox/proposal-inbox.component';
 
 
 export const routes: Routes = [
@@ -34,8 +35,7 @@ export const routes: Routes = [
   { path: 'project/edit/:id', component: ProjectCreateComponent },
   { path: 'create-proposal/:id', component: ProposalCreateComponent },
   { path: 'submitted-proposals', component: SubmittedProposalsComponent },
-
-
+  { path: 'proposal-inbox', component: ProposalInboxComponent },
 
   // ✅ New freelancer route
   { path: 'browse-projects', component: BrowseProjectsComponent, canActivate: [authGuard] },

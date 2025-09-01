@@ -19,5 +19,7 @@ namespace API.DTOs
         public string? PhotoUrl { get; set; }
 
         public bool? IsAccepted { get; set; }
+        public string? FreelancerPhotoUrl { get; set; } // new property
+
     }
 }

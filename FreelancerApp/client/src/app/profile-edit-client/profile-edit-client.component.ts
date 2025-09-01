@@ -6,11 +6,12 @@ import { MembersService } from '../_services/members.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { PhotoService } from '../_services/photo.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-profile-edit-client',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './profile-edit-client.component.html',
   styleUrl: './profile-edit-client.component.css'
 })

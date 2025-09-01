@@ -83,4 +83,28 @@ public class ProposalsController(IProposalRepository proposalRepository, IUserRe
             }
         });
     }
+
+    [HttpGet("proposals-with-projects-inbox/{clientId}")]
+    public async Task<IActionResult> GetProposalsWithProjectsInbox(
+        int clientId,
+        [FromQuery] ProposalWithProjectParams propprojParams)
+    {
+        var result = await proposalRepository
+            .GetProposalsWithProjectsInboxByClientIdAsync(clientId, propprojParams);
+
+        Response.AddPaginationHeader(result);
+
+        return Ok(new
+        {
+            result = result,
+            pagination = new
+            {
+                currentPage = result.CurrentPage,
+                itemsPerPage = result.PageSize,
+                totalItems = result.TotalCount,
+                totalPages = result.TotalPages
+            }
+        });
+    }
+
 }

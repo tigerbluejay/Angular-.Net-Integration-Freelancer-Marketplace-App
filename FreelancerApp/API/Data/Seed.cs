@@ -266,7 +266,62 @@ public class Seed
         ProjectId = projectData[20].Id,
         FreelancerUserId = users[0].Id,
         ClientUserId = users[9].Id,
-        IsAccepted = null
+        IsAccepted = null // client hasnt accepted or rejected yet
+    },
+            new()
+    {
+        Title = "Proposal 11 for Project 1",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 1500,
+        Photo = new Photo { Url = "https://picsum.photos/id/812/600/400" },
+        ProjectId = projectData[0].Id,
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[5].Id,
+        IsAccepted = null // client hasnt accepted or rejected yet
+    },
+            new()
+    {
+        Title = "Proposal 12 for Project 2",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 2500,
+        Photo = new Photo { Url = "https://picsum.photos/id/813/600/400" },
+        ProjectId = projectData[1].Id,
+        FreelancerUserId = users[1].Id,
+        ClientUserId = users[5].Id,
+        IsAccepted = null // client hasnt accepted or rejected yet
+    },
+            new()
+    {
+        Title = "Proposal 13 for Project 3",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 3500,
+        Photo = new Photo { Url = "https://picsum.photos/id/814/600/400" },
+        ProjectId = projectData[2].Id,
+        FreelancerUserId = users[2].Id,
+        ClientUserId = users[5].Id,
+        IsAccepted = null // client hasnt accepted or rejected yet
+    },
+            new()
+    {
+        Title = "Proposal 14 for Project 4",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 4500,
+        Photo = new Photo { Url = "https://picsum.photos/id/815/600/400" },
+        ProjectId = projectData[3].Id,
+        FreelancerUserId = users[3].Id,
+        ClientUserId = users[5].Id,
+        IsAccepted = null // client hasnt accepted or rejected yet
+    },
+            new()
+    {
+        Title = "Proposal 15 for Project 5",
+        Description = "Proven track record in similar projects. Quality guaranteed.",
+        Bid = 5500,
+        Photo = new Photo { Url = "https://picsum.photos/id/816/600/400" },
+        ProjectId = projectData[4].Id,
+        FreelancerUserId = users[4].Id,
+        ClientUserId = users[5].Id,
+        IsAccepted = null // client hasnt accepted or rejected yet
     }
 };
 

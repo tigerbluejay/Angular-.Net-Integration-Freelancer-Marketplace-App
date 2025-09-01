@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MembersService } from '../_services/members.service';
 import { Member } from '../_models/member';
-import { DatePipe, NgIf } from '@angular/common';
+import { CommonModule, DatePipe, NgIf } from '@angular/common';
 import { AgePipe } from '../_pipes/age.pipe';
 import { PortfolioListComponent } from '../portfolio-list/portfolio-list.component';
 import { ProfileProjectListComponent } from '../profile-project-list/profile-project-list.component';
@@ -15,7 +15,8 @@ import { ProjectDTO } from '../_DTOs/projectDTO';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RouterModule, NgIf, DatePipe, AgePipe, PortfolioListComponent, ProfileProjectListComponent],
+  imports: [RouterModule, NgIf, DatePipe, AgePipe, PortfolioListComponent, ProfileProjectListComponent,
+    CommonModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -93,15 +94,35 @@ export class ProfileComponent implements OnInit {
     this.loadPortfolio();
   }
 
+  // onDeletePortfolioItem(id: number) {
+  //   this.portfolioItemService.deletePortfolioItem(id).subscribe({
+  //     next: () => {
+  //       this.portfolio = this.portfolio.filter(item => item.id !== id);
+  //       this.toastr.success('Portfolio item deleted successfully', 'Deleted');
+  //     },
+  //     error: () => this.toastr.error('Failed to delete portfolio item', 'Error')
+  //   });
+  // }
+
   onDeletePortfolioItem(id: number) {
-    this.portfolioItemService.deletePortfolioItem(id).subscribe({
-      next: () => {
-        this.portfolio = this.portfolio.filter(item => item.id !== id);
-        this.toastr.success('Portfolio item deleted successfully', 'Deleted');
-      },
-      error: () => this.toastr.error('Failed to delete portfolio item', 'Error')
-    });
-  }
+  this.portfolioItemService.deletePortfolioItem(id).subscribe({
+    next: () => {
+      this.toastr.success('Portfolio item deleted successfully', 'Deleted');
+
+      // Compute if the current page would be empty after deletion
+      const itemsOnCurrentPageAfterDeletion = this.portfolio.length - 1;
+
+      // If we are on a page beyond the first and deleting the last item, move back one page
+      if (itemsOnCurrentPageAfterDeletion === 0 && this.portfolioPageNumber > 1) {
+        this.portfolioPageNumber--;
+      }
+
+      // Reload the portfolio for the updated page
+      this.loadPortfolio();
+    },
+    error: () => this.toastr.error('Failed to delete portfolio item', 'Error')
+  });
+}
 
   // ----------------- Projects -----------------
   loadProjects() {

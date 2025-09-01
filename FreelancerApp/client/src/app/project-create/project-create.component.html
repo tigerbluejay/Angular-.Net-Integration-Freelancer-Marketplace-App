@@ -53,7 +53,7 @@
                     <label class="form-label">Skills</label>
                     <div class="form-check" *ngFor="let skill of availableSkills">
                         <input type="checkbox" class="form-check-input" [id]="skill"
-                            [checked]="(project?.skills ?? []).includes(skill)"
+                            [checked]="project.skills.includes(skill)"
                             (change)="onSkillChange($event, skill)" />
                         <label class="form-check-label" [for]="skill">{{ skill }}</label>
                     </div>

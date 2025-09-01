@@ -4,7 +4,7 @@
 
 <!-- Debug info -->
 <div class="alert alert-info">
-  isLoggedIn: {{ isLoggedIn }} | userRole: {{ userRole() }}
+  isLoggedIn: {{ isLoggedIn() }} | userRole: {{ userRole() }}
 </div>
 
 <app-publicnav *ngIf="!isLoggedIn()"></app-publicnav>

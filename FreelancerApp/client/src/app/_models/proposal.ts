@@ -11,4 +11,5 @@ export interface Proposal {
   projectTitle?: string;
   photoUrl?: string;
   isAccepted?: boolean;
+  freelancerPhotoUrl?: string;  // new
 }

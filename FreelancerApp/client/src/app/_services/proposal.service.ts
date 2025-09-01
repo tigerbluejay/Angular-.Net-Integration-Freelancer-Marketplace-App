@@ -51,4 +51,15 @@ export class ProposalService {
       `${this.baseUrl}proposals-with-projects/${freelancerId}?PageNumber=${pageNumber}&PageSize=${pageSize}&Status=${status}`
     );
   }
+
+  getInboxProposalsForClient(
+    clientId: number,
+    pageNumber: number,
+    pageSize: number
+  ): Observable<PaginatedResult2<ProposalWithProjectCombinedDTO>> {
+    return this.http.get<PaginatedResult2<ProposalWithProjectCombinedDTO>>(
+      `${this.baseUrl}proposals-with-projects-inbox/${clientId}?PageNumber=${pageNumber}&PageSize=${pageSize}&Status=pending`
+    );
+  }
+
 }
