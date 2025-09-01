@@ -116,4 +116,24 @@ IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiCo
         return Ok(projects);
     }
 
+    [HttpPatch("assign-proposals-with-projects")]
+    public async Task<IActionResult> PatchAssignProposalswithProjects(
+    [FromBody] ProposalWithProjectAssignCombinedDTO patchDto)
+{
+    var project = await context.Projects.FindAsync(patchDto.Project.Id);
+    var proposal = await context.Proposals.FindAsync(patchDto.Proposal.Id);
+
+    if (project == null || proposal == null)
+        return NotFound();
+
+    if (patchDto.Project.FreelancerUserId != null)
+        project.FreelancerUserId = patchDto.Project.FreelancerUserId;
+
+    if (patchDto.Proposal.IsAccepted != null)
+        proposal.IsAccepted = patchDto.Proposal.IsAccepted;
+
+    await context.SaveChangesAsync();
+    return NoContent();
+}      
+
 }

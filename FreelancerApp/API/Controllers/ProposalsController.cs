@@ -106,5 +106,4 @@ public class ProposalsController(IProposalRepository proposalRepository, IUserRe
             }
         });
     }
-
 }
