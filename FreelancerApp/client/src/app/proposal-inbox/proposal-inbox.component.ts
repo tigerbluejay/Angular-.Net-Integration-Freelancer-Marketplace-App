@@ -3,8 +3,12 @@ import { AccountService } from '../_services/account.service';
 import { ProposalService } from '../_services/proposal.service';
 import { MembersService } from '../_services/members.service';
 import { ProposalWithProjectCombinedDTO } from '../_DTOs/proposalWithProjectCombinedDTO';
+import { ProjectAssignDTO } from '../_DTOs/projectAssignDTO';
+import { ProposalAssignDTO } from '../_DTOs/proposalAssignDTO';
 import { PaginatedResult2 } from '../_models/pagination2';
 import { CommonModule } from '@angular/common';
+import { ProjectService } from '../_services/project.service';
+import { ProposalWithProjectAssignCombinedDTO } from '../_DTOs/proposalwithprojectAssignCombinedDTO';
 
 @Component({
   selector: 'app-proposal-inbox',
@@ -15,14 +19,13 @@ import { CommonModule } from '@angular/common';
 })
 export class ProposalInboxComponent implements OnInit {
   private proposalsService = inject(ProposalService);
+  private projectService = inject(ProjectService);
   private accountService = inject(AccountService);
   private membersService = inject(MembersService);
 
-  // Signals
   proposals = signal<ProposalWithProjectCombinedDTO[]>([]);
   loading = signal(true);
 
-  // Pagination
   currentPage = signal(1);
   totalPages = signal(1);
   pageSize = 10;
@@ -81,5 +84,29 @@ export class ProposalInboxComponent implements OnInit {
       this.currentPage.set(this.currentPage() - 1);
       this.loadProposals();
     }
+  }
+
+  assignProposal(item: ProposalWithProjectCombinedDTO, accept: boolean) {
+    const dto: ProposalWithProjectAssignCombinedDTO = {
+      proposal: {
+        id: item.proposal.id,
+        isAccepted: accept
+      } as ProposalAssignDTO,
+      project: {
+        id: item.project.id,
+        freelancerUserId: item.proposal.freelancerUserId 
+      } as ProjectAssignDTO
+    };
+
+    this.projectService.patchProposalWithProjectAssign(dto).subscribe({
+      next: (response) => {
+        console.log('Assignment saved:', response);
+        // Optional: refresh list or update UI state
+        this.loadProposals();
+      },
+      error: (err) => {
+        console.error('Error assigning proposal:', err);
+      }
+    });
   }
 }

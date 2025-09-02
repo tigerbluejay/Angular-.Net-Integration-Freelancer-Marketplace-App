@@ -6,6 +6,7 @@ import { PaginatedResult, Pagination } from '../_models/pagination';
 import { map, Observable } from 'rxjs';
 import { ProjectParams } from '../_models/projectParams';
 import { ProjectBrowseDTO } from '../_DTOs/projectBrowseDTO';
+import { ProposalWithProjectAssignCombinedDTO } from '../_DTOs/proposalwithprojectAssignCombinedDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -13,14 +14,14 @@ import { ProjectBrowseDTO } from '../_DTOs/projectBrowseDTO';
 export class ProjectService {
   baseUrl = environment.apiUrl; // e.g. "https://localhost:5001/api/"
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // 🔹 GET projects with filtering & pagination
   getProjects(params: ProjectParams) {
     let httpParams = new HttpParams();
 
     if (params.pageNumber != null) httpParams = httpParams.set('PageNumber', params.pageNumber);
-    if (params.pageSize != null)   httpParams = httpParams.set('PageSize', params.pageSize);
+    if (params.pageSize != null) httpParams = httpParams.set('PageSize', params.pageSize);
 
     httpParams = httpParams.set('IncludeAssigned', String(!!params.includeAssigned));
     httpParams = httpParams.set('MatchAllSkills', String(!!params.matchAllSkills));
@@ -73,6 +74,15 @@ export class ProjectService {
   }
 
   getProjectById(id: number): Observable<ProjectBrowseDTO> {
-  return this.http.get<ProjectBrowseDTO>(`${this.baseUrl}project/${id}`);
-}
+    return this.http.get<ProjectBrowseDTO>(`${this.baseUrl}project/${id}`);
+  }
+
+  patchProposalWithProjectAssign(
+    dto: ProposalWithProjectAssignCombinedDTO
+  ): Observable<ProposalWithProjectAssignCombinedDTO> {
+    return this.http.patch<ProposalWithProjectAssignCombinedDTO>(
+      `${this.baseUrl}project/assign-proposals-with-projects`,
+      dto // <-- you need to pass the body of the PATCH here
+    );
+  }
 }
