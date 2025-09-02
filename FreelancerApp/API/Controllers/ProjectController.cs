@@ -6,7 +6,9 @@ using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +18,8 @@ namespace API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class ProjectController(IProjectRepository projectRepository,
-IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiController
+IUserRepository userRepository, IMapper mapper, UserManager<AppUser> userManager,
+DataContext context) : BaseApiController
 {
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProject(int id)
@@ -136,4 +139,78 @@ IUserRepository userRepository, IMapper mapper, DataContext context) : BaseApiCo
         return NoContent();
     }
 
+    [HttpGet("projects-by-client-id/{id:int}")]
+    public async Task<IActionResult> GetProjectsByClientId(int id, [FromQuery] ActiveProjectsParams pagingParams)
+    {
+        // Get the logged-in username from the token
+        var loggedInUsername = User.Identity?.Name ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        // Fetch the user corresponding to the ID parameter
+        var userFromId = await userManager.FindByIdAsync(id.ToString());
+        if (userFromId == null)
+            return NotFound("User not found.");
+
+        // Compare the usernames
+        if (!string.Equals(loggedInUsername, userFromId.UserName, StringComparison.OrdinalIgnoreCase))
+            return Forbid();
+
+        var query = projectRepository.Query()
+            .Where(p => p.ClientUserId == id)
+            .OrderByDescending(p => p.Id); // Optional: order by recent first
+
+        var totalCount = await query.CountAsync();
+
+        var projects = await query
+            .Skip((pagingParams.PageNumber - 1) * pagingParams.PageSize)
+            .Take(pagingParams.PageSize)
+            .ProjectTo<ProjectActiveDTO>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        if (!projects.Any())
+            return NotFound($"No projects found for client with ID {id}.");
+
+        // Optional: include pagination metadata in headers
+        Response.Headers["X-Total-Count"] = totalCount.ToString();
+        Response.Headers["X-Page-Number"] = pagingParams.PageNumber.ToString();
+        Response.Headers["X-Page-Size"] = pagingParams.PageSize.ToString();
+
+        return Ok(projects);
+    }
+
+    [HttpGet("projects-by-freelancer-id/{id:int}")]
+    public async Task<IActionResult> GetProjectsByFreelancerId(int id, [FromQuery] ActiveProjectsParams pagingParams)
+    {
+        // Get the logged-in username from the token
+        var loggedInUsername = User.Identity?.Name ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        // Fetch the user corresponding to the ID parameter
+        var userFromId = await userManager.FindByIdAsync(id.ToString());
+        if (userFromId == null)
+            return NotFound("User not found.");
+
+        // Compare the usernames
+        if (!string.Equals(loggedInUsername, userFromId.UserName, StringComparison.OrdinalIgnoreCase))
+            return Forbid();
+
+        var query = projectRepository.Query()
+            .Where(p => p.FreelancerUserId == id)
+            .OrderByDescending(p => p.Id);
+
+        var totalCount = await query.CountAsync();
+
+        var projects = await query
+            .Skip((pagingParams.PageNumber - 1) * pagingParams.PageSize)
+            .Take(pagingParams.PageSize)
+            .ProjectTo<ProjectActiveDTO>(mapper.ConfigurationProvider)
+            .ToListAsync();
+
+        if (!projects.Any())
+            return NotFound($"No projects found for freelancer with ID {id}.");
+
+        Response.Headers["X-Total-Count"] = totalCount.ToString();
+        Response.Headers["X-Page-Number"] = pagingParams.PageNumber.ToString();
+        Response.Headers["X-Page-Size"] = pagingParams.PageSize.ToString();
+
+        return Ok(projects);
+    }
 }

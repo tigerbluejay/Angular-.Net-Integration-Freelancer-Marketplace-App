@@ -134,4 +134,8 @@ public class ProjectRepository(DataContext context, IMapper mapper) : IProjectRe
         return await PagedList<ProjectDTO>.CreateAsync(projected, projectParams.PageNumber, projectParams.PageSize);
     }
 
+    public IQueryable<Project> Query()
+{
+    return context.Projects.AsQueryable();
+}
 }

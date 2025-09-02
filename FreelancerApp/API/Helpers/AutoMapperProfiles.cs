@@ -58,6 +58,21 @@ namespace API.Helpers
             .ForMember(dest => dest.FreelancerUsername, opt => opt.MapFrom(src => src.Freelancer != null ? src.Freelancer.UserName : null))
             .ForMember(dest => dest.ClientUsername, opt => opt.MapFrom(src => src.Client != null ? src.Client.UserName : null))
             .ForMember(dest => dest.ProjectTitle, opt => opt.MapFrom(src => src.Project != null ? src.Project.Title : null));
+            CreateMap<Project, ProjectActiveDTO>()
+            .ForMember(dest => dest.SkillNames, 
+                opt => opt.MapFrom(src => src.Skills.Select(s => s.Name))) // Assuming Skill has Name
+            .ForMember(dest => dest.ClientKnownAs, 
+                opt => opt.MapFrom(src => src.Client.KnownAs))
+            .ForMember(dest => dest.ClientPhotoUrl, 
+                opt => opt.MapFrom(src => src.Client.Photo != null ? src.Client.Photo.Url : null))
+            .ForMember(dest => dest.FreelancerKnownAs, 
+                opt => opt.MapFrom(src => src.Freelancer != null ? src.Freelancer.KnownAs : null))
+            .ForMember(dest => dest.FreelancerPhotoUrl, 
+                opt => opt.MapFrom(src => src.Freelancer != null && src.Freelancer.Photo != null 
+                    ? src.Freelancer.Photo.Url 
+                    : null))
+            .ForMember(dest => dest.PhotoUrl, 
+                opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : null));
         }
     }
 }
