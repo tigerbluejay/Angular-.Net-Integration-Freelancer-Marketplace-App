@@ -155,7 +155,7 @@ DataContext context) : BaseApiController
             return Forbid();
 
         var query = projectRepository.Query()
-            .Where(p => p.ClientUserId == id)
+            .Where(p => p.ClientUserId == id && p.FreelancerUserId != null)
             .OrderByDescending(p => p.Id); // Optional: order by recent first
 
         var totalCount = await query.CountAsync();

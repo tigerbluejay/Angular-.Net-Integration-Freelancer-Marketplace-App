@@ -1,7 +1,7 @@
 import { ProjectAssignDTO } from "./projectAssignDTO";
 import { ProposalAssignDTO } from "./proposalAssignDTO";
 
-export interface ProposalWithProjectAssignCombinedDTO {
+export interface ProposalwithProjectAssignCombinedDTO {
   proposal: ProposalAssignDTO;
   project: ProjectAssignDTO;
 }

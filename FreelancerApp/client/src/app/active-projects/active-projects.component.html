@@ -1,0 +1,76 @@
+<div class="container my-4" style="max-width: 80%;">
+  <h2 class="text-center mb-4">Active Projects</h2>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading()" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>
+
+  <!-- Projects Grid -->
+  <div *ngIf="!loading() && projects().length > 0" class="row row-cols-1 row-cols-md-2 g-4">
+    <div class="col" *ngFor="let project of projects()">
+      <div class="card h-100 shadow-sm">
+
+        <!-- Project Photo -->
+        <img *ngIf="project.photoUrl" [src]="project.photoUrl" class="card-img-top" alt="{{ project.title }}">
+
+        <div class="card-body">
+          <!-- Title -->
+          <h5 class="card-title">{{ project.title }}</h5>
+
+          <!-- Description -->
+          <p class="card-text text-muted">{{ project.description }}</p>
+
+          <!-- Skills -->
+          <div class="mb-2">
+            <span *ngFor="let skill of project.skillNames" class="badge bg-info text-dark me-1">
+              {{ skill }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Client/Freelancer Info -->
+        <div class="card-footer d-flex align-items-center">
+          <img [src]="role === 'Client' ? (project.freelancerPhotoUrl || 'assets/fallback.png') 
+                                      : (project.clientPhotoUrl || 'assets/fallback.png')" class="rounded-circle me-2"
+            style="width: 40px; height: 40px; object-fit: cover;" alt="User photo">
+
+          <small class="text-muted">
+            {{ role === 'Client' ? project.freelancerKnownAs : project.clientKnownAs }}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!loading() && projects().length > 0" class="d-flex justify-content-center my-4">
+    <nav>
+      <ul class="pagination">
+        <!-- Previous Button -->
+        <li class="page-item" [class.disabled]="pageNumber === 1">
+          <button class="page-link" (click)="previousPage()" [disabled]="pageNumber === 1">
+            Previous
+          </button>
+        </li>
+
+        <!-- Current Page Number -->
+        <li class="page-item active">
+          <span class="page-link">{{ pageNumber }}</span>
+        </li>
+
+        <!-- Next Button -->
+        <li class="page-item" [class.disabled]="!hasMoreProjects()">
+          <button class="page-link" (click)="nextPage()" [disabled]="!hasMoreProjects()">
+            Next
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- No Projects -->
+  <div *ngIf="!loading() && projects().length === 0" class="text-center text-muted">
+    No active projects found.
+  </div>
+</div>

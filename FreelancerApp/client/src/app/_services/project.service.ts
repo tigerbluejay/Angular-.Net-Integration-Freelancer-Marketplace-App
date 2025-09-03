@@ -6,7 +6,8 @@ import { PaginatedResult, Pagination } from '../_models/pagination';
 import { map, Observable } from 'rxjs';
 import { ProjectParams } from '../_models/projectParams';
 import { ProjectBrowseDTO } from '../_DTOs/projectBrowseDTO';
-import { ProposalWithProjectAssignCombinedDTO } from '../_DTOs/proposalwithprojectAssignCombinedDTO';
+import { ProjectActiveDTO } from '../_DTOs/projectActiveDTO';
+import { ProposalwithProjectAssignCombinedDTO } from '../_DTOs/proposalwithProjectAssignCombinedDTO_tmp';
 
 @Injectable({
   providedIn: 'root'
@@ -78,11 +79,41 @@ export class ProjectService {
   }
 
   patchProposalWithProjectAssign(
-    dto: ProposalWithProjectAssignCombinedDTO
-  ): Observable<ProposalWithProjectAssignCombinedDTO> {
-    return this.http.patch<ProposalWithProjectAssignCombinedDTO>(
+    dto: ProposalwithProjectAssignCombinedDTO
+  ): Observable<ProposalwithProjectAssignCombinedDTO> {
+    return this.http.patch<ProposalwithProjectAssignCombinedDTO>(
       `${this.baseUrl}project/assign-proposals-with-projects`,
       dto // <-- you need to pass the body of the PATCH here
+    );
+  }
+
+    getProjectsByClientId(
+    clientId: number,
+    pageNumber: number,
+    pageSize: number
+  ): Observable<ProjectActiveDTO[]> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+
+    return this.http.get<ProjectActiveDTO[]>(
+      `${this.baseUrl}project/projects-by-client-id/${clientId}`,
+      { params }
+    );
+  }
+
+  getProjectsByFreelancerId(
+    freelancerId: number,
+    pageNumber: number,
+    pageSize: number
+  ): Observable<ProjectActiveDTO[]> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+
+    return this.http.get<ProjectActiveDTO[]>(
+      `${this.baseUrl}project/projects-by-freelancer-id/${freelancerId}`,
+      { params }
     );
   }
 }

@@ -8,7 +8,7 @@ import { ProposalAssignDTO } from '../_DTOs/proposalAssignDTO';
 import { PaginatedResult2 } from '../_models/pagination2';
 import { CommonModule } from '@angular/common';
 import { ProjectService } from '../_services/project.service';
-import { ProposalWithProjectAssignCombinedDTO } from '../_DTOs/proposalwithprojectAssignCombinedDTO';
+import { ProposalwithProjectAssignCombinedDTO } from '../_DTOs/proposalwithProjectAssignCombinedDTO_tmp';
 
 @Component({
   selector: 'app-proposal-inbox',
@@ -87,7 +87,7 @@ export class ProposalInboxComponent implements OnInit {
   }
 
   assignProposal(item: ProposalWithProjectCombinedDTO, accept: boolean) {
-    const dto: ProposalWithProjectAssignCombinedDTO = {
+    const dto: ProposalwithProjectAssignCombinedDTO = {
       proposal: {
         id: item.proposal.id,
         isAccepted: accept
