@@ -135,6 +135,19 @@ DataContext context) : BaseApiController
         if (proposal.IsAccepted == true)
             project.FreelancerUserId = patchDto.Project.FreelancerUserId;
 
+        if (project.FreelancerUserId != null)
+        {
+
+            var conversation = new ProjectConversation
+            {
+                ProjectId = project.Id,
+                ClientId = project.ClientUserId,
+                FreelancerId = (int)project.FreelancerUserId
+            };
+
+            context.ProjectConversations.Add(conversation);
+        }
+
         await context.SaveChangesAsync();
         return NoContent();
     }

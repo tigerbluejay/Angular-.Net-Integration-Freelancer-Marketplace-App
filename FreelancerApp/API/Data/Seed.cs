@@ -155,23 +155,64 @@ public class Seed
         context.Projects.AddRange(projectData);
         await context.SaveChangesAsync();
 
+        // 1️⃣ Assign approved proposals and active projects
+        var approvedProposals = new List<Proposal>
+{
+    new()
+    {
+        Title = "Proposal 1 for Project 1",
+        Description = "I can handle this project efficiently.",
+        Bid = 1000,
+        Photo = new Photo { Url = "https://picsum.photos/id/801/600/400" },
+        ProjectId = projectData[0].Id,   // Project 1
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[5].Id,
+        IsAccepted = true
+    },
+    new()
+    {
+        Title = "Proposal 2 for Project 3",
+        Description = "Experienced in similar projects.",
+        Bid = 1200,
+        Photo = new Photo { Url = "https://picsum.photos/id/802/600/400" },
+        ProjectId = projectData[2].Id,   // Project 3
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[5].Id,
+        IsAccepted = true
+    },
+    new()
+    {
+        Title = "Proposal 3 for Project 14",
+        Description = "Strong backend skills.",
+        Bid = 900,
+        Photo = new Photo { Url = "https://picsum.photos/id/803/600/400" },
+        ProjectId = projectData[13].Id,  // Project 14
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[5].Id,
+        IsAccepted = true
+    },
+    new()
+    {
+        Title = "Proposal 4 for Project 20",
+        Description = "Front-end expert.",
+        Bid = 1500,
+        Photo = new Photo { Url = "https://picsum.photos/id/804/600/400" },
+        ProjectId = projectData[19].Id,  // Project 20
+        FreelancerUserId = users[0].Id,
+        ClientUserId = users[8].Id,
+        IsAccepted = true
+    }
+};
+
+        context.Proposals.AddRange(approvedProposals);
+        await context.SaveChangesAsync();
+
         // Seed proposals
         var proposals = new List<Proposal>
 {
     new()
     {
-        Title = "Proposal 1 for Project 14",
-        Description = "I have strong experience in C# and ASP.NET Core. I can deliver this project efficiently.",
-        Bid = 1000,
-        Photo = new Photo { Url = "https://picsum.photos/id/801/600/400" },
-        ProjectId = projectData[13].Id,   // Project 14
-        FreelancerUserId = users[0].Id,  // Freelancer
-        ClientUserId = users[5].Id,       // Project 14’s client
-        IsAccepted = true
-    },
-    new()
-    {
-        Title = "Proposal 2 for Project 16",
+        Title = "Proposal 5 for Project 16",
         Description = "I’ve built multiple Angular + .NET applications. I can implement this quickly.",
         Bid = 1200,
         Photo = new Photo { Url = "https://picsum.photos/id/802/600/400" },
@@ -182,7 +223,7 @@ public class Seed
     },
     new()
     {
-        Title = "Proposal 3 for Project 18",
+        Title = "Proposal 6 for Project 18",
         Description = "SQL optimization and backend expertise. I’ll ensure high performance.",
         Bid = 900,
         Photo = new Photo { Url = "https://picsum.photos/id/803/600/400" },
@@ -193,18 +234,7 @@ public class Seed
     },
     new()
     {
-        Title = "Proposal 4 for Project 20",
-        Description = "Extensive Angular front-end experience. I’ll deliver a responsive UI.",
-        Bid = 1500,
-        Photo = new Photo { Url = "https://picsum.photos/id/804/600/400" },
-        ProjectId = projectData[19].Id,
-        FreelancerUserId = users[0].Id,
-        ClientUserId = users[8].Id,
-        IsAccepted = true
-    },
-    new()
-    {
-        Title = "Proposal 5 for Project 22",
+        Title = "Proposal 7 for Project 22",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 800,
         Photo = new Photo { Url = "https://picsum.photos/id/805/600/400" },
@@ -215,7 +245,7 @@ public class Seed
     },
         new()
     {
-        Title = "Proposal 6 for Project 13",
+        Title = "Proposal 8 for Project 13",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 800,
         Photo = new Photo { Url = "https://picsum.photos/id/806/600/400" },
@@ -226,7 +256,7 @@ public class Seed
     },
         new()
     {
-        Title = "Proposal 7 for Project 15",
+        Title = "Proposal 9 for Project 15",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 900,
         Photo = new Photo { Url = "https://picsum.photos/id/807/600/400" },
@@ -237,7 +267,7 @@ public class Seed
     },
         new()
     {
-        Title = "Proposal 8 for Project 17",
+        Title = "Proposal 10 for Project 17",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 100,
         Photo = new Photo { Url = "https://picsum.photos/id/808/600/400" },
@@ -248,7 +278,7 @@ public class Seed
     },
         new()
     {
-        Title = "Proposal 9 for Project 19",
+        Title = "Proposal 11 for Project 19",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 300,
         Photo = new Photo { Url = "https://picsum.photos/id/809/600/400" },
@@ -259,7 +289,7 @@ public class Seed
     },
         new()
     {
-        Title = "Proposal 10 for Project 21",
+        Title = "Proposal 12 for Project 21",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 500,
         Photo = new Photo { Url = "https://picsum.photos/id/811/600/400" },
@@ -270,7 +300,7 @@ public class Seed
     },
             new()
     {
-        Title = "Proposal 11 for Project 1",
+        Title = "Proposal 13 for Project 1",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 1500,
         Photo = new Photo { Url = "https://picsum.photos/id/812/600/400" },
@@ -281,7 +311,7 @@ public class Seed
     },
             new()
     {
-        Title = "Proposal 12 for Project 2",
+        Title = "Proposal 14 for Project 2",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 2500,
         Photo = new Photo { Url = "https://picsum.photos/id/813/600/400" },
@@ -292,7 +322,7 @@ public class Seed
     },
             new()
     {
-        Title = "Proposal 13 for Project 3",
+        Title = "Proposal 15 for Project 3",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 3500,
         Photo = new Photo { Url = "https://picsum.photos/id/814/600/400" },
@@ -303,7 +333,7 @@ public class Seed
     },
             new()
     {
-        Title = "Proposal 14 for Project 4",
+        Title = "Proposal 16 for Project 4",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 4500,
         Photo = new Photo { Url = "https://picsum.photos/id/815/600/400" },
@@ -314,7 +344,7 @@ public class Seed
     },
             new()
     {
-        Title = "Proposal 15 for Project 5",
+        Title = "Proposal 17 for Project 5",
         Description = "Proven track record in similar projects. Quality guaranteed.",
         Bid = 5500,
         Photo = new Photo { Url = "https://picsum.photos/id/816/600/400" },
@@ -328,8 +358,56 @@ public class Seed
         context.Proposals.AddRange(proposals);
         await context.SaveChangesAsync();
 
+        // Update Projects to set FreelancerUserId based on approved proposals
+        foreach (var proposal in approvedProposals)
+        {
+            var project = await context.Projects.FindAsync(proposal.ProjectId);
+            project.FreelancerUserId = proposal.FreelancerUserId;
+            context.Projects.Update(project);
+        }
+        await context.SaveChangesAsync();
+
+
+        // Create ProjectConversations for each approved project
+        var conversations = new List<ProjectConversation>();
+        foreach (var proposal in approvedProposals)
+        {
+            var conversation = new ProjectConversation
+            {
+                ProjectId = proposal.ProjectId,
+                ClientId = proposal.ClientUserId,
+                FreelancerId = proposal.FreelancerUserId
+            };
+            conversations.Add(conversation);
+        }
+
+        context.ProjectConversations.AddRange(conversations);
+        await context.SaveChangesAsync();
+
+        // 4️⃣ Seed example messages for each conversation
+        var messages = new List<Message>();
+        foreach (var conversation in conversations)
+        {
+            messages.Add(new Message
+            {
+                ConversationId = conversation.Id,
+                SenderId = conversation.ClientId,
+                RecipientId = conversation.FreelancerId,
+                Content = $"Hello! This is the client for project {conversation.ProjectId}.",
+            });
+            messages.Add(new Message
+            {
+                ConversationId = conversation.Id,
+                SenderId = conversation.FreelancerId,
+                RecipientId = conversation.ClientId,
+                Content = $"Hi! Freelancer here for project {conversation.ProjectId}.",
+            });
+        }
+        context.Messages.AddRange(messages);
+        await context.SaveChangesAsync();
+
         // Optional: assign freelancer projects later if needed
-        users[0].FreelancerProjects = new List<Project> { projectData[0], projectData[2] };
+        users[0].FreelancerProjects = new List<Project> { projectData[0], projectData[2], projectData[13], projectData[19] };
 
         // Update users to track their relationships
         foreach (var user in users)

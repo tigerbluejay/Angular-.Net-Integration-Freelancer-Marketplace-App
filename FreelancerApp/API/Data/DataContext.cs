@@ -13,7 +13,9 @@ IdentityUserToken<int>>(options)
     public DbSet<Skill> Skills { get; set; }
     public DbSet<PortfolioItem> PortfolioItems { get; set; }
     public DbSet<Project> Projects { get; set; }
-    public DbSet<Proposal> Proposals { get; set; } // ← add this
+    public DbSet<Proposal> Proposals { get; set; }
+    public DbSet<ProjectConversation> ProjectConversations { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -105,6 +107,45 @@ IdentityUserToken<int>>(options)
             .WithOne(ph => ph.Proposal)
             .HasForeignKey<Proposal>(p => p.PhotoId)
             .OnDelete(DeleteBehavior.SetNull); // Keep proposal but nullify photo if photo deleted
+
+
+        // ProjectConversation
+        builder.Entity<ProjectConversation>()
+            .HasOne(pc => pc.Project)
+            .WithMany(p => p.Conversations)
+            .HasForeignKey(pc => pc.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ProjectConversation>()
+            .HasOne(pc => pc.Client)
+            .WithMany(u => u.ClientConversations)
+            .HasForeignKey(pc => pc.ClientId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ProjectConversation>()
+            .HasOne(pc => pc.Freelancer)
+            .WithMany(u => u.FreelancerConversations)
+            .HasForeignKey(pc => pc.FreelancerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Message
+        builder.Entity<Message>()
+            .HasOne(m => m.Conversation)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.ConversationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Message>()
+            .HasOne(m => m.Sender)
+            .WithMany(u => u.MessagesSent)
+            .HasForeignKey(m => m.SenderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Message>()
+            .HasOne(m => m.Recipient)
+            .WithMany(u => u.MessagesReceived)
+            .HasForeignKey(m => m.RecipientId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 
 }

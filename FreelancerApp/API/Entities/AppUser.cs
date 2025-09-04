@@ -45,4 +45,16 @@ public class AppUser : IdentityUser<int>
     public ICollection<Proposal> ClientProposals { get; set; } = [];     // Proposals received (as client)
     public ICollection<Proposal> FreelancerProposals { get; set; } = []; // Proposals submitted (as freelancer)
 
+    // Conversations where user is client
+    public ICollection<ProjectConversation> ClientConversations { get; set; } = [];
+
+    // Conversations where user is freelancer
+    public ICollection<ProjectConversation> FreelancerConversations { get; set; } = [];
+
+    // Messages this user sent
+    public ICollection<Message> MessagesSent { get; set; } = [];
+
+    // Messages this user received
+    public ICollection<Message> MessagesReceived { get; set; } = [];
+
 }

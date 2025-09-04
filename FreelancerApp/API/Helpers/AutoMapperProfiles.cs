@@ -59,20 +59,38 @@ namespace API.Helpers
             .ForMember(dest => dest.ClientUsername, opt => opt.MapFrom(src => src.Client != null ? src.Client.UserName : null))
             .ForMember(dest => dest.ProjectTitle, opt => opt.MapFrom(src => src.Project != null ? src.Project.Title : null));
             CreateMap<Project, ProjectActiveDTO>()
-            .ForMember(dest => dest.SkillNames, 
+            .ForMember(dest => dest.SkillNames,
                 opt => opt.MapFrom(src => src.Skills.Select(s => s.Name))) // Assuming Skill has Name
-            .ForMember(dest => dest.ClientKnownAs, 
+            .ForMember(dest => dest.ClientKnownAs,
                 opt => opt.MapFrom(src => src.Client.KnownAs))
-            .ForMember(dest => dest.ClientPhotoUrl, 
+            .ForMember(dest => dest.ClientPhotoUrl,
                 opt => opt.MapFrom(src => src.Client.Photo != null ? src.Client.Photo.Url : null))
-            .ForMember(dest => dest.FreelancerKnownAs, 
+            .ForMember(dest => dest.FreelancerKnownAs,
                 opt => opt.MapFrom(src => src.Freelancer != null ? src.Freelancer.KnownAs : null))
-            .ForMember(dest => dest.FreelancerPhotoUrl, 
-                opt => opt.MapFrom(src => src.Freelancer != null && src.Freelancer.Photo != null 
-                    ? src.Freelancer.Photo.Url 
+            .ForMember(dest => dest.FreelancerPhotoUrl,
+                opt => opt.MapFrom(src => src.Freelancer != null && src.Freelancer.Photo != null
+                    ? src.Freelancer.Photo.Url
                     : null))
-            .ForMember(dest => dest.PhotoUrl, 
+            .ForMember(dest => dest.PhotoUrl,
                 opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : null));
+
+            // Message -> MessageDTO
+            CreateMap<Message, MessageDTO>()
+                .ForMember(dest => dest.SenderPhotoUrl,
+                    opt => opt.MapFrom(src => src.Sender.Photo != null ? src.Sender.Photo.Url : string.Empty))
+                .ForMember(dest => dest.RecipientPhotoUrl,
+                    opt => opt.MapFrom(src => src.Recipient.Photo != null ? src.Recipient.Photo.Url : string.Empty));
+
+            // ProjectConversation -> ProjectConversationDTO
+            CreateMap<ProjectConversation, ProjectConversationDTO>()
+                .ForMember(dest => dest.ProjectTitle, opt => opt.MapFrom(src => src.Project.Title))
+                .ForMember(dest => dest.ClientUsername, opt => opt.MapFrom(src => src.Client.UserName))
+                .ForMember(dest => dest.ClientPhotoUrl, opt => opt.MapFrom(src => src.Client.Photo != null ? src.Client.Photo.Url : string.Empty))
+                .ForMember(dest => dest.FreelancerUsername, opt => opt.MapFrom(src => src.Freelancer.UserName))
+                .ForMember(dest => dest.FreelancerPhotoUrl, opt => opt.MapFrom(src => src.Freelancer.Photo != null ? src.Freelancer.Photo.Url : string.Empty))
+                .ForMember(dest => dest.LastMessage, opt => opt.Ignore())
+                .ForMember(dest => dest.LastMessageSent, opt => opt.Ignore())
+                .ForMember(dest => dest.UnreadCount, opt => opt.Ignore());
         }
     }
 }

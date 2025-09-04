@@ -28,4 +28,7 @@ public class Project
     public int? PhotoId { get; set; }
     public Photo? Photo { get; set; }
     public ICollection<Proposal> Proposals { get; set; } = [];
+
+    // Conversations associated with this project
+    public ICollection<ProjectConversation> Conversations { get; set; } = [];
 }
