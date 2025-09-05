@@ -1,0 +1,45 @@
+<div class="container mt-3 d-flex justify-content-center">
+
+  <div class="chat-container" style="width: 60%;">
+
+    <h2 class="text-center pt-3 mb-3">{{ projectTitle() }} Chat</h2>
+    <!-- Spinner while loading -->
+    <div *ngIf="loading(); else chatList">
+      <ngx-spinner 
+        bdColor="rgba(0,0,0,0.3)" 
+        size="medium" 
+        color="#007bff" 
+        type="ball-spin-clockwise">
+      </ngx-spinner>
+    </div>
+
+    <ng-template #chatList>
+      <div *ngIf="messages().length === 0">
+        <h5 class="text-muted text-center">No messages yet. Start the conversation!</h5>
+      </div>
+
+      <div *ngIf="messages().length > 0" class="chat-box border p-3 mb-3" style="height: 400px; overflow-y: auto;">
+        <div *ngFor="let msg of messages()" class="d-flex mb-2"
+             [class.justify-content-end]="msg.senderId === currentMember()?.id">
+          <img [src]="getUserPhoto(msg)" class="rounded-circle me-2" width="40" height="40" alt="user">
+          <div [class.bg-primary]="msg.senderId === currentMember()?.id"
+               [class.bg-light]="msg.senderId !== currentMember()?.id" class="rounded p-2"
+               [style.color]="msg.senderId === currentMember()?.id ? 'white' : 'black'" style="max-width: 70%;">
+            <strong>{{ getUserName(msg) }}</strong><br>
+            {{ msg.content }}
+            <div class="text-end text-muted" style="font-size: 0.75rem;">
+              {{ msg.messageSent | date:'short' }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Type your message..." [(ngModel)]="newMessage">
+        <button class="btn btn-primary" (click)="sendMessage()">Send</button>
+      </div>
+    </ng-template>
+
+  </div>
+
+</div>

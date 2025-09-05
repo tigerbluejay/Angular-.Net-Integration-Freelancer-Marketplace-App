@@ -1,0 +1,54 @@
+<div class="container mt-3">
+
+  <h2 class="text-center pt-3 mb-3">Messages</h2>
+
+  <!-- Spinner while loading -->
+  <div *ngIf="loading(); else conversationList">
+    <ngx-spinner 
+      bdColor="rgba(0,0,0,0.3)" 
+      size="medium" 
+      color="#007bff" 
+      type="ball-spin-clockwise">
+    </ngx-spinner>
+  </div>
+
+  <!-- Conversation table -->
+  <ng-template #conversationList>
+    <div *ngIf="conversations().length === 0">
+      <h4 class="text-muted">No conversations found</h4>
+    </div>
+
+    <div *ngIf="conversations().length > 0">
+      <table class="table table-hover mt-3" style="cursor: pointer;">
+        <thead>
+          <tr>
+            <th style="width: 20%;">Project</th>
+            <th style="width: 33%;">Last Message</th>
+            <th style="width: 23%;">Counterpart</th>
+            <th style="width: 13%;">Sent</th>
+            <th style="width: 11%;">Unread</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let conv of conversations()" 
+              [routerLink]="['/chat', conv.projectId]"
+              [queryParams]="{conversationId: conv.conversationId, freelancerId: conv.freelancerId}">
+            <td>{{ conv.projectTitle }}</td>
+            <td>{{ conv.lastMessage }}</td>
+            <td>
+              <div class="d-flex align-items-center">
+                <img [src]="getCounterpartPhoto(conv)" alt="user" class="rounded-circle me-2"
+                     style="width: 40px; height: 40px;">
+                <strong>{{ getCounterpartUsername(conv) }}</strong>
+              </div>
+            </td>
+            <td>{{ conv.lastMessageSent | date:'short' }}</td>
+            <td>
+              <span *ngIf="conv.unreadCount > 0" class="badge bg-primary">{{ conv.unreadCount }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-template>
+</div>

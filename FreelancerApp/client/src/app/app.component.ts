@@ -6,6 +6,7 @@ import { FreelancernavComponent } from './nav/freelancernav/freelancernav.compon
 import { ClientnavComponent } from './nav/clientnav/clientnav.component';
 import { PublicnavComponent } from './nav/publicnav/publicnav.component';
 import { NgxSpinnerComponent } from 'ngx-spinner';
+import { TimeagoModule } from 'ngx-timeago';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +17,11 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
     FreelancernavComponent,
     ClientnavComponent,
     PublicnavComponent,
-    NgxSpinnerComponent
+    NgxSpinnerComponent,
+    TimeagoModule
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'] // <-- plural
 })
 export class AppComponent {
   private accountService = inject(AccountService);
