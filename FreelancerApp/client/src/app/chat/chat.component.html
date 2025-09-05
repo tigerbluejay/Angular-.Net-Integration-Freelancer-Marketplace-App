@@ -2,7 +2,11 @@
 
   <div class="chat-container" style="width: 60%;">
 
-    <h2 class="text-center pt-3 mb-3">{{ projectTitle() }} Chat</h2>
+    <!-- Dynamic Project Title -->
+    <h2 class="text-center pt-3 mb-3">
+      {{ projectConversation()?.projectTitle || 'Project' }} Chat
+    </h2>
+
     <!-- Spinner while loading -->
     <div *ngIf="loading(); else chatList">
       <ngx-spinner 
