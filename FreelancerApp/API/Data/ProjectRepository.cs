@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using API.DTOs;
 using API.Entities;
 using API.Helpers;
@@ -116,6 +117,8 @@ public class ProjectRepository(DataContext context, IMapper mapper) : IProjectRe
                 }
             }
         }
+
+        query = query.OrderByDescending(p => p.Id);
 
         // Projection & paging
         var projected = query.ProjectTo<ProjectBrowseDTO>(mapper.ConfigurationProvider);

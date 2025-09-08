@@ -25,8 +25,16 @@ export class PublicnavComponent {
 
 login() {
   this.accountService.login(this.model).subscribe({
-    next: (user) => {
-      this.router.navigate(['/profile', user.username]);  
+    next: (user: User) => {
+      // Check user role and navigate accordingly
+      if (user.roles[0] === 'Freelancer') {
+        this.router.navigate(['/browse-projects']); // replace with your actual route
+      } else if (user.roles[0] === 'Client') {
+        this.router.navigate(['/profile', user.username]);
+      } else {
+        // default fallback
+        this.router.navigate(['/']);
+      }
     },
     error: error => this.toastr.error(error.error)
   });

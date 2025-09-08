@@ -65,6 +65,9 @@ namespace API.Data
                 }
             }
 
+            // **Order by latest first**
+            query = query.OrderByDescending(p => p.Created);
+
             var projected = query.Select(p => new ProposalWithProjectCombinedDTO
             {
                 Proposal = new ProposalDTO
@@ -111,6 +114,9 @@ int clientId, ProposalWithProjectParams propprojParams)
                 query = query.Where(p => p.IsAccepted == null);
             
             }
+
+            // **Order by latest first**
+            query = query.OrderByDescending(p => p.Created);
             
             var projected = query.Select(p => new ProposalWithProjectCombinedDTO
             {
