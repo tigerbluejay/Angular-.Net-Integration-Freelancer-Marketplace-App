@@ -58,12 +58,18 @@ public class ProjectConversationController : ControllerBase
     [HttpGet("{projectId}/{freelancerId}")]
     public async Task<ActionResult<IEnumerable<MessageDTO>>> GetMessages(int projectId, int freelancerId)
     {
+
+        var currentUser = await userRepository
+            .GetUserByUsernameAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+        if (currentUser == null) return Unauthorized();
+
         var conversation = await messageRepository.GetConversationByProjectAsync(projectId, freelancerId);
         if (conversation == null) return NotFound();
 
-        var messages = await messageRepository.GetProjectMessages(conversation.Id);
+        var messages = await messageRepository.GetProjectMessages(conversation.Id, currentUser.Id);
         return Ok(messages);
     }
+
 
     [HttpGet("conversations")]
     public async Task<ActionResult<IEnumerable<ProjectConversationDTO>>> GetConversations()
@@ -74,5 +80,37 @@ public class ProjectConversationController : ControllerBase
 
         var conversations = await messageRepository.GetConversationsForUserAsync(currentUser.Id);
         return Ok(conversations.OrderByDescending(c => c.LastMessageSent));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteMessage(int id)
+    {
+        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(username)) return Unauthorized();
+
+        var currentUser = await userRepository.GetUserByUsernameAsync(username);
+        if (currentUser == null) return Unauthorized();
+
+        var userId = currentUser.Id;
+
+        var message = await messageRepository.GetMessageByIdAsync(id);
+        if (message == null) return NotFound();
+
+        // Make sure user is sender or recipient
+        if (message.SenderId != userId && message.RecipientId != userId)
+            return Forbid();
+
+        // Mark as deleted for this user
+        if (message.SenderId == userId) message.SenderDeleted = true;
+        if (message.RecipientId == userId) message.RecipientDeleted = true;
+
+        // Hard delete if both have deleted
+        if (message.SenderDeleted && message.RecipientDeleted)
+            messageRepository.DeleteMessage(message);
+
+        if (await messageRepository.SaveAllAsync())
+            return NoContent();
+
+        return BadRequest("Problem deleting the message");
     }
 }

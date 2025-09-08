@@ -13,5 +13,6 @@ public interface IMessageRepository
     Task<IEnumerable<MessageDTO>> GetProjectMessages(int conversationId);
     Task<IEnumerable<ProjectConversationDTO>> GetConversationsForUserAsync(int userId);
     Task<Message?> GetMessageByIdAsync(int id);
+    Task<IEnumerable<MessageDTO>> GetProjectMessages(int conversationId, int currentUserId);
     Task<bool> SaveAllAsync();
 }

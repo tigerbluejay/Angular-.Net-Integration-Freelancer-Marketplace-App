@@ -114,6 +114,31 @@ public class MessageRepository : IMessageRepository
             .FirstOrDefaultAsync(m => m.Id == id);
     }
 
+    public async Task<IEnumerable<MessageDTO>> GetProjectMessages(int conversationId, int currentUserId)
+{
+    var messages = await context.Messages
+        .Include(x => x.Sender).ThenInclude(x => x.Photo)
+        .Include(x => x.Recipient).ThenInclude(x => x.Photo)
+        .Where(m => m.ConversationId == conversationId &&
+                    // Filter out messages deleted by current user
+                    !((m.SenderId == currentUserId && m.SenderDeleted) ||
+                      (m.RecipientId == currentUserId && m.RecipientDeleted)))
+        .OrderBy(m => m.MessageSent)
+        .ToListAsync();
+
+    var unreadMessages = messages
+        .Where(m => m.DateRead == null && m.RecipientId == currentUserId)
+        .ToList();
+
+    if (unreadMessages.Any())
+    {
+        unreadMessages.ForEach(m => m.DateRead = DateTime.UtcNow);
+        await context.SaveChangesAsync();
+    }
+
+    return mapper.Map<IEnumerable<MessageDTO>>(messages);
+}
+
     public async Task<bool> SaveAllAsync()
     {
         return await context.SaveChangesAsync() > 0;
