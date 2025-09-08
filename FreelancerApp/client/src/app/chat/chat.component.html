@@ -9,11 +9,7 @@
 
     <!-- Spinner while loading -->
     <div *ngIf="loading(); else chatList">
-      <ngx-spinner 
-        bdColor="rgba(0,0,0,0.3)" 
-        size="medium" 
-        color="#007bff" 
-        type="ball-spin-clockwise">
+      <ngx-spinner bdColor="rgba(0,0,0,0.3)" size="medium" color="#007bff" type="ball-spin-clockwise">
       </ngx-spinner>
     </div>
 
@@ -24,17 +20,28 @@
 
       <div *ngIf="messages().length > 0" class="chat-box border p-3 mb-3" style="height: 400px; overflow-y: auto;">
         <div *ngFor="let msg of messages()" class="d-flex mb-2"
-             [class.justify-content-end]="msg.senderId === currentMember()?.id">
+          [class.justify-content-end]="msg.senderId === currentMember()?.id">
+
+          <!-- User avatar -->
           <img [src]="getUserPhoto(msg)" class="rounded-circle me-2" width="40" height="40" alt="user">
-          <div [class.bg-primary]="msg.senderId === currentMember()?.id"
-               [class.bg-light]="msg.senderId !== currentMember()?.id" class="rounded p-2"
-               [style.color]="msg.senderId === currentMember()?.id ? 'white' : 'black'" style="max-width: 70%;">
+
+          <!-- Message bubble -->
+          <div class="message-bubble rounded p-2" [class.bg-primary]="msg.senderId === currentMember()?.id"
+            [class.bg-light]="msg.senderId !== currentMember()?.id"
+            [style.color]="msg.senderId === currentMember()?.id ? 'white' : 'black'" style="max-width: 70%;">
             <strong>{{ getUserName(msg) }}</strong><br>
             {{ msg.content }}
             <div class="text-end text-muted" style="font-size: 0.75rem;">
               {{ msg.messageSent | date:'short' }}
             </div>
           </div>
+
+          <!-- Trash icon outside the bubble -->
+          <button *ngIf="msg.senderId === currentMember()?.id" (click)="onDeleteMessage(msg.id)"
+            class="btn btn-sm btn-link p-0 ms-1" title="Delete message" style="font-size: 1rem; color: gray;">
+            <i class="bi bi-trash"></i>
+          </button>
+
         </div>
       </div>
 

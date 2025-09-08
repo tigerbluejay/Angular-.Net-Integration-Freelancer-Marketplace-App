@@ -14,7 +14,24 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
   selector: 'app-chat',
   standalone: true,
   imports: [CommonModule, FormsModule, NgxSpinnerComponent],
-  templateUrl: './chat.component.html'
+  templateUrl: './chat.component.html',
+  styles: [`
+    .trash-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .trash-btn:hover {
+      color: rgba(255,255,255,1);
+    }
+  `]
 })
 export class ChatComponent implements OnInit {
   private conversationService = inject(ProjectConversationService);
@@ -27,6 +44,8 @@ export class ChatComponent implements OnInit {
   newMessage = signal<string>('');
   currentMember = signal<Member | null>(null);
   projectConversation = signal<ProjectConversationDTO | null>(null);
+
+  hoveredMessageId = signal<number | null>(null);
 
   ngOnInit(): void {
     const conversationId = Number(this.route.snapshot.queryParamMap.get('conversationId'));
@@ -82,7 +101,6 @@ export class ChatComponent implements OnInit {
       return;
     }
 
-    // Determine recipient ID
     const freelancerId = conv.freelancerId;
     this.conversationService.getMessages(conv.projectId, freelancerId).subscribe({
       next: msgs => {
@@ -106,7 +124,6 @@ export class ChatComponent implements OnInit {
     const member = this.currentMember();
     if (!member) return;
 
-    // Determine recipient
     const recipientId = member.id === conv.clientId ? conv.freelancerId : conv.clientId;
 
     this.conversationService.sendMessage(conv.projectId, { recipientId, content }).subscribe({
@@ -128,5 +145,19 @@ export class ChatComponent implements OnInit {
     const member = this.currentMember();
     if (!member) return 'You';
     return msg.senderId === member.id ? member.userName || 'You' : msg.senderUsername;
+  }
+
+  onDeleteMessage(messageId: number): void {
+    if (!confirm('Are you sure you want to delete this message? Other users in this conversation will still see it.')) return;
+
+    this.conversationService.deleteMessage(messageId).subscribe({
+      next: () => {
+        this.messages.update(curr => curr.filter(m => m.id !== messageId));
+      },
+      error: err => {
+        console.error('Error deleting message:', err);
+        alert('Failed to delete message. Please try again.');
+      }
+    });
   }
 }

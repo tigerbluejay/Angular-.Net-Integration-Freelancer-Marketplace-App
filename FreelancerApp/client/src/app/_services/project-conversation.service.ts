@@ -47,4 +47,12 @@ export class ProjectConversationService {
       `${this.baseUrl}projectconversation/conversations`
     );
   }
+
+  /**
+   * Soft-delete a message for the logged-in user.
+   * @param messageId The message ID
+   */
+  deleteMessage(messageId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}projectconversation/${messageId}`);
+  }
 }
