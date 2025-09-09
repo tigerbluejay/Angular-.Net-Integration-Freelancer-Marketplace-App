@@ -91,6 +91,14 @@ namespace API.Helpers
                 .ForMember(dest => dest.LastMessage, opt => opt.Ignore())
                 .ForMember(dest => dest.LastMessageSent, opt => opt.Ignore())
                 .ForMember(dest => dest.UnreadCount, opt => opt.Ignore());
+
+            CreateMap<AppUser, UserAdminDTO>()
+            .ForMember(dest => dest.PhotoUrl,
+                opt => opt.MapFrom(src => src.Photo != null ? src.Photo.Url : null))
+            .ForMember(dest => dest.Skills,
+                opt => opt.MapFrom(src => src.Skills.Select(s => s.Name)))
+            .ForMember(dest => dest.Roles,
+                opt => opt.MapFrom(src => src.UserRoles.Select(ur => ur.Role.Name)));
         }
     }
 }

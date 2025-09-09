@@ -57,4 +57,6 @@ public class AppUser : IdentityUser<int>
     // Messages this user received
     public ICollection<Message> MessagesReceived { get; set; } = [];
 
+    public bool IsAccountDisabled { get; set; } = false;
+
 }

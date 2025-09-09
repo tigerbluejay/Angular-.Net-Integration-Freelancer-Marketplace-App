@@ -84,4 +84,58 @@ public class UsersController(IUserRepository userRepository, IProjectRepository 
         return Ok(portfolio);
     }
 
+    // GET: api/users/admin/?pageNumber=1&pageSize=10
+    [HttpGet("admin")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<PagedList<UserAdminDTO>>> GetUsers([FromQuery] UserParams userParams)
+    {
+        var users = await userRepository.GetUsersAsync(userParams);
+
+        var userDtos = mapper.Map<IEnumerable<UserAdminDTO>>(users);
+
+        // If you already have a PagedList<T>, you can map directly and keep metadata
+        var pagedResult = new PagedList<UserAdminDTO>(
+            userDtos.ToList(),
+            users.TotalCount,
+            users.CurrentPage,
+            users.PageSize
+        );
+
+        return Ok(pagedResult);
+    }
+
+    // PATCH: api/users/{id}/disable
+    [HttpPatch("{id}/disable")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DisableUser(int id)
+    {
+        var user = await userRepository.GetUserByIdAsync(id);
+        if (user == null) return NotFound();
+
+        if (user.IsAccountDisabled)
+            return BadRequest("User account is already disabled.");
+
+        user.IsAccountDisabled = true;
+        await userRepository.UpdateUserAsync(user);
+
+        return NoContent();
+    }
+
+    // PATCH: api/users/{id}/enable
+    [HttpPatch("{id}/enable")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> EnableUser(int id)
+    {
+        var user = await userRepository.GetUserByIdAsync(id);
+        if (user == null) return NotFound();
+
+        if (!user.IsAccountDisabled)
+            return BadRequest("User account is already enabled.");
+
+        user.IsAccountDisabled = false;
+        await userRepository.UpdateUserAsync(user);
+
+        return NoContent();
+    }
+
 }

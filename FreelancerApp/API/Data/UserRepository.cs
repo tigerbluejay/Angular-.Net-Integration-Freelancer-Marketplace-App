@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using API.DTOs;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -43,7 +44,7 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
     }
 
     public async Task<IEnumerable<AppUser>> GetUsersAsync()
-    { 
+    {
         return await context.Users
          .Include(x => x.Photo)
          .Include(x => x.Skills)
@@ -63,5 +64,28 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
     {
         // explicity tell EF that this entity has been modified
         context.Entry(user).State = EntityState.Modified;
+    }
+
+    public async Task UpdateUserAsync(AppUser user)
+    {
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task<PagedList<AppUser>> GetUsersAsync(UserParams userParams)
+    {
+        var query = context.Users
+        .Include(u => u.Photo)
+        .Include(u => u.Skills)
+        .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+        .AsQueryable();
+
+        // Order by the first role alphabetically, then by LastActive as a secondary sort
+        query = query
+            .OrderBy(u => u.UserRoles.Select(ur => ur.Role.Name).FirstOrDefault())
+            .ThenByDescending(u => u.LastActive);
+
+        return await PagedList<AppUser>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
     }
 }
