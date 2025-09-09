@@ -416,9 +416,17 @@ public class Seed
         await context.SaveChangesAsync();
 
         // Create admin
-        var admin = new AppUser { UserName = "admin", KnownAs = "admin" };
+        var admin = new AppUser { UserName = "admin", KnownAs = "admin", };
         await userManager.CreateAsync(admin, "Pa$$w0rd");
         await userManager.AddToRolesAsync(admin, new[] { "Admin" });
+
+        // Assign a photo for the admin
+        var adminPhoto = new Photo
+        {
+            Url = "https://randomuser.me/api/portraits/men/20.jpg", // your chosen URL
+            User = admin
+        };
+        context.Photos.Add(adminPhoto);
 
         await context.SaveChangesAsync();
     }

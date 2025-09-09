@@ -2,9 +2,11 @@ import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpHeaders, HttpParams, HttpXhrBackend } from '@angular/common/http';
 import { Member } from '../_models/member';
-import { of, tap } from 'rxjs';
+import { map, of, tap } from 'rxjs';
 import { ProjectDTO } from '../_DTOs/projectDTO';
 import { PortfolioItemDTO } from '../_DTOs/portfolioItemDTO';
+import { UserAdminDTO } from '../_DTOs/userAdminDTO';
+import { PaginatedResultAdmin } from '../_models/paginationAdmin';
 
 @Injectable({
   providedIn: 'root'
@@ -62,5 +64,21 @@ export class MembersService {
     return this.http.get<PortfolioItemDTO[]>(`${this.baseUrl}users/${username}/portfolio`, { observe: 'response', params });
   }
 
+  getAdminUsers(pageNumber: number = 1, pageSize: number = 10) {
+  let params = new HttpParams()
+    .set('pageNumber', pageNumber.toString())
+    .set('pageSize', pageSize.toString());
 
+  return this.http.get<UserAdminDTO[]>(this.baseUrl + 'users/admin', { params });
+}
+
+  // Disable a user
+  disableUser(id: number) {
+    return this.http.patch(this.baseUrl + `users/${id}/disable`, {});
+  }
+
+  // Enable a user
+  enableUser(id: number) {
+    return this.http.patch(this.baseUrl + `users/${id}/enable`, {});
+  }
 }

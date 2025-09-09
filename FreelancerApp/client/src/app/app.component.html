@@ -10,5 +10,6 @@
 <app-publicnav *ngIf="!isLoggedIn()"></app-publicnav>
 <app-freelancernav *ngIf="isLoggedIn() && userRole() === 'Freelancer'"></app-freelancernav>
 <app-clientnav *ngIf="isLoggedIn() && userRole() === 'Client'"></app-clientnav>
+<app-adminnav *ngIf="isLoggedIn() && userRole() === 'Admin'"></app-adminnav>
 
 <router-outlet></router-outlet>

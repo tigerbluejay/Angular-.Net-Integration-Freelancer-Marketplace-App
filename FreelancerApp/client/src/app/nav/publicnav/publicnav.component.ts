@@ -31,6 +31,8 @@ login() {
         this.router.navigate(['/browse-projects']); // replace with your actual route
       } else if (user.roles[0] === 'Client') {
         this.router.navigate(['/profile', user.username]);
+      } else if (user.roles[0] === 'Admin') {
+        this.router.navigate(['/admin-panel']);
       } else {
         // default fallback
         this.router.navigate(['/']);

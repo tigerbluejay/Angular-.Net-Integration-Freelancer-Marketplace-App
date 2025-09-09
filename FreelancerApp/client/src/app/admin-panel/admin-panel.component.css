@@ -1,0 +1,7 @@
+.row-equal > .col-md-2 {
+  display: flex;
+}
+
+.row-equal > .col-md-2 > .card {
+  flex: 1 1 auto; /* make all cards stretch to equal height */
+}

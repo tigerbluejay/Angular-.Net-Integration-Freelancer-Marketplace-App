@@ -19,6 +19,7 @@ import { ProposalInboxComponent } from './proposal-inbox/proposal-inbox.componen
 import { ActiveProjectsComponent } from './active-projects/active-projects.component';
 import { MessagesComponent } from './messages/messages.component';
 import { ChatComponent } from './chat/chat.component';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 
 
 export const routes: Routes = [
@@ -42,6 +43,7 @@ export const routes: Routes = [
   { path: 'active-projects', component: ActiveProjectsComponent, canActivate: [authGuard] },
   { path: 'chat/:projectId', component: ChatComponent },
   { path: 'messages', component: MessagesComponent },
+  { path: 'admin-panel', component: AdminPanelComponent},
 
   // ✅ New freelancer route
   { path: 'browse-projects', component: BrowseProjectsComponent, canActivate: [authGuard] },

@@ -7,6 +7,7 @@ import { ClientnavComponent } from './nav/clientnav/clientnav.component';
 import { PublicnavComponent } from './nav/publicnav/publicnav.component';
 import { NgxSpinnerComponent } from 'ngx-spinner';
 import { TimeagoModule } from 'ngx-timeago';
+import { AdminnavComponent } from './nav/adminnav/adminnav.component';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ import { TimeagoModule } from 'ngx-timeago';
     NgIf,
     FreelancernavComponent,
     ClientnavComponent,
+    AdminnavComponent,
     PublicnavComponent,
     NgxSpinnerComponent,
     TimeagoModule

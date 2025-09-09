@@ -1,0 +1,65 @@
+<div class="container mt-4" style="max-width: 75%;">
+  <h2 class="text-center mb-4">Admin Panel</h2>
+
+  <!-- Role Tabs -->
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="selectedRole === 'Freelancer'" (click)="selectRole('Freelancer')">Freelancers</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="selectedRole === 'Client'" (click)="selectRole('Client')">Clients</a>
+    </li>
+  </ul>
+
+  <!-- User Cards -->
+  <div *ngIf="filteredUsers?.length; else noUsers">
+    <div class="row row-equal justify-content-center">
+      <div class="col-md-2 mb-3 d-flex" *ngFor="let user of filteredUsers">
+        <div class="card h-100 w-100 d-flex flex-column">
+          <img [src]="user.photoUrl || 'assets/default-user.png'" class="card-img-top" alt="User photo">
+          <div class="card-body p-2 d-flex flex-column">
+            <h5 class="card-title text-center">{{ user.knownAs }}</h5>
+
+            <ul class="list-unstyled small mb-2">
+              <li><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</li>
+              <li><strong>Location:</strong> {{ user.city }}, {{ user.country }}</li>
+              <li><strong>DOB:</strong> {{ user.dateOfBirth | date:'shortDate' }}</li>
+              <li><strong>Available:</strong>
+                <span class="badge" [ngClass]="user.isAvailable ? 'bg-success' : 'bg-info'">
+                  {{ user.isAvailable ? 'Yes' : 'No' }}
+                </span>
+              </li>
+              <li *ngIf="user.skills.length"><strong>Skills:</strong>
+                <span *ngFor="let skill of user.skills" class="badge bg-info text-dark me-1">{{ skill }}</span>
+              </li>
+            </ul>
+
+            <div class="d-flex justify-content-between mt-auto">
+              <button class="btn btn-sm btn-success" (click)="enableUser(user)" [disabled]="!user.isAccountDisabled">Enable</button>
+              <button class="btn btn-sm btn-danger" (click)="disableUser(user)" [disabled]="user.isAccountDisabled">Disable</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noUsers>
+    <p class="text-center">No users to display for this role.</p>
+  </ng-template>
+
+  <!-- Pagination -->
+  <nav *ngIf="pagination.totalPages > 1" aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="pagination?.currentPage === 1">
+        <button class="page-link" (click)="loadPage(pagination.currentPage - 1)">Previous</button>
+      </li>
+      <li class="page-item" *ngFor="let page of pagesArray()" [class.active]="page === pagination?.currentPage">
+        <button class="page-link" (click)="loadPage(page)">{{ page }}</button>
+      </li>
+      <li class="page-item" [class.disabled]="pagination?.currentPage === pagination?.totalPages">
+        <button class="page-link" (click)="loadPage(pagination.currentPage + 1)">Next</button>
+      </li>
+    </ul>
+  </nav>
+</div>
