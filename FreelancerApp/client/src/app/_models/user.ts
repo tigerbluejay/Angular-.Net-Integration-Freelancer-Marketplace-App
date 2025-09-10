@@ -4,4 +4,5 @@ export interface User {
     roles: string[];
     photoUrl?: string;
     knownAs: string;
+    IsAccountDisabled: boolean;
 }

@@ -33,7 +33,8 @@ public class AccountController(DataContext context, UserManager<AppUser> userMan
         {
             Username = user.UserName,
             Token = await tokenService.CreateToken(user),
-            KnownAs = user.KnownAs
+            KnownAs = user.KnownAs,
+            IsAccountDisabled = user.IsAccountDisabled
         };
     }
 
@@ -56,7 +57,8 @@ public class AccountController(DataContext context, UserManager<AppUser> userMan
             Username = user.UserName!,
             KnownAs = user.KnownAs,
             Token = await tokenService.CreateToken(user),
-            PhotoUrl = user.Photo?.Url
+            PhotoUrl = user.Photo?.Url,
+            IsAccountDisabled = user.IsAccountDisabled
         };
     }
     private async Task<bool> UserExists(string username)

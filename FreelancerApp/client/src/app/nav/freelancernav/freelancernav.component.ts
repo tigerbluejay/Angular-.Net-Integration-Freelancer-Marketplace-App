@@ -19,7 +19,6 @@ import { ToastrService } from 'ngx-toastr';
 export class FreelancernavComponent {
   accountService = inject(AccountService);
   authService = inject(AuthService);
-  private router = inject(Router);
 
   username = computed(() => this.accountService.currentUser()?.username ?? null);
   photoTimestamp = Date.now();
@@ -35,7 +34,7 @@ export class FreelancernavComponent {
   }
 
   logout() {
+    console.log('Nav bar logout clicked');
     this.accountService.logout();
-    this.router.navigateByUrl('/');
   }
 }

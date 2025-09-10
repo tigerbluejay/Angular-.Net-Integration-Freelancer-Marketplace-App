@@ -36,8 +36,7 @@ export class ClientnavComponent {
   }
 
   logout() {
-    this.accountService.logout();
-    this.router.navigateByUrl('/');
+    this.accountService.logout(); // will now navigate automatically
   }
 
 }

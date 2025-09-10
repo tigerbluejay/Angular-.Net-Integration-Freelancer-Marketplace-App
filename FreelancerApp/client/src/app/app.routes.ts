@@ -1,14 +1,10 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
+
+// Components
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { ProfileComponent } from './profile/profile.component';
-import { authGuard } from './auth.guard';  // You may not have this yet
-import { TestErrorsComponent } from './errors/test-errors/test-errors.component';
-import { NotFoundComponent } from './errors/not-found/not-found.component';
-import { ServerErrorComponent } from './errors/server-error/server-error.component';
 import { ProfileEditFreelancerComponent } from './profile-edit-freelancer/profile-edit-freelancer.component';
-import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 import { ProfileEditClientComponent } from './profile-edit-client/profile-edit-client.component';
 import { PortfolioItemCreateComponent } from './portfolio-item-create/portfolio-item-create.component';
 import { ProjectCreateComponent } from './project-create/project-create.component';
@@ -20,37 +16,57 @@ import { ActiveProjectsComponent } from './active-projects/active-projects.compo
 import { MessagesComponent } from './messages/messages.component';
 import { ChatComponent } from './chat/chat.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { TestErrorsComponent } from './errors/test-errors/test-errors.component';
+import { NotFoundComponent } from './errors/not-found/not-found.component';
+import { ServerErrorComponent } from './errors/server-error/server-error.component';
 
+// Guards
+import { authGuard } from './auth.guard';
+import { accountGuard } from './_guards/prevent-disabled-users-to-use-the-platform.guard';
+import { preventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 
 export const routes: Routes = [
   // Public routes
   { path: '', component: HomeComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'errors', component: TestErrorsComponent},
-  { path: 'not-found', component: NotFoundComponent},
-  { path: 'server-error', component: ServerErrorComponent},
-  { path: 'profile-edit-freelancer', component: ProfileEditFreelancerComponent, 
-    canDeactivate: [preventUnsavedChangesGuard]},
-  { path: 'profile-edit-client', component: ProfileEditClientComponent, 
-    canDeactivate: [preventUnsavedChangesGuard]},
-  { path: 'portfolio-item/create', component: PortfolioItemCreateComponent },
-  { path: 'portfolio-item/edit/:id', component: PortfolioItemCreateComponent },
-  { path: 'project/create', component: ProjectCreateComponent },
-  { path: 'project/edit/:id', component: ProjectCreateComponent },
-  { path: 'create-proposal/:id', component: ProposalCreateComponent },
-  { path: 'submitted-proposals', component: SubmittedProposalsComponent },
-  { path: 'proposal-inbox', component: ProposalInboxComponent },
-  { path: 'active-projects', component: ActiveProjectsComponent, canActivate: [authGuard] },
-  { path: 'chat/:projectId', component: ChatComponent },
-  { path: 'messages', component: MessagesComponent },
-  { path: 'admin-panel', component: AdminPanelComponent},
+  { path: 'errors', component: TestErrorsComponent },
+  { path: 'not-found', component: NotFoundComponent },
+  { path: 'server-error', component: ServerErrorComponent },
 
-  // ✅ New freelancer route
-  { path: 'browse-projects', component: BrowseProjectsComponent, canActivate: [authGuard] },
+  // Authenticated routes (wrapper)
+  {
+    path: '',
+    canActivate: [authGuard], // ensure user is logged in
+    canActivateChild: [accountGuard], // ensure account is active on every child route
+    children: [
+      { path: 'profile/:username', component: ProfileComponent },
 
-  // Protected route
-  { path: 'profile/:username', component: ProfileComponent, canActivate: [authGuard]  },
+      // Profile edit
+      { path: 'profile-edit-freelancer', component: ProfileEditFreelancerComponent, canDeactivate: [preventUnsavedChangesGuard] },
+      { path: 'profile-edit-client', component: ProfileEditClientComponent, canDeactivate: [preventUnsavedChangesGuard] },
 
-  // fallback
-  { path: '**', component: HomeComponent, pathMatch: 'full'},
+      // Projects
+      { path: 'portfolio-item/create', component: PortfolioItemCreateComponent },
+      { path: 'portfolio-item/edit/:id', component: PortfolioItemCreateComponent },
+      { path: 'project/create', component: ProjectCreateComponent },
+      { path: 'project/edit/:id', component: ProjectCreateComponent },
+      { path: 'browse-projects', component: BrowseProjectsComponent },
+
+      // Proposals
+      { path: 'create-proposal/:id', component: ProposalCreateComponent },
+      { path: 'submitted-proposals', component: SubmittedProposalsComponent },
+      { path: 'proposal-inbox', component: ProposalInboxComponent },
+
+      // Projects & messaging
+      { path: 'active-projects', component: ActiveProjectsComponent },
+      { path: 'chat/:projectId', component: ChatComponent },
+      { path: 'messages', component: MessagesComponent },
+
+      // Admin
+      { path: 'admin-panel', component: AdminPanelComponent },
+    ],
+  },
+
+  // Fallback
+  { path: '**', component: HomeComponent, pathMatch: 'full' },
 ];

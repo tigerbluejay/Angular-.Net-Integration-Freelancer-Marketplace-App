@@ -8,6 +8,7 @@ import { PublicnavComponent } from './nav/publicnav/publicnav.component';
 import { NgxSpinnerComponent } from 'ngx-spinner';
 import { TimeagoModule } from 'ngx-timeago';
 import { AdminnavComponent } from './nav/adminnav/adminnav.component';
+import { ModalComponent } from "./modal/modal.component";
 
 @Component({
   selector: 'app-root',
@@ -20,8 +21,9 @@ import { AdminnavComponent } from './nav/adminnav/adminnav.component';
     AdminnavComponent,
     PublicnavComponent,
     NgxSpinnerComponent,
-    TimeagoModule
-  ],
+    TimeagoModule,
+    ModalComponent
+],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'] // <-- plural
 })
