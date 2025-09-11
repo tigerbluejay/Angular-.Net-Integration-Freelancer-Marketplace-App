@@ -1,11 +1,6 @@
 <div class="container my-4" style="max-width: 80%;">
   <h2 class="text-center mb-4">Active Projects</h2>
 
-  <!-- Loading Spinner -->
-  <div *ngIf="loading()" class="text-center my-5">
-    <div class="spinner-border text-primary" role="status"></div>
-  </div>
-
   <!-- Projects Grid -->
   <div *ngIf="!loading() && projects().length > 0" class="row row-cols-1 row-cols-md-2 g-4">
     <div class="col" *ngFor="let project of projects()">

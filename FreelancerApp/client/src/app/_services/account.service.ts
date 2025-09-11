@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 import { getDecodedToken } from '../_helpers/jwt-helper';
 import { Router } from '@angular/router';
+import { PresenceService } from './presence.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class AccountService {
 
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private presenceService = inject(PresenceService);
   private router: Router = inject(Router);
   baseUrl = environment.apiUrl;
   currentUser = signal<User | null>(null);
@@ -61,6 +63,8 @@ export class AccountService {
 setCurrentUser(user: User) {
   localStorage.setItem('user', JSON.stringify(user));
   this.currentUser.set(user);
+  this.presenceService.createHubConnection(user);
+
 
 }
 
@@ -68,6 +72,7 @@ setCurrentUser(user: User) {
   localStorage.removeItem('user');
   localStorage.removeItem('token');  // make sure token is removed too
   this.currentUser.set(null);        // clear signal
+  this.presenceService.stopHubConnection();
   this.router.navigate(['/']); // redirect to Home
 }
 
