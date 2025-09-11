@@ -18,13 +18,6 @@ import { CommonModule } from '@angular/common';
 export class ProfileEditClientComponent {
   @ViewChild('editForm') editForm?: NgForm;
 
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any) {
-    if (this.editForm?.dirty) {
-      $event.returnValue = true;
-    }
-  }
-
   member?: Member;
   selectedPhotoFile?: File;
   photoPreviewUrl: string | null | undefined;

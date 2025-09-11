@@ -7,6 +7,8 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @Component({
   standalone: true,
@@ -17,12 +19,6 @@ import { CommonModule } from '@angular/common';
 })
 export class ProfileEditFreelancerComponent implements OnInit {
   @ViewChild('editForm') editForm?: NgForm;
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any) {
-    if (this.editForm?.dirty) {
-      $event.returnValue = true;
-    }
-  }
 
   member?: Member;
   selectedPhotoFile?: File;

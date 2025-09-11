@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PortfolioItem } from '../_models/portfolio-item';
 import { Member } from '../_models/member';
 import { PortfolioItemService } from '../_services/portfolio-item.service';
 import { AccountService } from '../_services/account.service';
 import { MembersService } from '../_services/members.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 import { PhotoService } from '../_services/photo.service';
@@ -24,6 +24,8 @@ export class PortfolioItemCreateComponent implements OnInit {
   selectedPhotoFile?: File;
   photoPreviewUrl: string | null | undefined;
 
+  @ViewChild('editForm') editForm?: NgForm;
+
   constructor(
     private activeRouter: ActivatedRoute,
     private router: Router,
@@ -40,7 +42,7 @@ export class PortfolioItemCreateComponent implements OnInit {
 
     this.loadMemberAndPortfolioItem(Number(id));
   }
-  
+
   loadMemberAndPortfolioItem(id: number) {
     const user = this.accountService.currentUser();
     if (!user) return;
@@ -88,26 +90,26 @@ export class PortfolioItemCreateComponent implements OnInit {
     }
   }
 
-    onDeletePhoto() {
-  if (!confirm('Are you sure you want to delete this photo?')) return;
+  onDeletePhoto() {
+    if (!confirm('Are you sure you want to delete this photo?')) return;
 
-  if (!this.portfolioItem) return;
+    if (!this.portfolioItem) return;
 
-  this.photoService.deletePortfolioPhoto(this.portfolioItem.id).subscribe({
-    next: () => {
-      this.toastr.success('Photo deleted successfully');
-      this.photoPreviewUrl = undefined;
-      this.selectedPhotoFile = undefined;
-      this.portfolioItem!.photoUrl = '';
+    this.photoService.deletePortfolioPhoto(this.portfolioItem.id).subscribe({
+      next: () => {
+        this.toastr.success('Photo deleted successfully');
+        this.photoPreviewUrl = undefined;
+        this.selectedPhotoFile = undefined;
+        this.portfolioItem!.photoUrl = '';
 
-      // Optionally mark form dirty or trigger UI update here
-    },
-    error: err => {
-      this.toastr.error('Failed to delete photo');
-      console.error(err);
-    }
-  });
-}
+        // Optionally mark form dirty or trigger UI update here
+      },
+      error: err => {
+        this.toastr.error('Failed to delete photo');
+        console.error(err);
+      }
+    });
+  }
 
   onSubmit() {
     if (!this.portfolioItem) return;
@@ -139,6 +141,9 @@ export class PortfolioItemCreateComponent implements OnInit {
       this.portfolioItemService.createPortfolioItem(this.portfolioItem).subscribe({
         next: createdItem => {
           this.toastr.success('Portfolio item created successfully');
+
+          // Reset form so guard doesn’t trigger
+          this.editForm?.reset(createdItem);
 
           if (this.selectedPhotoFile) {
             // Upload photo now with the new portfolioItemId
@@ -174,6 +179,7 @@ export class PortfolioItemCreateComponent implements OnInit {
     }
   }
 
+
   private savePortfolioItem() {
     if (!this.portfolioItem) return;
 
@@ -181,6 +187,8 @@ export class PortfolioItemCreateComponent implements OnInit {
       this.portfolioItemService.updatePortfolioItem(this.portfolioItem.id, this.portfolioItem).subscribe({
         next: () => {
           this.toastr.success('Portfolio item updated successfully.');
+          // Reset form so guard doesn’t trigger
+          this.editForm?.reset(this.portfolioItem);
           this.goToProfile();
         },
         error: err => {
@@ -192,6 +200,8 @@ export class PortfolioItemCreateComponent implements OnInit {
       this.portfolioItemService.createPortfolioItem(this.portfolioItem).subscribe({
         next: () => {
           this.toastr.success('Portfolio item created successfully.');
+          // Reset form so guard doesn’t trigger
+          this.editForm?.reset(this.portfolioItem);
           this.goToProfile();
         },
         error: err => {

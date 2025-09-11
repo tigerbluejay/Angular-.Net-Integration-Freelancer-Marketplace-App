@@ -47,9 +47,9 @@ export const routes: Routes = [
 
       // Projects
       { path: 'portfolio-item/create', component: PortfolioItemCreateComponent },
-      { path: 'portfolio-item/edit/:id', component: PortfolioItemCreateComponent },
+      { path: 'portfolio-item/edit/:id', component: PortfolioItemCreateComponent, canDeactivate: [preventUnsavedChangesGuard] },
       { path: 'project/create', component: ProjectCreateComponent },
-      { path: 'project/edit/:id', component: ProjectCreateComponent },
+      { path: 'project/edit/:id', component: ProjectCreateComponent, canDeactivate: [preventUnsavedChangesGuard]  },
       { path: 'browse-projects', component: BrowseProjectsComponent },
 
       // Proposals
