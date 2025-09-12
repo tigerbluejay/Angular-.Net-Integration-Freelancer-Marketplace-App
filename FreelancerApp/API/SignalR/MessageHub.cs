@@ -7,29 +7,34 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace API.SignalR;
 
-public class MessageHub(IMessageRepository messageRepository, IUserRepository userRepository,
-    IMapper mapper) : Hub
+public class MessageHub(IMessageRepository messageRepository, IUserRepository userRepository, IMapper mapper) : Hub
 {
     public override async Task OnConnectedAsync()
     {
-        var httpContext = Context.GetHttpContext();
-        var conversationIdStr = httpContext?.Request.Query["conversationId"];
+        try
+        {
+            var httpContext = Context.GetHttpContext();
+            var conversationIdStr = httpContext?.Request.Query["conversationId"];
+            if (Context.User == null || string.IsNullOrEmpty(conversationIdStr))
+                throw new Exception("Cannot join group");
 
-        if (Context.User == null || string.IsNullOrEmpty(conversationIdStr))
-            throw new Exception("Cannot join group");
+            if (!int.TryParse(conversationIdStr, out var conversationId))
+                throw new Exception("Invalid conversation id");
 
-        if (!int.TryParse(conversationIdStr, out var conversationId))
-            throw new Exception("Invalid conversation id");
+            var groupName = $"conversation-{conversationId}";
+            Console.WriteLine($"[MessageHub] User {Context.User.GetUsername()} joining group {groupName}");
 
-        var groupName = $"conversation-{conversationId}";
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            await AddToGroup(groupName);
 
-        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-        await AddToGroup(groupName);
-
-        // Use your conversation-based repository method
-        var messages = await messageRepository.GetProjectMessages(conversationId);
-
-        await Clients.Group(groupName).SendAsync("ReceiveMessageThread", messages);
+            var messages = await messageRepository.GetProjectMessages(conversationId);
+            await Clients.Group(groupName).SendAsync("ReceiveMessageThread", messages);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[MessageHub] OnConnectedAsync error: {ex.Message}");
+            throw;
+        }
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)
@@ -38,47 +43,47 @@ public class MessageHub(IMessageRepository messageRepository, IUserRepository us
         await base.OnDisconnectedAsync(exception);
     }
 
-    public async Task SendMessage(MessageCreateDTO MessageCreateDTO)
+    public async Task SendMessage(MessageCreateDTO dto)
     {
-        var username = Context.User?.GetUsername() ?? throw new Exception("Could not get user");
-
-        var recipient = await userRepository.GetUserByIdAsync(MessageCreateDTO.RecipientId);
-
-        if (username == recipient?.KnownAs)
-            throw new HubException("You cannot message yourself");
-
-        var sender = await userRepository.GetUserByUsernameAsync(username);
-
-        if (recipient == null || sender == null
-            || sender.UserName == null || recipient.UserName == null)
-            throw new HubException("Cannot send message at this time");
-
-        var message = new Message
+        try
         {
-            Sender = sender,
-            Recipient = recipient,
-            SenderId = sender.Id,
-            RecipientId = recipient.Id,
-            Content = MessageCreateDTO.Content
-        };
+            var username = Context.User?.GetUsername() ?? throw new Exception("Could not get user");
+            var recipient = await userRepository.GetUserByIdAsync(dto.RecipientId);
+            if (username == recipient?.KnownAs)
+                throw new HubException("Cannot message yourself");
 
-        var groupName = GetGroupName(sender.UserName, recipient.UserName);
-        var group = await messageRepository.GetMessageGroup(groupName);
+            var sender = await userRepository.GetUserByUsernameAsync(username);
+            if (recipient == null || sender == null || sender.UserName == null || recipient.UserName == null)
+                throw new HubException("Cannot send message at this time");
 
-        if (group != null && group.Connections.Any(x => x.Username == recipient.UserName))
-        {
-            message.DateRead = DateTime.UtcNow;
+            var message = new Message
+            {
+                Sender = sender,
+                Recipient = recipient,
+                SenderId = sender.Id,
+                RecipientId = recipient.Id,
+                Content = dto.Content,
+                ConversationId = dto.ConversationId
+            };
+
+            var groupName = $"conversation-{dto.ConversationId}";
+            var group = await messageRepository.GetMessageGroup(groupName);
+
+            if (group != null && group.Connections.Any(x => x.Username == recipient.UserName))
+                message.DateRead = DateTime.UtcNow;
+
+            messageRepository.AddProjectMessage(message);
+            if (await messageRepository.SaveAllAsync())
+            {
+                Console.WriteLine($"[MessageHub] Sending NewMessage to group {groupName}");
+                await Clients.Group(groupName).SendAsync("NewMessage", mapper.Map<MessageDTO>(message));
+            }
         }
-
-
-        messageRepository.AddProjectMessage(message);
-
-        if (await messageRepository.SaveAllAsync())
+        catch (Exception ex)
         {
-
-            await Clients.Group(groupName).SendAsync("NewMessage", mapper.Map<MessageDTO>(message));
+            Console.WriteLine($"[MessageHub] SendMessage exception: {ex.GetType().Name} - {ex.Message}");
+            throw;
         }
-
     }
 
     private async Task<bool> AddToGroup(string groupName)
@@ -86,31 +91,14 @@ public class MessageHub(IMessageRepository messageRepository, IUserRepository us
         var username = Context.User?.GetUsername() ?? throw new Exception("Cannot get username");
         var group = await messageRepository.GetMessageGroup(groupName);
         var connection = new Connection { ConnectionId = Context.ConnectionId, Username = username };
-
-        if (group == null)
-        {
-            group = new Group { Name = groupName };
-            messageRepository.AddGroup(group);
-        }
-
+        if (group == null) { group = new Group { Name = groupName }; messageRepository.AddGroup(group); }
         group.Connections.Add(connection);
-
         return await messageRepository.SaveAllAsync();
     }
 
     private async Task RemoveFromMessageGroup()
     {
         var connection = await messageRepository.GetConnection(Context.ConnectionId);
-        if (connection != null)
-        {
-            messageRepository.RemoveConnection(connection);
-            await messageRepository.SaveAllAsync();
-        }
-    }
-
-    private string GetGroupName(string caller, string? other)
-    {
-        var stringCompare = string.CompareOrdinal(caller, other) < 0;
-        return stringCompare ? $"{caller}-{other}" : $"{other}-{caller}";
+        if (connection != null) { messageRepository.RemoveConnection(connection); await messageRepository.SaveAllAsync(); }
     }
 }

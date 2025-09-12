@@ -1,7 +1,7 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ProjectConversationService } from '../_services/project-conversation.service';
 import { MembersService } from '../_services/members.service';
 import { AccountService } from '../_services/account.service';
@@ -9,6 +9,7 @@ import { MessageDTO } from '../_DTOs/messageDTO';
 import { ProjectConversationDTO } from '../_DTOs/projectConversationDTO';
 import { Member } from '../_models/member';
 import { NgxSpinnerComponent } from 'ngx-spinner';
+import { MessageCreateDTO } from '../_DTOs/messageCreateDTO';
 
 @Component({
   selector: 'app-chat',
@@ -28,18 +29,16 @@ import { NgxSpinnerComponent } from 'ngx-spinner';
       padding: 0;
       transition: color 0.2s;
     }
-    .trash-btn:hover {
-      color: rgba(255,255,255,1);
-    }
+    .trash-btn:hover { color: rgba(255,255,255,1); }
   `]
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
   private conversationService = inject(ProjectConversationService);
   private memberService = inject(MembersService);
   private accountService = inject(AccountService);
   private route = inject(ActivatedRoute);
 
-  messages = signal<MessageDTO[]>([]);
+  messages = this.conversationService.messageThread;
   loading = signal<boolean>(true);
   newMessage = signal<string>('');
   currentMember = signal<Member | null>(null);
@@ -49,68 +48,42 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
     const conversationId = Number(this.route.snapshot.queryParamMap.get('conversationId'));
-    if (!conversationId) {
-      console.error('Conversation ID is missing from route params!');
-      this.loading.set(false);
-      return;
-    }
+    if (!conversationId) { console.error('Conversation ID missing'); this.loading.set(false); return; }
 
     const currentUser = this.accountService.currentUser();
-    if (!currentUser) {
-      console.error('No current user found!');
-      this.loading.set(false);
-      return;
-    }
+    if (!currentUser) { console.error('No current user'); this.loading.set(false); return; }
 
-    // Fetch full member info
     this.memberService.getMember(currentUser.username).subscribe({
       next: member => {
         this.currentMember.set(member);
-
-        // Get all conversations and pick the current one
         this.conversationService.getConversations().subscribe({
           next: convs => {
             const conv = convs.find(c => c.conversationId === conversationId);
-            if (!conv) {
-              console.error('Conversation not found!');
-              this.loading.set(false);
-              return;
-            }
+            if (!conv) { console.error('Conversation not found'); this.loading.set(false); return; }
 
             this.projectConversation.set(conv);
             this.loadMessages(conv);
+            console.log('[ChatComponent] Starting SignalR hub connection...');
+            this.conversationService.createHubConnection(currentUser, conv.conversationId);
           },
-          error: err => {
-            console.error('Error loading conversations:', err);
-            this.loading.set(false);
-          }
+          error: err => { console.error('Error fetching conversations', err); this.loading.set(false); }
         });
       },
-      error: err => {
-        console.error('Error fetching member:', err);
-        this.loading.set(false);
-      }
+      error: err => { console.error('Error fetching member', err); this.loading.set(false); }
     });
   }
 
   loadMessages(conv: ProjectConversationDTO): void {
     const member = this.currentMember();
-    if (!member) {
-      console.error('Current member not loaded yet!');
-      this.loading.set(false);
-      return;
-    }
+    if (!member) return;
 
-    const freelancerId = conv.freelancerId;
-    this.conversationService.getMessages(conv.projectId, freelancerId).subscribe({
+    this.conversationService.getMessages(conv.projectId, conv.freelancerId).subscribe({
       next: msgs => {
-        this.messages.set(msgs);
+        console.log('[ChatComponent] Loaded messages', msgs);
+        this.conversationService.messageThread.set(msgs);
         this.loading.set(false);
       },
-      error: err => {
-        console.error('Error loading messages:', err);
-        this.loading.set(false);
-      }
+      error: err => { console.error('Error loading messages', err); this.loading.set(false); }
     });
   }
 
@@ -126,13 +99,27 @@ export class ChatComponent implements OnInit {
 
     const recipientId = member.id === conv.clientId ? conv.freelancerId : conv.clientId;
 
-    this.conversationService.sendMessage(conv.projectId, { recipientId, content }).subscribe({
-      next: msg => {
-        this.messages.update(curr => [...curr, msg]);
-        this.newMessage.set('');
-      },
-      error: err => console.error('Error sending message:', err)
-    });
+    const dto: MessageCreateDTO = {
+      recipientId,
+      content,
+      conversationId: conv.conversationId
+    };
+
+    console.log('[ChatComponent] Sending message DTO:', dto);
+
+    this.conversationService.sendMessageSignalR(dto)
+      .then(() => this.newMessage.set(''))
+      .catch(err => {
+        console.error('SignalR send failed, falling back to HTTP:', err);
+        this.conversationService.sendMessage(conv.projectId, dto).subscribe({
+          next: msg => { this.messages.update(curr => [...curr, msg]); this.newMessage.set(''); },
+          error: e => console.error('HTTP fallback failed:', e)
+        });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.conversationService.stopHubConnection();
   }
 
   getUserPhoto(msg: MessageDTO): string {

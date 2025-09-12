@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { UserAdminDTO } from '../_DTOs/userAdminDTO';
 import { CommonModule, DatePipe } from '@angular/common';
-import { PaginatedResultAdmin } from '../_models/paginationAdmin';
 import { MembersService } from '../_services/members.service';
+import { PresenceService } from '../_services/presence.service';
 
 @Component({
   standalone: true,
@@ -16,29 +16,27 @@ export class AdminPanelComponent implements OnInit {
   users: UserAdminDTO[] = [];
   filteredUsers: UserAdminDTO[] = [];
   selectedRole: string = 'Freelancer';
-  pagination: { currentPage: number; totalPages: number; itemsPerPage: number; totalItems: number } = {
-    currentPage: 1,
-    totalPages: 1,
-    itemsPerPage: 11,
-    totalItems: 0
-  };
+  pagination = { currentPage: 1, totalPages: 1, itemsPerPage: 11, totalItems: 0 };
 
   membersService = inject(MembersService);
+  private presenceService = inject(PresenceService);
+
+  // Computed signal for reactivity
+  isUserOnline = computed(() => {
+    return (username: string) => this.presenceService.onlineUsers().includes(username);
+  });
 
   ngOnInit(): void {
     this.loadUsers();
   }
 
   loadUsers(page: number = 1) {
-  this.membersService.getAdminUsers(page, this.pagination.itemsPerPage).subscribe(res => {
-    console.log('Admin API response:', res);
-    // If res is a plain array:
-    this.users = res as UserAdminDTO[];
-    this.pagination = { currentPage: 1, totalPages: 1, itemsPerPage: 10, totalItems: this.users.length };
-    console.log('Users array:', this.users);
-    this.filterUsers();
-  });
-}
+    this.membersService.getAdminUsers(page, this.pagination.itemsPerPage).subscribe(res => {
+      this.users = res as UserAdminDTO[];
+      this.pagination = { ...this.pagination, totalItems: this.users.length };
+      this.filterUsers();
+    });
+  }
 
   filterUsers() {
     if (!this.users) return;
@@ -58,18 +56,27 @@ export class AdminPanelComponent implements OnInit {
   }
 
   enableUser(user: UserAdminDTO) {
-    this.membersService.enableUser(user.id).subscribe(() => {
-      user.isAccountDisabled = false;
-    });
+    this.membersService.enableUser(user.id).subscribe(() => user.isAccountDisabled = false);
   }
 
   disableUser(user: UserAdminDTO) {
-    this.membersService.disableUser(user.id).subscribe(() => {
-      user.isAccountDisabled = true;
-    });
+    this.membersService.disableUser(user.id).subscribe(() => user.isAccountDisabled = true);
   }
 
   pagesArray(): number[] {
     return Array(this.pagination.totalPages).fill(0).map((x, i) => i + 1);
+  }
+
+  isOnline(user: UserAdminDTO): boolean {
+    // Normalize both: lowercase and trim spaces
+    const onlineUsers = this.presenceService.onlineUsers().map(u => u.toLowerCase().trim());
+    const knownAs = (user.knownAs || '').toLowerCase().trim();
+
+    const isOnline = onlineUsers.includes(knownAs);
+
+    // Optional: log for debugging
+    console.log(`Checking online status for '${user.knownAs}' -> ${isOnline}`, 'Online users:', onlineUsers);
+
+    return isOnline;
   }
 }

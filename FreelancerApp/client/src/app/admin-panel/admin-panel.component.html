@@ -21,6 +21,9 @@
             <h5 class="card-title text-center">{{ user.knownAs }}</h5>
 
             <ul class="list-unstyled small mb-2">
+              <span [class.is-online]="isOnline(user)">
+              <i class="fa fa-user me-2"></i>
+              </span>
               <li><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</li>
               <li><strong>Location:</strong> {{ user.city }}, {{ user.country }}</li>
               <li><strong>DOB:</strong> {{ user.dateOfBirth | date:'shortDate' }}</li>

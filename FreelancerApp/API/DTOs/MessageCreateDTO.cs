@@ -4,4 +4,6 @@ public class MessageCreateDTO
 {
     public required int RecipientId { get; set; }
     public required string Content { get; set; }
+    public int ConversationId { get; set; } // <-- add this
+
 }

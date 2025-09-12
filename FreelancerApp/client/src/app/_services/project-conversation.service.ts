@@ -1,58 +1,70 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 import { MessageCreateDTO } from '../_DTOs/messageCreateDTO';
 import { MessageDTO } from '../_DTOs/messageDTO';
 import { ProjectConversationDTO } from '../_DTOs/projectConversationDTO';
-import { environment } from '../../environments/environment';
+import { User } from '../_models/user';
 
-
-@Injectable({
-  providedIn: 'root',
-})
-
+@Injectable({ providedIn: 'root' })
 export class ProjectConversationService {
-  baseUrl = environment.apiUrl; // e.g. "https://localhost:5001/api/"
+  baseUrl = environment.apiUrl;
+  hubUrl = environment.hubsUrl;
+  private http = inject(HttpClient);
+  private hubConnection?: HubConnection;
 
-  constructor(private http: HttpClient) {}
+  messageThread = signal<MessageDTO[]>([]);
 
-  /**
-   * Send a message in a project conversation.
-   * @param projectId The project ID
-   * @param dto The message data
-   */
-  sendMessage(projectId: number, dto: MessageCreateDTO): Observable<MessageDTO> {
+  createHubConnection(user: User, conversationId: number) {
+    console.log('[ProjectConversationService] Creating hub for conversation:', conversationId);
+
+    this.hubConnection = new HubConnectionBuilder()
+      .withUrl(this.hubUrl + 'message?conversationId=' + conversationId, { accessTokenFactory: () => user.token })
+      .withAutomaticReconnect()
+      .build();
+
+    this.hubConnection.start()
+      .then(() => console.log('[ProjectConversationService] Hub connected'))
+      .catch(err => console.error('[ProjectConversationService] Hub start error:', err));
+
+    this.hubConnection.on('ReceiveMessageThread', (messages: MessageDTO[]) => {
+      console.log('[ProjectConversationService] Received message thread:', messages);
+      this.messageThread.set(messages);
+    });
+
+    this.hubConnection.on('NewMessage', (message: MessageDTO) => {
+      console.log('[ProjectConversationService] Received new message:', message);
+      this.messageThread.update(curr => [...curr, message]);
+    });
+  }
+
+  stopHubConnection() {
+    if (this.hubConnection?.state === HubConnectionState.Connected) {
+      this.hubConnection.stop()
+        .then(() => console.log('[ProjectConversationService] Hub stopped'))
+        .catch(err => console.error('[ProjectConversationService] Error stopping hub:', err));
+    }
+  }
+
+  async sendMessageSignalR(dto: MessageCreateDTO) {
+    console.log('[ProjectConversationService] Invoking SendMessage via SignalR:', dto);
+    return this.hubConnection?.invoke('SendMessage', dto);
+  }
+
+  sendMessage(projectId: number, dto: MessageCreateDTO) {
     return this.http.post<MessageDTO>(`${this.baseUrl}projectconversation/${projectId}`, dto);
   }
 
-  /**
-   * Get all messages for a given project conversation.
-   * @param projectId The project ID
-   * @param freelancerId The freelancer ID
-   */
-  getMessages(
-    projectId: number,
-    freelancerId: number
-  ): Observable<MessageDTO[]> {
-    return this.http.get<MessageDTO[]>(
-      `${this.baseUrl}projectconversation/${projectId}/${freelancerId}`
-    );
+  getMessages(projectId: number, freelancerId: number) {
+    return this.http.get<MessageDTO[]>(`${this.baseUrl}projectconversation/${projectId}/${freelancerId}`);
   }
 
-  /**
-   * Get all project conversations for the current user.
-   */
-  getConversations(): Observable<ProjectConversationDTO[]> {
-    return this.http.get<ProjectConversationDTO[]>(
-      `${this.baseUrl}projectconversation/conversations`
-    );
+  getConversations() {
+    return this.http.get<ProjectConversationDTO[]>(`${this.baseUrl}projectconversation/conversations`);
   }
 
-  /**
-   * Soft-delete a message for the logged-in user.
-   * @param messageId The message ID
-   */
-  deleteMessage(messageId: number): Observable<void> {
+  deleteMessage(messageId: number) {
     return this.http.delete<void>(`${this.baseUrl}projectconversation/${messageId}`);
   }
 }
