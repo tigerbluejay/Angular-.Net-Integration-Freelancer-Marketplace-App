@@ -13,6 +13,7 @@ export class PresenceService {
   private hubConnection?: HubConnection;
   private toastr = inject(ToastrService);
   onlineUsers = signal<string[]>([]);
+  private currentUser?: User;
 
   createHubConnection(user: User) {
   console.log('[PresenceService] Creating Hub Connection for:', user.username);
@@ -31,8 +32,11 @@ export class PresenceService {
   // User comes online
   this.hubConnection.on('UserIsOnline', username => {
     console.log('[PresenceService] UserIsOnline event:', username);
-    this.toastr.info(username + ' has connected');
     this.onlineUsers.set([...this.onlineUsers(), username]); // add user to signal
+    // Only show toastr if current user is admin
+      if (this.currentUser?.roles?.includes('Admin')) {
+        this.toastr.info(username + ' has connected');
+      }
     console.log('[PresenceService] onlineUsers after UserIsOnline:', this.onlineUsers());
 
   });
@@ -42,6 +46,11 @@ export class PresenceService {
     console.log('[PresenceService] UserIsOffline event:', username);
     this.toastr.warning(username + ' has disconnected');
     this.onlineUsers.set(this.onlineUsers().filter(u => u !== username)); // remove user
+
+    // Only show toastr if current user is admin
+      if (this.currentUser?.roles?.includes('Admin')) {
+        this.toastr.warning(username + ' has disconnected');
+      }
     console.log('[PresenceService] onlineUsers after UserIsOffline:', this.onlineUsers());
   });
 
