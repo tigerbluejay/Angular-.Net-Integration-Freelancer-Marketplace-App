@@ -15,4 +15,9 @@ public interface IMessageRepository
     Task<Message?> GetMessageByIdAsync(int id);
     Task<IEnumerable<MessageDTO>> GetProjectMessages(int conversationId, int currentUserId);
     Task<bool> SaveAllAsync();
+    // Signal R methods:
+    void AddGroup(Group group);
+    void RemoveConnection(Connection connection);
+    Task<Connection?> GetConnection(string connectionId);
+    Task<Group?> GetMessageGroup(string groupName);
 }
