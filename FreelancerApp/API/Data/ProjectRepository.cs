@@ -26,11 +26,6 @@ public class ProjectRepository(DataContext context, IMapper mapper) : IProjectRe
         context.Projects.Remove(project);
     }
 
-    public async Task<bool> SaveAllAsync()
-    {
-        return await context.SaveChangesAsync() > 0;
-    }
-
     public async Task<IEnumerable<Project>> GetProjectsAsync()
     {
         return await context.Projects

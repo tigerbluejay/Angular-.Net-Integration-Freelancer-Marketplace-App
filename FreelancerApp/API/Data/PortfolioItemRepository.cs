@@ -23,11 +23,6 @@ public class PortfolioItemRepository(DataContext context, IMapper mapper) : IPor
         context.PortfolioItems.Remove(item);
     }
 
-    public async Task<bool> SaveAllAsync()
-    {
-        return await context.SaveChangesAsync() > 0;
-    }
-
     public async Task<PortfolioItem> CreateAsync(PortfolioItem item)
     {
         context.PortfolioItems.Add(item);

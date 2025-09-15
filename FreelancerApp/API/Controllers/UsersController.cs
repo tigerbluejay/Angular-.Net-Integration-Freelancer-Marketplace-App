@@ -15,14 +15,14 @@ namespace API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class UsersController(IUserRepository userRepository, IProjectRepository projectRepository,
-    IPortfolioItemRepository portfolioItemRepository, IMapper mapper, DataContext context) : BaseApiController
+public class UsersController(IUnitOfWork unitOfWork, IMapper mapper,
+DataContext context) : BaseApiController
 {
     [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers()
     {
-        var users = await userRepository.GetMembersAsync();
+        var users = await unitOfWork.UserRepository.GetMembersAsync();
 
         return Ok(users);
     }
@@ -30,7 +30,7 @@ public class UsersController(IUserRepository userRepository, IProjectRepository 
     [HttpGet("{username}")] // /api/users/jose
     public async Task<ActionResult<MemberDTO>> GetUser(string username)
     {
-        var user = await userRepository.GetMemberAsync(username);
+        var user = await unitOfWork.UserRepository.GetMemberAsync(username);
 
         if (user == null) return NotFound();
 
@@ -46,7 +46,7 @@ public class UsersController(IUserRepository userRepository, IProjectRepository 
         if (string.IsNullOrEmpty(username))
             return BadRequest("No username found in token");
 
-        var user = await userRepository.GetUserByUsernameAsync(username);
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
 
         if (user == null)
             return NotFound("User not found");
@@ -56,7 +56,7 @@ public class UsersController(IUserRepository userRepository, IProjectRepository 
         // Force EF to detect changes or mark as modified
         context.Entry(user).State = EntityState.Modified;
 
-        if (await userRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return NoContent();
 
         return BadRequest("Failed to update the user");
@@ -65,10 +65,10 @@ public class UsersController(IUserRepository userRepository, IProjectRepository 
     [HttpGet("{username}/projects")]
     public async Task<ActionResult> GetClientProjects(string username, [FromQuery] ProjectParams projectParams)
     {
-        var user = await userRepository.GetUserByUsernameAsync(username);
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         if (user == null) return NotFound();
 
-        var projects = await projectRepository.GetClientProjectsAsync(user.Id, projectParams);
+        var projects = await unitOfWork.ProjectRepository.GetClientProjectsAsync(user.Id, projectParams);
         Response.AddPaginationHeader(projects);
         return Ok(projects);
     }
@@ -76,10 +76,10 @@ public class UsersController(IUserRepository userRepository, IProjectRepository 
     [HttpGet("{username}/portfolio")]
     public async Task<ActionResult> GetFreelancerPortfolio(string username, [FromQuery] PortfolioParams portfolioParams)
     {
-        var user = await userRepository.GetUserByUsernameAsync(username);
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         if (user == null) return NotFound();
 
-        var portfolio = await portfolioItemRepository.GetFreelancerPortfolioAsync(user.Id, portfolioParams);
+        var portfolio = await unitOfWork.PortfolioItemRepository.GetFreelancerPortfolioAsync(user.Id, portfolioParams);
         Response.AddPaginationHeader(portfolio);
         return Ok(portfolio);
     }
@@ -89,7 +89,7 @@ public class UsersController(IUserRepository userRepository, IProjectRepository 
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<PagedList<UserAdminDTO>>> GetUsers([FromQuery] UserParams userParams)
     {
-        var users = await userRepository.GetUsersAsync(userParams);
+        var users = await unitOfWork.UserRepository.GetUsersAsync(userParams);
 
         var userDtos = mapper.Map<IEnumerable<UserAdminDTO>>(users);
 
@@ -109,14 +109,14 @@ public class UsersController(IUserRepository userRepository, IProjectRepository 
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DisableUser(int id)
     {
-        var user = await userRepository.GetUserByIdAsync(id);
+        var user = await unitOfWork.UserRepository.GetUserByIdAsync(id);
         if (user == null) return NotFound();
 
         if (user.IsAccountDisabled)
             return BadRequest("User account is already disabled.");
 
         user.IsAccountDisabled = true;
-        await userRepository.UpdateUserAsync(user);
+        await unitOfWork.UserRepository.UpdateUserAsync(user);
 
         return NoContent();
     }
@@ -126,14 +126,14 @@ public class UsersController(IUserRepository userRepository, IProjectRepository 
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> EnableUser(int id)
     {
-        var user = await userRepository.GetUserByIdAsync(id);
+        var user = await unitOfWork.UserRepository.GetUserByIdAsync(id);
         if (user == null) return NotFound();
 
         if (!user.IsAccountDisabled)
             return BadRequest("User account is already enabled.");
 
         user.IsAccountDisabled = false;
-        await userRepository.UpdateUserAsync(user);
+        await unitOfWork.UserRepository.UpdateUserAsync(user);
 
         return NoContent();
     }

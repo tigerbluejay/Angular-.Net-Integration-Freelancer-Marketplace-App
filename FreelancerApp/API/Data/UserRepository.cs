@@ -54,12 +54,7 @@ public class UserRepository(DataContext context, IMapper mapper) : IUserReposito
          .Include(x => x.FreelancerProjects)
          .ToListAsync();
     }
-
-    public async Task<bool> SaveAllAsync()
-    {
-        return await context.SaveChangesAsync() > 0;
-    }
-
+    
     public void Update(AppUser user)
     {
         // explicity tell EF that this entity has been modified

@@ -13,15 +13,14 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/photos")]
-public class PhotosController(IUserRepository userRepository, IProjectRepository projectRepository,
-    IPortfolioItemRepository portfolioItemRepository, IProposalRepository proposalRepository,
-    IPhotoService photoService, IMapper mapper) : BaseApiController
+public class PhotosController(IUnitOfWork unitOfWork,
+IPhotoService photoService, IMapper mapper) : BaseApiController
 {
 
     [HttpPost("user")]
     public async Task<ActionResult<PhotoDTO>> UploadUserPhoto(IFormFile file)
     {
-        var user = await userRepository.GetUserByUsernameAsync(User.GetUsername());
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
         if (user == null) return BadRequest("User not found");
 
         var result = await photoService.AddPhotoAsync(file);
@@ -37,7 +36,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
             PublicId = result.PublicId
         };
 
-        if (await userRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return Ok(new PhotoDTO { Id = user.Photo.Id, Url = user.Photo.Url, PublicId = user.Photo.PublicId });
 
         return BadRequest("Problem saving photo");
@@ -46,7 +45,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
     [HttpPost("project/{projectId}")]
     public async Task<ActionResult<PhotoDTO>> UploadProjectPhoto(int projectId, IFormFile file)
     {
-        var project = await projectRepository.GetProjectByIdAsync(projectId);
+        var project = await unitOfWork.ProjectRepository.GetProjectByIdAsync(projectId);
         if (project == null) return NotFound("Project not found");
 
         var result = await photoService.AddPhotoAsync(file);
@@ -62,7 +61,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
             PublicId = result.PublicId
         };
 
-        if (await projectRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return Ok(new PhotoDTO { Id = project.Photo.Id, Url = project.Photo.Url, PublicId = project.Photo.PublicId });
 
         return BadRequest("Problem saving project photo");
@@ -71,7 +70,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
     [HttpPost("portfolio/{portfolioItemId}")]
     public async Task<ActionResult<PhotoDTO>> UploadPortfolioPhoto(int portfolioItemId, IFormFile file)
     {
-        var portfolioItem = await portfolioItemRepository.GetPortfolioItemByIdAsync(portfolioItemId);
+        var portfolioItem = await unitOfWork.PortfolioItemRepository.GetPortfolioItemByIdAsync(portfolioItemId);
         if (portfolioItem == null) return NotFound("Portfolio item not found");
 
         var result = await photoService.AddPhotoAsync(file);
@@ -86,7 +85,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
             PublicId = result.PublicId
         };
 
-        if (await portfolioItemRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return Ok(new PhotoDTO { Url = portfolioItem.Photo.Url, Id = portfolioItem.Photo.Id, PublicId = portfolioItem.Photo.PublicId });
 
         return BadRequest("Problem saving portfolio photo");
@@ -95,7 +94,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
     [HttpDelete("user")]
     public async Task<ActionResult> DeleteUserPhoto()
     {
-        var user = await userRepository.GetUserByUsernameAsync(User.GetUsername());
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
         if (user == null) return NotFound("User not found");
 
         if (user.Photo == null) return BadRequest("User does not have a photo to delete");
@@ -110,7 +109,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
         user.Photo = null;
         user.PhotoId = null;
 
-        if (await userRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return Ok("User photo deleted");
 
         return BadRequest("Problem deleting user photo");
@@ -119,7 +118,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
     [HttpDelete("project/{projectId}")]
     public async Task<ActionResult> DeleteProjectPhoto(int projectId)
     {
-        var project = await projectRepository.GetProjectByIdAsync(projectId);
+        var project = await unitOfWork.ProjectRepository.GetProjectByIdAsync(projectId);
         if (project == null) return NotFound("Project not found");
 
         if (project.Photo == null) return BadRequest("Project does not have a photo to delete");
@@ -133,7 +132,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
         project.Photo = null;
         project.PhotoId = null;
 
-        if (await projectRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return Ok("Project photo deleted");
 
         return BadRequest("Problem deleting project photo");
@@ -142,7 +141,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
     [HttpDelete("portfolio/{portfolioItemId}")]
     public async Task<ActionResult> DeletePortfolioPhoto(int portfolioItemId)
     {
-        var portfolioItem = await portfolioItemRepository.GetPortfolioItemByIdAsync(portfolioItemId);
+        var portfolioItem = await unitOfWork.PortfolioItemRepository.GetPortfolioItemByIdAsync(portfolioItemId);
         if (portfolioItem == null) return NotFound("Portfolio item not found");
 
         if (portfolioItem.Photo == null) return BadRequest("Portfolio item does not have a photo to delete");
@@ -156,7 +155,7 @@ public class PhotosController(IUserRepository userRepository, IProjectRepository
         portfolioItem.Photo = null;
         portfolioItem.PhotoId = null;
 
-        if (await portfolioItemRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return Ok("Portfolio item photo deleted");
 
         return BadRequest("Problem deleting portfolio photo");

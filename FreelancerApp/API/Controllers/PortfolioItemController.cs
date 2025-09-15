@@ -12,8 +12,7 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 [Authorize]
 public class PortfolioItemController(
-    IPortfolioItemRepository portfolioRepository,
-    IUserRepository userRepository, IMapper mapper) : BaseApiController
+    IUnitOfWork unitOfWork, IMapper mapper) : BaseApiController
 {
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeletePortfolioItem(int id)
@@ -21,15 +20,15 @@ public class PortfolioItemController(
         var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (username == null) return Unauthorized();
 
-        var user = await userRepository.GetUserByUsernameAsync(username);
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         if (user == null) return Unauthorized();
 
-        var item = await portfolioRepository.GetPortfolioItemByIdAsync(id);
+        var item = await unitOfWork.PortfolioItemRepository.GetPortfolioItemByIdAsync(id);
 
         if (item != null)
         {
-            portfolioRepository.DeletePortfolioItem(item);
-            await portfolioRepository.SaveAllAsync();
+            unitOfWork.PortfolioItemRepository.DeletePortfolioItem(item);
+            await unitOfWork.Complete();
         }
 
         // Even if item was null, act like it’s gone
@@ -42,7 +41,7 @@ public class PortfolioItemController(
         var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (username == null) return Unauthorized();
 
-        var user = await userRepository.GetUserByUsernameAsync(username);
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
 
         if (user == null)
             return NotFound("User not found");
@@ -51,7 +50,7 @@ public class PortfolioItemController(
         portfolioItem.UserId = user.Id;
         portfolioItem.Created = DateTime.UtcNow;
 
-        var createdItem = await portfolioRepository.CreateAsync(portfolioItem);
+        var createdItem = await unitOfWork.PortfolioItemRepository.CreateAsync(portfolioItem);
 
         return CreatedAtAction(nameof(GetPortfolioItem), new { id = createdItem.Id }, mapper.Map<PortfolioItemDTO>(createdItem));
     }
@@ -59,7 +58,7 @@ public class PortfolioItemController(
     [HttpGet("{id}")]
     public async Task<ActionResult<PortfolioItemDTO>> GetPortfolioItem(int id)
     {
-        var item = await portfolioRepository.GetPortfolioItemByIdAsync(id);
+        var item = await unitOfWork.PortfolioItemRepository.GetPortfolioItemByIdAsync(id);
         if (item == null) return NotFound();
 
         return mapper.Map<PortfolioItemDTO>(item);
@@ -74,10 +73,10 @@ public class PortfolioItemController(
         var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (username == null) return Unauthorized();
 
-        var user = await userRepository.GetUserByUsernameAsync(username);
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         if (user == null) return NotFound("User not found");
 
-        var item = await portfolioRepository.GetPortfolioItemByIdAsync(id);
+        var item = await unitOfWork.PortfolioItemRepository.GetPortfolioItemByIdAsync(id);
         if (item == null) return NotFound("Portfolio item not found");
 
         if (item.UserId != user.Id)
@@ -85,7 +84,7 @@ public class PortfolioItemController(
 
         mapper.Map(dto, item); // Apply updates to the entity
 
-        var success = await portfolioRepository.UpdateAsync(item);
+        var success = await unitOfWork.PortfolioItemRepository.UpdateAsync(item);
 
         if (!success)
             return StatusCode(500, "Failed to update portfolio item");

@@ -11,24 +11,22 @@ namespace API.Controllers;
 [Route("api/[controller]")]
 public class ProjectConversationController : ControllerBase
 {
-    private readonly IMessageRepository messageRepository;
-    private readonly IUserRepository userRepository;
+    private readonly IUnitOfWork unitOfWork;
     private readonly IMapper mapper;
 
-    public ProjectConversationController(IMessageRepository messageRepository, IUserRepository userRepository, IMapper mapper)
+    public ProjectConversationController(IUnitOfWork unitOfWork, IMapper mapper)
     {
-        this.messageRepository = messageRepository;
-        this.userRepository = userRepository;
+        this.unitOfWork = unitOfWork;
         this.mapper = mapper;
     }
 
     [HttpPost("{projectId}")]
     public async Task<ActionResult<MessageDTO>> SendMessage(int projectId, MessageCreateDTO dto)
     {
-        var currentUser = await userRepository
+        var currentUser = await unitOfWork.UserRepository
             .GetUserByUsernameAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-        var conversation = await messageRepository.GetConversationByProjectAsync(projectId);
+        var conversation = await unitOfWork.MessageRepository.GetConversationByProjectAsync(projectId);
         if (conversation == null) return BadRequest("No conversation exists for this project.");
 
         // Optional safety check: ensure current user is part of the conversation
@@ -43,12 +41,12 @@ public class ProjectConversationController : ControllerBase
             ConversationId = conversation.Id
         };
 
-        messageRepository.AddProjectMessage(message);
+        unitOfWork.MessageRepository.AddProjectMessage(message);
 
-        if (await messageRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
         {
             // Re-fetch the message with navigation properties (Sender, Recipient)
-            var savedMessage = await messageRepository.GetMessageByIdAsync(message.Id);
+            var savedMessage = await unitOfWork.MessageRepository.GetMessageByIdAsync(message.Id);
             return Ok(mapper.Map<MessageDTO>(savedMessage));
         }
 
@@ -59,14 +57,14 @@ public class ProjectConversationController : ControllerBase
     public async Task<ActionResult<IEnumerable<MessageDTO>>> GetMessages(int projectId, int freelancerId)
     {
 
-        var currentUser = await userRepository
+        var currentUser = await unitOfWork.UserRepository
             .GetUserByUsernameAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         if (currentUser == null) return Unauthorized();
 
-        var conversation = await messageRepository.GetConversationByProjectAsync(projectId, freelancerId);
+        var conversation = await unitOfWork.MessageRepository.GetConversationByProjectAsync(projectId, freelancerId);
         if (conversation == null) return NotFound();
 
-        var messages = await messageRepository.GetProjectMessages(conversation.Id, currentUser.Id);
+        var messages = await unitOfWork.MessageRepository.GetProjectMessages(conversation.Id, currentUser.Id);
         return Ok(messages);
     }
 
@@ -74,11 +72,11 @@ public class ProjectConversationController : ControllerBase
     [HttpGet("conversations")]
     public async Task<ActionResult<IEnumerable<ProjectConversationDTO>>> GetConversations()
     {
-        var currentUser = await userRepository
+        var currentUser = await unitOfWork.UserRepository
                 .GetUserByUsernameAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
         if (currentUser == null) return Unauthorized();
 
-        var conversations = await messageRepository.GetConversationsForUserAsync(currentUser.Id);
+        var conversations = await unitOfWork.MessageRepository.GetConversationsForUserAsync(currentUser.Id);
         return Ok(conversations.OrderByDescending(c => c.LastMessageSent));
     }
 
@@ -88,12 +86,12 @@ public class ProjectConversationController : ControllerBase
         var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(username)) return Unauthorized();
 
-        var currentUser = await userRepository.GetUserByUsernameAsync(username);
+        var currentUser = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         if (currentUser == null) return Unauthorized();
 
         var userId = currentUser.Id;
 
-        var message = await messageRepository.GetMessageByIdAsync(id);
+        var message = await unitOfWork.MessageRepository.GetMessageByIdAsync(id);
         if (message == null) return NotFound();
 
         // Make sure user is sender or recipient
@@ -106,9 +104,9 @@ public class ProjectConversationController : ControllerBase
 
         // Hard delete if both have deleted
         if (message.SenderDeleted && message.RecipientDeleted)
-            messageRepository.DeleteMessage(message);
+            unitOfWork.MessageRepository.DeleteMessage(message);
 
-        if (await messageRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return NoContent();
 
         return BadRequest("Problem deleting the message");

@@ -9,20 +9,20 @@ using System.Threading.Tasks;
 
 namespace API.Controllers;
 
-public class ProposalsController(IProposalRepository proposalRepository, IUserRepository userRepository,
-    IProjectRepository projectRepository, IPhotoService photoService, IMapper mapper) : BaseApiController
+public class ProposalsController(IUnitOfWork unitOfWork, IPhotoService photoService,
+IMapper mapper) : BaseApiController
 {
     // POST: api/proposals
     [HttpPost]
     public async Task<ActionResult<ProposalDTO>> CreateProposal([FromForm] ProposalCreateDTO dto)
     {
-        var freelancer = await userRepository.GetUserByIdAsync(dto.FreelancerUserId);
+        var freelancer = await unitOfWork.UserRepository.GetUserByIdAsync(dto.FreelancerUserId);
         if (freelancer == null) return NotFound("Freelancer not found");
 
-        var client = await userRepository.GetUserByIdAsync(dto.ClientUserId);
+        var client = await unitOfWork.UserRepository.GetUserByIdAsync(dto.ClientUserId);
         if (client == null) return NotFound("Client not found");
 
-        var project = await projectRepository.GetProjectByIdAsync(dto.ProjectId);
+        var project = await unitOfWork.ProjectRepository.GetProjectByIdAsync(dto.ProjectId);
         if (project == null) return NotFound("Project not found");
 
         var proposal = mapper.Map<Proposal>(dto);
@@ -40,8 +40,8 @@ public class ProposalsController(IProposalRepository proposalRepository, IUserRe
             };
         }
 
-        proposalRepository.Add(proposal);
-        if (await proposalRepository.SaveAllAsync())
+        unitOfWork.ProposalRepository.Add(proposal);
+        if (await unitOfWork.Complete())
         {
             var proposalDto = mapper.Map<ProposalDTO>(proposal);
             return CreatedAtAction(nameof(GetProposalById), new { id = proposal.Id }, proposalDto);
@@ -54,7 +54,7 @@ public class ProposalsController(IProposalRepository proposalRepository, IUserRe
     [HttpGet("{id}")]
     public async Task<ActionResult<ProposalDTO>> GetProposalById(int id)
     {
-        var proposal = await proposalRepository.GetProposalByIdAsync(id);
+        var proposal = await unitOfWork.ProposalRepository.GetProposalByIdAsync(id);
         if (proposal == null) return NotFound("Proposal not found");
 
         var proposalDto = mapper.Map<ProposalDTO>(proposal);
@@ -66,7 +66,7 @@ public class ProposalsController(IProposalRepository proposalRepository, IUserRe
         int freelancerId,
         [FromQuery] ProposalWithProjectParams propprojParams)
     {
-        var result = await proposalRepository
+        var result = await unitOfWork.ProposalRepository
             .GetProposalsWithProjectsByFreelancerIdAsync(freelancerId, propprojParams);
 
         Response.AddPaginationHeader(result);
@@ -89,7 +89,7 @@ public class ProposalsController(IProposalRepository proposalRepository, IUserRe
         int clientId,
         [FromQuery] ProposalWithProjectParams propprojParams)
     {
-        var result = await proposalRepository
+        var result = await unitOfWork.ProposalRepository
             .GetProposalsWithProjectsInboxByClientIdAsync(clientId, propprojParams);
 
         Response.AddPaginationHeader(result);

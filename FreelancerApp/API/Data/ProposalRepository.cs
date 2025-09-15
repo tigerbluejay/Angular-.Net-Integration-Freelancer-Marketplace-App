@@ -22,11 +22,6 @@ namespace API.Data
             return proposal; // optionally return the proposal with the generated Id
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
-
         public async Task<Proposal?> GetProposalByIdAsync(int id)
         {
             return await _context.Proposals

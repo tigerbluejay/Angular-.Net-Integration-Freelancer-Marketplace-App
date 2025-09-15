@@ -17,9 +17,8 @@ namespace API.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ProjectController(IProjectRepository projectRepository,
-IUserRepository userRepository, IMapper mapper, UserManager<AppUser> userManager,
-DataContext context) : BaseApiController
+public class ProjectController(IUnitOfWork unitOfWork, IMapper mapper,
+UserManager<AppUser> userManager, DataContext context) : BaseApiController
 {
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProject(int id)
@@ -29,7 +28,7 @@ DataContext context) : BaseApiController
         if (userId == null)
             return Unauthorized();
 
-        var project = await projectRepository.GetProjectByIdAsync(id);
+        var project = await unitOfWork.ProjectRepository.GetProjectByIdAsync(id);
 
         if (project == null)
             return NotFound();
@@ -37,9 +36,9 @@ DataContext context) : BaseApiController
         if (project.Client.UserName != userId)
             return Forbid();
 
-        projectRepository.DeleteProject(project);
+        unitOfWork.ProjectRepository.DeleteProject(project);
 
-        if (await projectRepository.SaveAllAsync())
+        if (await unitOfWork.Complete())
             return NoContent();
 
         return BadRequest("Failed to delete the project");
@@ -51,7 +50,7 @@ DataContext context) : BaseApiController
         var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (username == null) return Unauthorized();
 
-        var user = await userRepository.GetUserByUsernameAsync(username);
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
         if (user == null) return NotFound("User not found");
 
         // Lookup skill IDs by names
@@ -63,7 +62,7 @@ DataContext context) : BaseApiController
         var project = mapper.Map<Project>(dto);
         project.ClientUserId = user.Id;
 
-        var createdProject = await projectRepository.CreateAsync(project, skillIds);
+        var createdProject = await unitOfWork.ProjectRepository.CreateAsync(project, skillIds);
 
         var projectDto = mapper.Map<ProjectDTO>(createdProject);
 
@@ -73,7 +72,7 @@ DataContext context) : BaseApiController
     [HttpGet("{id}")]
     public async Task<ActionResult<ProjectBrowseDTO>> GetProjectById(int id)
     {
-        var project = await projectRepository.GetProjectByIdAsync(id);
+        var project = await unitOfWork.ProjectRepository.GetProjectByIdAsync(id);
         if (project == null)
             return NotFound();
 
@@ -87,7 +86,7 @@ DataContext context) : BaseApiController
         if (id != dto.Id)
             return BadRequest("Project ID mismatch");
 
-        var existingProject = await projectRepository.GetProjectByIdAsync(id);
+        var existingProject = await unitOfWork.ProjectRepository.GetProjectByIdAsync(id);
         if (existingProject == null)
             return NotFound();
 
@@ -100,7 +99,7 @@ DataContext context) : BaseApiController
         // Map non-skills properties from DTO to existing entity
         mapper.Map(dto, existingProject);
 
-        var updatedProject = await projectRepository.UpdateAsync(existingProject, skillIds);
+        var updatedProject = await unitOfWork.ProjectRepository.UpdateAsync(existingProject, skillIds);
 
         if (updatedProject == null)
             return NotFound();
@@ -112,7 +111,7 @@ DataContext context) : BaseApiController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProjectBrowseDTO>>> GetProjects([FromQuery] ProjectParams projectParams)
     {
-        var projects = await projectRepository.GetProjectsAsync(projectParams);
+        var projects = await unitOfWork.ProjectRepository.GetProjectsAsync(projectParams);
 
         Response.AddPaginationHeader(projects);
 
@@ -167,7 +166,7 @@ DataContext context) : BaseApiController
         if (!string.Equals(loggedInUsername, userFromId.UserName, StringComparison.OrdinalIgnoreCase))
             return Forbid();
 
-        var query = projectRepository.Query()
+        var query = unitOfWork.ProjectRepository.Query()
             .Where(p => p.ClientUserId == id && p.FreelancerUserId != null)
             .OrderByDescending(p => p.Id); // Optional: order by recent first
 
@@ -205,7 +204,7 @@ DataContext context) : BaseApiController
         if (!string.Equals(loggedInUsername, userFromId.UserName, StringComparison.OrdinalIgnoreCase))
             return Forbid();
 
-        var query = projectRepository.Query()
+        var query = unitOfWork.ProjectRepository.Query()
             .Where(p => p.FreelancerUserId == id)
             .OrderByDescending(p => p.Id);
 
