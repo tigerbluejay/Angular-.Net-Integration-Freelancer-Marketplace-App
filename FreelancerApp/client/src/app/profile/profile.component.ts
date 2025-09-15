@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MembersService } from '../_services/members.service';
 import { Member } from '../_models/member';
@@ -30,6 +30,7 @@ export class ProfileComponent implements OnInit {
   private router = inject(Router);
 
   member?: Member;
+  loading = signal(true);   // starts as "loading"
 
   // Lists
   portfolio: PortfolioItemDTO[] = [];
@@ -49,21 +50,29 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  loadMember() {
-    const username = this.route.snapshot.paramMap.get('username');
-    if (!username) return;
-
-    this.memberService.getMember(username).subscribe({
-      next: member => {
-        this.member = member;
-
-        // Load data based on role
-        if (member.roles?.includes('Freelancer')) this.loadPortfolio();
-        if (member.roles?.includes('Client')) this.loadProjects();
-      },
-      error: err => console.error('Failed to load member', err)
-    });
+loadMember() {
+  const username = this.route.snapshot.paramMap.get('username');
+  if (!username) {
+    this.loading.set(false);
+    return;
   }
+
+  this.loading.set(true);
+
+  this.memberService.getMember(username).subscribe({
+    next: member => {
+      this.member = member;
+      this.loading.set(false);
+
+      if (member.roles?.includes('Freelancer')) this.loadPortfolio();
+      if (member.roles?.includes('Client')) this.loadProjects();
+    },
+    error: err => {
+      console.error('Failed to load member', err);
+      this.loading.set(false);
+    }
+  });
+}
 
   // ----------------- Portfolio -----------------
   loadPortfolio() {

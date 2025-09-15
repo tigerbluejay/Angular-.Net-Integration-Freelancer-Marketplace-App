@@ -18,7 +18,7 @@
         <h5 class="text-muted text-center">No messages yet. Start the conversation!</h5>
       </div>
 
-      <div *ngIf="messages().length > 0" class="chat-box border p-3 mb-3" style="height: 400px; overflow-y: auto;">
+      <div *ngIf="messages().length > 0" class="chat-box border p-3 mb-3" #scrollMe style="overflow: scroll; height: 400px; overflow-y: auto; scroll-behavior: smooth;">
         <div *ngFor="let msg of messages()" class="d-flex mb-2"
           [class.justify-content-end]="msg.senderId === currentMember()?.id">
 

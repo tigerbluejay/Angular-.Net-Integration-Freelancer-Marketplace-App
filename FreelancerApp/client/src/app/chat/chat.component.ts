@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, signal, inject, OnDestroy, AfterViewChecked, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -32,7 +32,11 @@ import { MessageCreateDTO } from '../_DTOs/messageCreateDTO';
     .trash-btn:hover { color: rgba(255,255,255,1); }
   `]
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
+
+  @ViewChild('scrollMe') scrollContainer?: any;
+
+
   private conversationService = inject(ProjectConversationService);
   private memberService = inject(MembersService);
   private accountService = inject(AccountService);
@@ -146,5 +150,14 @@ export class ChatComponent implements OnInit, OnDestroy {
         alert('Failed to delete message. Please try again.');
       }
     });
+  }
+
+  ngAfterViewChecked(): void {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom() {
+    if (this.scrollContainer)
+      this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
   }
 }

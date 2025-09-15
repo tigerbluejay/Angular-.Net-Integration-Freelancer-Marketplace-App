@@ -1,5 +1,11 @@
 <div class="container mt-4">
-  <p>Welcome to the profile of <strong>{{ member?.userName }}</strong>!</p>
+  <ng-container *ngIf="loading()">Loading profile...</ng-container>
+
+  <ng-container *ngIf="!loading() && member">
+    <p>Welcome to the profile of <strong>{{ member.userName }}</strong>!</p>
+
+    <!-- rest of your profile template -->
+  </ng-container>
 
   @if (member) {
   <div class="row">
