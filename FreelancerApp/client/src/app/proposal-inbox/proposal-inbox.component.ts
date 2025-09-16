@@ -56,7 +56,7 @@ export class ProposalInboxComponent implements OnInit {
         ).subscribe({
           next: (paginatedResult: PaginatedResult2<ProposalWithProjectCombinedDTO>) => {
             this.proposals.set(paginatedResult.result);
-            this.totalPages.set(paginatedResult.pagination.totalPages);
+            this.totalPages.set(paginatedResult.pagination!.totalPages);
             this.loading.set(false);
           },
           error: err => {

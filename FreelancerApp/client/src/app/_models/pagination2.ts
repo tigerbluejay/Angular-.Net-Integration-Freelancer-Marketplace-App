@@ -7,5 +7,5 @@ export interface Pagination2 {
 
 export class PaginatedResult2<T> {
   result!: T[]; // ← note the array here
-  pagination!: Pagination2;
+  pagination?: Pagination2;
 }

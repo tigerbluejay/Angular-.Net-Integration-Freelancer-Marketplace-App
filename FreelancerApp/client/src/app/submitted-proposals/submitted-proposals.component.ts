@@ -81,7 +81,7 @@ export class SubmittedProposalsComponent implements OnInit {
             next: (paginatedResult: PaginatedResult2<ProposalWithProjectCombinedDTO>) => {
               console.log('Paginated result:', paginatedResult);
               this.proposals.set(paginatedResult.result);
-              this.totalPages()[tab] = paginatedResult.pagination.totalPages;
+              this.totalPages()[tab] = paginatedResult.pagination!.totalPages;
               this.loading.set(false);
             },
             error: err => {
