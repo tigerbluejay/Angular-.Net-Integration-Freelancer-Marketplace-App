@@ -99,7 +99,7 @@ API runs at: https://localhost:5001/
 Angular Client Setup
 
 ```bash
-cd FreelancerMarketplace/app
+cd FreelancerMarketplace/client
 npm install
 ng serve --open
 ```
@@ -125,3 +125,4 @@ Client runs at: http://localhost:4200/
 - API uses EF Core Code First migrations
 - Angular uses standalone components (non-nested for simplicity)
 - Cloudinary is integrated for image storage
+
