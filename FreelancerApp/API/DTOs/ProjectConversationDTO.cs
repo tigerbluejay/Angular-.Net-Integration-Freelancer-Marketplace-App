@@ -15,6 +15,6 @@ public class ProjectConversationDTO
     public string FreelancerPhotoUrl { get; set; } = null!;
 
     public string LastMessage { get; set; } = null!;
-    public DateTime LastMessageSent { get; set; }
+    public DateTime? LastMessageSent { get; set; }
     public int UnreadCount { get; set; }
 }

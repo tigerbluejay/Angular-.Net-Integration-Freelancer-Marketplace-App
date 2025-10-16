@@ -96,7 +96,7 @@ public class MessageRepository : IMessageRepository
                 FreelancerUsername = c.Freelancer.UserName,
                 FreelancerPhotoUrl = c.Freelancer.Photo.Url,
                 LastMessage = lastMessage?.Content ?? "",
-                LastMessageSent = lastMessage?.MessageSent ?? DateTime.MinValue,
+                LastMessageSent = lastMessage?.MessageSent ?? null,
                 UnreadCount = unreadCount
             };
         });
