@@ -5,42 +5,56 @@ using API.Repository;
 using API.Services;
 using API.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace API.Extensions;
 
 public static class ApplicationServiceExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services,
-    IConfiguration config)
-    {
-        services.AddControllers();
-        services.AddDbContext<DataContext>(opt =>
-         {
-             opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
-         });
-        services.AddCors();
+	public static IServiceCollection AddApplicationServices(this IServiceCollection services,
+	IConfiguration config)
+	{
+		services.AddControllers();
+		services.AddDbContext<DataContext>(opt =>
+		 {
+			 opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
 
-        // Lifetime of Services
-        // - AddSingleton - Created the first time they are requested
-        // Every subsequent request for that service, will use the same instance
-        // Good for caching data or maintain a state that should be shared across the application
-        // - AddTransient - Created each time they are requested
-        // Good for lightweight services
-        // - AddScoped - Created once per client request (HTTP request)
-        services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IPortfolioItemRepository, PortfolioItemRepository>();
-        services.AddScoped<IProjectRepository, ProjectRepository>();
-        services.AddScoped<IPhotoService, PhotoService>();
-        services.AddScoped<IProposalRepository, ProposalRepository>();
-        services.AddScoped<IMessageRepository, MessageRepository>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
-        services.AddSignalR();
-        services.AddSingleton<PresenceTracker>();
+			 opt.EnableDetailedErrors();
+			 opt.EnableSensitiveDataLogging();
 
-        return services;
+			 opt.LogTo(message =>
+			 {
+				 if (message.Contains("DbCommand"))
+				 {
+					 Debug.WriteLine("──── EF CORE SQL ────");
+					 Debug.WriteLine(message);
+					 Debug.WriteLine("─────────────────────");
+				 }
+			 }, LogLevel.Information);
+		 });
+		services.AddCors();
 
-    }
+		// Lifetime of Services
+		// - AddSingleton - Created the first time they are requested
+		// Every subsequent request for that service, will use the same instance
+		// Good for caching data or maintain a state that should be shared across the application
+		// - AddTransient - Created each time they are requested
+		// Good for lightweight services
+		// - AddScoped - Created once per client request (HTTP request)
+		services.AddScoped<ITokenService, TokenService>();
+		services.AddScoped<IUserRepository, UserRepository>();
+		services.AddScoped<IPortfolioItemRepository, PortfolioItemRepository>();
+		services.AddScoped<IProjectRepository, ProjectRepository>();
+		services.AddScoped<IPhotoService, PhotoService>();
+		services.AddScoped<IProposalRepository, ProposalRepository>();
+		services.AddScoped<IMessageRepository, MessageRepository>();
+		services.AddScoped<IUnitOfWork, UnitOfWork>();
+		services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+		services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+		services.AddSignalR();
+		services.AddSingleton<PresenceTracker>();
+
+		return services;
+
+	}
 }

@@ -43,6 +43,7 @@ using (var scope = app.Services.CreateScope())
 // MIDDLEWARE
 
 app.UseMiddleware<ExceptionMiddleware>(); // uses our custom error handling middleware
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseCors(x => x.AllowAnyHeader()
 .AllowAnyMethod()
 .AllowCredentials()
