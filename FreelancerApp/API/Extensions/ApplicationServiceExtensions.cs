@@ -5,6 +5,7 @@ using API.Repository;
 using API.Services;
 using API.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
 namespace API.Extensions;
@@ -17,7 +18,10 @@ public static class ApplicationServiceExtensions
 		services.AddControllers();
 		services.AddDbContext<DataContext>(opt =>
 		 {
-			 opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
+			 // opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
+			 opt.UseSqlServer(
+	"Server=localhost;Database=FreelancerMarketplaceDb;Trusted_Connection=True;TrustServerCertificate=True;"
+);
 
 			 opt.EnableDetailedErrors();
 			 opt.EnableSensitiveDataLogging();
