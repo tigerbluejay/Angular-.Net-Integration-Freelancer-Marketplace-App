@@ -11,9 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 // SERVICES
 // Add services to the container.
 
-// custom extension methods designed to make Program.cs shorter
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
+
 
 var app = builder.Build();
 

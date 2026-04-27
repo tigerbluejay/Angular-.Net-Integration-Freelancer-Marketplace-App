@@ -1,12 +1,14 @@
 using API.Data;
 using API.Helpers;
 using API.Interfaces;
+using API.Middleware;
 using API.Repository;
 using API.Services;
 using API.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace API.Extensions;
 
@@ -16,8 +18,12 @@ public static class ApplicationServiceExtensions
 	IConfiguration config)
 	{
 		services.AddControllers();
-		services.AddDbContext<DataContext>(opt =>
+		services.AddHttpContextAccessor(); // 👈
+
+		services.AddDbContext<DataContext>((serviceProvider, opt) =>
 		 {
+			 var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
+
 			 // opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
 			 opt.UseSqlServer(
 	"Server=localhost;Database=FreelancerMarketplaceDb;Trusted_Connection=True;TrustServerCertificate=True;"
@@ -26,10 +32,35 @@ public static class ApplicationServiceExtensions
 			 opt.EnableDetailedErrors();
 			 opt.EnableSensitiveDataLogging();
 
-			 opt.LogTo(message =>
+			 opt.LogTo((message) =>
 			 {
-				 if (message.Contains("DbCommand"))
+				 if (message.Contains("Executed DbCommand"))
 				 {
+					 var httpContextAccessor = services.BuildServiceProvider()
+						 .GetRequiredService<IHttpContextAccessor>();
+
+					 var context = httpContextAccessor.HttpContext;
+
+					 if (context != null)
+					 {
+						 if (context.Items.ContainsKey("QueryCount"))
+						 {
+							 context.Items["QueryCount"] = (int)context.Items["QueryCount"] + 1;
+						 }
+					 }
+
+					 // Duration detection
+					 var match = Regex.Match(message, @"\((\d+)ms\)");
+					 if (match.Success)
+					 {
+						 var duration = int.Parse(match.Groups[1].Value);
+
+						 if (duration > 100)
+						 {
+							 Debug.WriteLine($"🐢 SLOW QUERY: {duration}ms");
+						 }
+					 }
+
 					 Debug.WriteLine("──── EF CORE SQL ────");
 					 Debug.WriteLine(message);
 					 Debug.WriteLine("─────────────────────");
