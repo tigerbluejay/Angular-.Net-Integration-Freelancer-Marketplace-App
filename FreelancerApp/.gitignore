@@ -5,6 +5,8 @@
 API/bin/
 API/obj/
 API/out/
+**/bin/
+**/obj/
 
 # User-specific files
 *.user

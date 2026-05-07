@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Benchmarks.PerformanceSandbox4Benchmarks-20260507-144451</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.8, Windows 11 (10.0.26200.8328/25H2/2025Update/HudsonValley2)
+Intel Core Ultra 7 155H 3.80GHz, 1 CPU, 22 logical and 16 physical cores
+.NET SDK 10.0.202
+  [Host]     : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v3
+  DefaultJob : .NET 10.0.6 (10.0.6, 10.0.626.17701), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method           </th><th>Mean   </th><th>Error</th><th>StdDev</th><th>Gen0</th><th>Gen1</th><th>Gen2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>LinqHeavyPipeline</td><td>9,904.878 &mu;s</td><td>195.3152 &mu;s</td><td>371.6074 &mu;s</td><td>140.6250</td><td>140.6250</td><td>140.6250</td><td>6197638 B</td>
+</tr><tr><td>ManualForeachLoop</td><td>496.166 &mu;s</td><td>6.8834 &mu;s</td><td>6.4387 &mu;s</td><td>19.5313</td><td>19.0430</td><td>9.7656</td><td>524667 B</td>
+</tr><tr><td>SequentialSmallWorkload</td><td>9.330 &mu;s</td><td>0.1798 &mu;s</td><td>0.3101 &mu;s</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>ParallelSmallWorkload</td><td>16.956 &mu;s</td><td>0.2069 &mu;s</td><td>0.1936 &mu;s</td><td>0.2747</td><td>-</td><td>-</td><td>3506 B</td>
+</tr><tr><td>SequentialHugeWorkload</td><td>88,569.777 &mu;s</td><td>123.2689 &mu;s</td><td>109.2746 &mu;s</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>ParallelHugeWorkload</td><td>41,470.324 &mu;s</td><td>705.7778 &mu;s</td><td>660.1850 &mu;s</td><td>-</td><td>-</td><td>-</td><td>6517 B</td>
+</tr><tr><td>PredictableCondition</td><td>244.588 &mu;s</td><td>3.5143 &mu;s</td><td>3.2872 &mu;s</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>RandomCondition</td><td>3,684.931 &mu;s</td><td>48.0713 &mu;s</td><td>44.9659 &mu;s</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>ArrayTraversal</td><td>364.407 &mu;s</td><td>3.8798 &mu;s</td><td>3.4393 &mu;s</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>LinkedListTraversal</td><td>2,411.000 &mu;s</td><td>33.0434 &mu;s</td><td>27.5927 &mu;s</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr></tbody></table>
+</body>
+</html>
