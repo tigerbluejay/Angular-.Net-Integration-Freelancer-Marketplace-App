@@ -88,7 +88,10 @@ public static class ApplicationServiceExtensions
 		services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
 		services.AddSignalR();
 		services.AddSingleton<PresenceTracker>();
-
+		services.AddStackExchangeRedisCache(options =>
+		{
+			options.Configuration = "localhost:6379";
+		});
 		return services;
 
 	}

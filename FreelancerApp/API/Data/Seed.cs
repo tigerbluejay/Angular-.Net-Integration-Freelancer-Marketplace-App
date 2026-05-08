@@ -10,15 +10,23 @@ public class Seed
     public static async Task SeedUsers(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager,
         DataContext context)
     {
-        // Remove dependent entities first
-        context.Photos.RemoveRange(context.Photos);
-        context.Skills.RemoveRange(context.Skills);
-        context.PortfolioItems.RemoveRange(context.PortfolioItems);
-        context.Projects.RemoveRange(context.Projects);
-        await context.SaveChangesAsync();
+		// Remove dependent entities first
+		// Remove deepest dependents first
+		context.Messages.RemoveRange(context.Messages);
+		context.ProjectConversations.RemoveRange(context.ProjectConversations);
+		context.Proposals.RemoveRange(context.Proposals);
 
-        // Delete existing users and roles
-        foreach (var user in userManager.Users.ToList())
+		context.PortfolioItems.RemoveRange(context.PortfolioItems);
+		context.Projects.RemoveRange(context.Projects);
+
+		context.Photos.RemoveRange(context.Photos);
+		context.Skills.RemoveRange(context.Skills);
+
+		await context.SaveChangesAsync();
+
+
+		// Delete existing users and roles
+		foreach (var user in userManager.Users.ToList())
             await userManager.DeleteAsync(user);
 
         foreach (var role in roleManager.Roles.ToList())
