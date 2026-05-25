@@ -15,12 +15,18 @@ public class RequestLoggingMiddleware
 
 		context.Items["QueryCount"] = 0;
 
-		Debug.WriteLine($"===== REQUEST START {requestId} | {DateTime.Now:HH:mm:ss} =====");
+		var stopwatch = Stopwatch.StartNew();
+
+		Debug.WriteLine($"===== REQUEST START {requestId} | {DateTime.Now:HH:mm:ss.fff} =====");
 
 		await _next(context);
 
+		stopwatch.Stop();
+
 		var count = context.Items["QueryCount"] ?? 0;
 
-		Debug.WriteLine($"===== REQUEST END {requestId} | {DateTime.Now:HH:mm:ss} | Queries: {count} =====");
+		Debug.WriteLine(
+			$"===== REQUEST END {requestId} | {DateTime.Now:HH:mm:ss.fff} | " +
+			$"Duration: {stopwatch.Elapsed.TotalMilliseconds:N2} ms | Queries: {count} =====");
 	}
 }

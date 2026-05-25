@@ -10522,3 +10522,268 @@ WHERE [Id] = @p1;
 2026-05-25 17:24:51.170 -03:00 [INF] Cleanup job started
 2026-05-25 17:24:54.177 -03:00 [INF] Cleanup job completed in 3004ms
 2026-05-25 17:24:54.179 -03:00 [WRN] Slow cleanup job detected: 3004ms
+2026-05-25 18:00:55.405 -03:00 [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+2026-05-25 18:00:55.673 -03:00 [WRN] No store type was specified for the decimal property 'Bid' on entity type 'Proposal'. This will cause values to be silently truncated if they do not fit in the default precision and scale. Explicitly specify the SQL server column type that can accommodate all the values in 'OnModelCreating' using 'HasColumnType', specify precision and scale using 'HasPrecision', or configure a value converter using 'HasConversion'.
+2026-05-25 18:00:57.254 -03:00 [INF] Executed DbCommand (75ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-05-25 18:00:57.411 -03:00 [INF] Executed DbCommand (71ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-05-25 18:00:57.438 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2026-05-25 18:00:57.460 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2026-05-25 18:00:57.550 -03:00 [INF] Executed DbCommand (32ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2026-05-25 18:00:57.611 -03:00 [INF] No migrations were applied. The database is already up to date.
+2026-05-25 18:00:57.637 -03:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+DELETE FROM [Connections]
+2026-05-25 18:00:58.151 -03:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [m].[Id], [m].[Content], [m].[ConversationId], [m].[DateRead], [m].[MessageSent], [m].[RecipientDeleted], [m].[RecipientId], [m].[SenderDeleted], [m].[SenderId]
+FROM [Messages] AS [m]
+2026-05-25 18:00:58.326 -03:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[ClientId], [p].[FreelancerId], [p].[ProjectId]
+FROM [ProjectConversations] AS [p]
+2026-05-25 18:00:58.416 -03:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[Bid], [p].[ClientUserId], [p].[Created], [p].[Description], [p].[FreelancerUserId], [p].[IsAccepted], [p].[PhotoId], [p].[ProjectId], [p].[Title]
+FROM [Proposals] AS [p]
+2026-05-25 18:00:58.517 -03:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[Created], [p].[Description], [p].[PhotoId], [p].[Title], [p].[UserId]
+FROM [PortfolioItems] AS [p]
+2026-05-25 18:00:58.602 -03:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[ClientUserId], [p].[Description], [p].[FreelancerUserId], [p].[PhotoId], [p].[Title]
+FROM [Projects] AS [p]
+2026-05-25 18:00:58.706 -03:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [p].[Id], [p].[PublicId], [p].[Url], [p].[UserId]
+FROM [Photos] AS [p]
+2026-05-25 18:00:58.793 -03:00 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[Name]
+FROM [Skills] AS [s]
+2026-05-25 18:01:29.480 -03:00 [ERR] Failed executing DbCommand (30,284ms) [Parameters=[@p0='81', @p1='82', @p2='83', @p3='84', @p4='85', @p5='86', @p6='87', @p7='88', @p8='641', @p9='642', @p10='643', @p11='644', @p12='645', @p13='646', @p14='647', @p15='648', @p16='649', @p17='650', @p18='704', @p19='141', @p20='142', @p21='143', @p22='144', @p23='145', @p24='146', @p25='147', @p26='148', @p27='149', @p28='150', @p29='151', @p30='152', @p31='153', @p32='154', @p33='229', @p34='230', @p35='231', @p36='232', @p37='233', @p38='234', @p39='235', @p40='171', @p41='172'], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DELETE FROM [Messages]
+OUTPUT 1
+WHERE [Id] = @p0;
+DELETE FROM [Messages]
+OUTPUT 1
+WHERE [Id] = @p1;
+DELETE FROM [Messages]
+OUTPUT 1
+WHERE [Id] = @p2;
+DELETE FROM [Messages]
+OUTPUT 1
+WHERE [Id] = @p3;
+DELETE FROM [Messages]
+OUTPUT 1
+WHERE [Id] = @p4;
+DELETE FROM [Messages]
+OUTPUT 1
+WHERE [Id] = @p5;
+DELETE FROM [Messages]
+OUTPUT 1
+WHERE [Id] = @p6;
+DELETE FROM [Messages]
+OUTPUT 1
+WHERE [Id] = @p7;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p8;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p9;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p10;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p11;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p12;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p13;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p14;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p15;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p16;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p17;
+DELETE FROM [Photos]
+OUTPUT 1
+WHERE [Id] = @p18;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p19;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p20;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p21;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p22;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p23;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p24;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p25;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p26;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p27;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p28;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p29;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p30;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p31;
+DELETE FROM [PortfolioItems]
+OUTPUT 1
+WHERE [Id] = @p32;
+DELETE FROM [Projects]
+OUTPUT 1
+WHERE [Id] = @p33;
+DELETE FROM [Projects]
+OUTPUT 1
+WHERE [Id] = @p34;
+DELETE FROM [Projects]
+OUTPUT 1
+WHERE [Id] = @p35;
+DELETE FROM [Projects]
+OUTPUT 1
+WHERE [Id] = @p36;
+DELETE FROM [Projects]
+OUTPUT 1
+WHERE [Id] = @p37;
+DELETE FROM [Projects]
+OUTPUT 1
+WHERE [Id] = @p38;
+DELETE FROM [Projects]
+OUTPUT 1
+WHERE [Id] = @p39;
+DELETE FROM [Proposals]
+OUTPUT 1
+WHERE [Id] = @p40;
+DELETE FROM [Proposals]
+OUTPUT 1
+WHERE [Id] = @p41;
+2026-05-25 18:01:29.602 -03:00 [ERR] An exception occurred in the database while saving changes for context type 'API.Data.DataContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:e9cb76ec-2954-41c7-a787-3fc3526ff87d
+Error Number:-2,State:0,Class:11
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:e9cb76ec-2954-41c7-a787-3fc3526ff87d
+Error Number:-2,State:0,Class:11
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2026-05-25 18:01:29.845 -03:00 [ERR] An error occurred during seeding
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__211_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+ClientConnectionId:e9cb76ec-2954-41c7-a787-3fc3526ff87d
+Error Number:-2,State:0,Class:11
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at API.Data.Seed.SeedUsers(UserManager`1 userManager, RoleManager`1 roleManager, DataContext context) in C:\Users\josem\Desktop\Repositories\Angular-.Net-Integration-Freelancer-Marketplace-App\FreelancerApp\API\Data\Seed.cs:line 25
+   at Program.<Main>$(String[] args) in C:\Users\josem\Desktop\Repositories\Angular-.Net-Integration-Freelancer-Marketplace-App\FreelancerApp\API\Program.cs:line 68
+2026-05-25 18:01:30.551 -03:00 [INF] User profile is available. Using 'C:\Users\josem\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-05-25 18:01:30.644 -03:00 [INF] Cleanup job started
+2026-05-25 18:01:31.168 -03:00 [INF] Now listening on: https://localhost:5001
+2026-05-25 18:01:31.171 -03:00 [INF] Now listening on: http://localhost:5000
+2026-05-25 18:01:31.305 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-05-25 18:01:31.308 -03:00 [INF] Hosting environment: Development
+2026-05-25 18:01:31.313 -03:00 [INF] Content root path: C:\Users\josem\Desktop\Repositories\Angular-.Net-Integration-Freelancer-Marketplace-App\FreelancerApp\API
+2026-05-25 18:01:33.658 -03:00 [INF] Cleanup job completed in 3014ms
+2026-05-25 18:01:33.664 -03:00 [WRN] Slow cleanup job detected: 3014ms
+2026-05-25 18:01:36.013 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5000/api/performancesandbox7/fast - null null
+2026-05-25 18:01:36.348 -03:00 [INF] Executing endpoint 'API.Controllers.PerformanceSandbox7Controller.Fast (API)'
+2026-05-25 18:01:36.378 -03:00 [INF] Route matched with {action = "Fast", controller = "PerformanceSandbox7"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Fast() on controller API.Controllers.PerformanceSandbox7Controller (API).
+2026-05-25 18:01:36.393 -03:00 [INF] Fast endpoint execution started
+2026-05-25 18:01:36.396 -03:00 [INF] Fast endpoint completed in 3ms
+2026-05-25 18:01:36.412 -03:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType6`2[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int64, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-05-25 18:01:36.452 -03:00 [INF] Executed action API.Controllers.PerformanceSandbox7Controller.Fast (API) in 61.8413ms
+2026-05-25 18:01:36.459 -03:00 [INF] Executed endpoint 'API.Controllers.PerformanceSandbox7Controller.Fast (API)'
+2026-05-25 18:01:36.473 -03:00 [INF] HTTP GET /api/performancesandbox7/fast responded 200 in 337.6813 ms
+2026-05-25 18:01:36.489 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5000/api/performancesandbox7/fast - 200 null application/json; charset=utf-8 489.904ms
