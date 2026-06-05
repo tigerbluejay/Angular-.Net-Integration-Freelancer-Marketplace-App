@@ -7,6 +7,7 @@ using API.Services;
 using API.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Serilog;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -36,34 +37,51 @@ public static class ApplicationServiceExtensions
 			 {
 				 if (message.Contains("Executed DbCommand"))
 				 {
-					 var httpContextAccessor = services.BuildServiceProvider()
-						 .GetRequiredService<IHttpContextAccessor>();
+					 var context =
+						 httpContextAccessor.HttpContext;
 
-					 var context = httpContextAccessor.HttpContext;
+					 var queryCount = 0;
 
 					 if (context != null)
 					 {
 						 if (context.Items.ContainsKey("QueryCount"))
 						 {
-							 context.Items["QueryCount"] = (int)context.Items["QueryCount"] + 1;
+							 context.Items["QueryCount"] =
+								 (int)context.Items["QueryCount"] + 1;
+
+							 queryCount =
+								 (int)context.Items["QueryCount"];
 						 }
 					 }
 
-					 // Duration detection
-					 var match = Regex.Match(message, @"\((\d+)ms\)");
+					 var match =
+						 Regex.Match(message, @"\((\d+)ms\)");
+
 					 if (match.Success)
 					 {
-						 var duration = int.Parse(match.Groups[1].Value);
+						 var duration =
+							 int.Parse(match.Groups[1].Value);
 
 						 if (duration > 100)
 						 {
-							 Debug.WriteLine($"🐢 SLOW QUERY: {duration}ms");
+							 Debug.WriteLine(
+								 $"🐢 SLOW QUERY: {duration}ms");
+
+							 Log.Warning(
+								 "Slow EF query detected | DurationMs: {DurationMs} | QueryCount: {QueryCount}",
+								 duration,
+								 queryCount);
 						 }
 					 }
 
 					 Debug.WriteLine("──── EF CORE SQL ────");
 					 Debug.WriteLine(message);
 					 Debug.WriteLine("─────────────────────");
+
+					 Log.Information(
+						 "EF Core SQL executed | QueryCount: {QueryCount} | SqlMessage: {SqlMessage}",
+						 queryCount,
+						 message);
 				 }
 			 }, LogLevel.Information);
 		 });

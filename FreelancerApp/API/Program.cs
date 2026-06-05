@@ -23,6 +23,7 @@ Log.Logger = new LoggerConfiguration()
 	.WriteTo.File(
 		"logs/app-.txt",
 		rollingInterval: RollingInterval.Day)
+	.WriteTo.Seq("http://localhost:5341")
 	.Enrich.FromLogContext()
 	.CreateLogger();
 
@@ -75,6 +76,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 // MIDDLEWARE
+
+app.UseMiddleware<RequestTimingMiddleware>();
 // =========================================================
 // CORRELATION ID MIDDLEWARE
 // =========================================================
