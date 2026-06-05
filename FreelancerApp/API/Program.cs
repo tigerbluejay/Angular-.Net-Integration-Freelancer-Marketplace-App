@@ -1,14 +1,26 @@
 using API.Data;
 using API.Entities;
 using API.Extensions;
+using API.Filters;
 using API.Middleware;
 using API.Services;
 using API.SignalR;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
+using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Reflection;
+using System.Text.Json.Serialization;
+using Swashbuckle.AspNetCore.Filters;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,9 +46,171 @@ builder.Host.UseSerilog();
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+// =========================================================
+// CONTROLLERS + ENUM SERIALIZATION
+// =========================================================
+
+builder.Services.AddControllers()
+.AddJsonOptions(options =>
+{
+	options.JsonSerializerOptions.Converters
+	.Add(new JsonStringEnumConverter());
+});
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+	options.SerializerOptions.WriteIndented = true;
+});
+
+// =========================================================
+// API VERSIONING
+// =========================================================
+
+builder.Services
+	.AddApiVersioning(options =>
+	{
+		options.DefaultApiVersion = new ApiVersion(1, 0);
+
+		options.AssumeDefaultVersionWhenUnspecified = true;
+
+		options.ReportApiVersions = true;
+	})
+	.AddApiExplorer(options =>
+	{
+		options.GroupNameFormat = "'v'VVV";
+
+		options.SubstituteApiVersionInUrl = true;
+	});
+
+
+// builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddSwaggerGen();
+// =========================================================
+// SWAGGER
+// =========================================================
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(options =>
+{
+options.SwaggerDoc("v1", new OpenApiInfo
+{
+	Title = "Freelancer Marketplace API",
+	Version = "v1",
+	Description = "Swagger sandbox for bug fixing and consulting workflows"
+});
+options.SwaggerDoc(
+	"GeneralBugFixingSandbox",
+	new OpenApiInfo
+	{
+		Title = "General Bug Fixing Sandbox",
+		Version = "v1",
+		Description =
+		"Sandbox endpoints for debugging, Swagger testing, validation, auth, uploads, and API experimentation"
+	});
+	options.DocInclusionPredicate((docName, apiDesc) =>
+	{
+		var groupName = apiDesc.GroupName;
+
+		// Main versioned API document
+		if (docName == "v1" && groupName == "v1")
+			return true;
+
+		// Custom sandbox document
+		if (docName == "GeneralBugFixingSandbox" &&
+			apiDesc.ActionDescriptor.DisplayName?
+				.Contains("GeneralBugFixingSandboxController") == true)
+		{
+			return true;
+		}
+
+		return false;
+	});
+
+	// =====================================================
+	// XML COMMENTS
+	// =====================================================
+
+	var xmlFilename =
+	$"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+
+options.IncludeXmlComments(
+	Path.Combine(AppContext.BaseDirectory, xmlFilename));
+
+// =====================================================
+// JWT AUTH
+// =====================================================
+
+options.AddSecurityDefinition("Bearer",
+    new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter JWT token"
+    });
+
+options.AddSecurityRequirement(
+    new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+
+// =====================================================
+// EXAMPLES
+// =====================================================
+
+options.ExampleFilters();
+
+// =====================================================
+// OPERATION FILTER
+// =====================================================
+
+options.OperationFilter<CorrelationIdOperationFilter>();
+
+});
+
+
+// =========================================================
+// SWAGGER EXAMPLES
+// =========================================================
+
+builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
+
+// =========================================================
+// JWT AUTHENTICATION
+// =========================================================
+
+// JWT already configured inside AddIdentityServices()
+
+builder.Services.AddAuthorization();
+
+// =========================================================
+// FORWARDED HEADERS
+// Useful behind reverse proxies / nginx / cloud hosting
+// =========================================================
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+	options.ForwardedHeaders =
+		ForwardedHeaders.XForwardedFor |
+		ForwardedHeaders.XForwardedProto;
+});
+
+
 
 // =========================================================
 // REDIS
@@ -96,6 +270,8 @@ app.Use(async (context, next) =>
 	}
 });
 
+
+
 // =========================================================
 // SERILOG REQUEST LOGGING
 // =========================================================
@@ -122,6 +298,13 @@ app.UseSerilogRequestLogging(options =>
 	};
 });
 
+// =========================================================
+// MIDDLEWARE
+// =========================================================
+
+app.UseForwardedHeaders();
+
+app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionMiddleware>(); // uses our custom error handling middleware
 app.UseMiddleware<RequestLoggingMiddleware>();
@@ -134,7 +317,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(options =>
+{
+	options.SwaggerEndpoint(
+		"/swagger/v1/swagger.json",
+		"Freelancer Marketplace API v1");
+
+	options.SwaggerEndpoint(
+		"/swagger/GeneralBugFixingSandbox/swagger.json",
+		"General Bug Fixing Sandbox");
+});
 
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");

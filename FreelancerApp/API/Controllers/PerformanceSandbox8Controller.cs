@@ -28,8 +28,8 @@ public class PerformanceSandbox8Controller : ControllerBase
 	// =========================================================
 	// SLOW ENDPOINT
 	// =========================================================
-	[HttpGet("slow")]
-	public async Task<IActionResult> Slow()
+	[HttpGet("slow2")]
+	public async Task<IActionResult> Slow2()
 	{
 		var stopwatch = Stopwatch.StartNew();
 
