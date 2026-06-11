@@ -226,6 +226,14 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddHostedService<CleanupService>();
 var app = builder.Build();
 
+Log.Information(
+	"ENVIRONMENT: {Environment}",
+	app.Environment.EnvironmentName);
+
+Log.Information(
+	"DB CONNECTION: {Connection}",
+	builder.Configuration.GetConnectionString("DefaultConnection"));
+
 // DATABASE MIGRATION AND SEEDING
 
 // SEEDING

@@ -27,7 +27,7 @@ public static class ApplicationServiceExtensions
 
 			 // opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
 			 opt.UseSqlServer(
-	"Server=localhost;Database=FreelancerMarketplaceDb;Trusted_Connection=True;TrustServerCertificate=True;"
+	config.GetConnectionString("DefaultConnection")
 );
 
 			 opt.EnableDetailedErrors();
