@@ -3,10 +3,13 @@ using API.Entities;
 using API.Extensions;
 using API.Filters;
 using API.Middleware;
+using API.Sandbox;
+using API.Sandbox.Infrastructure;
 using API.Services;
 using API.SignalR;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
+using Bogus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
@@ -16,10 +19,10 @@ using Serilog;
 using Serilog.Context;
 using Serilog.Events;
 using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Swashbuckle.AspNetCore.Filters;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -236,26 +239,80 @@ Log.Information(
 
 // DATABASE MIGRATION AND SEEDING
 
-// SEEDING
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<DataContext>();
-        var userManager = services.GetRequiredService<UserManager<AppUser>>();
-        var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
-        
-        await context.Database.MigrateAsync();
-        await context.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]");
-        await Seed.SeedUsers(userManager, roleManager, context);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred during seeding");
-    }
+	var services = scope.ServiceProvider;
+
+	try
+	{
+		var context =
+			services.GetRequiredService<DataContext>();
+
+		var userManager =
+			services.GetRequiredService<UserManager<AppUser>>();
+
+		var roleManager =
+			services.GetRequiredService<RoleManager<AppRole>>();
+
+		// =====================================================
+		// APPLY MIGRATIONS
+		// =====================================================
+
+		await context.Database.MigrateAsync();
+
+		// =====================================================
+		// DEVELOPMENT ENVIRONMENT
+		// =====================================================
+
+		if (app.Environment.IsDevelopment())
+		{
+			Log.Information(
+				"Running DEVELOPMENT seed pipeline");
+
+			await context.Database.ExecuteSqlRawAsync(
+				"DELETE FROM [Connections]");
+
+			await Seed.SeedUsers(
+				userManager,
+				roleManager,
+				context);
+		}
+
+		// =====================================================
+		// SANDBOX ENVIRONMENT
+		// =====================================================
+
+		else if (app.Environment.IsEnvironment("Sandbox"))
+		{
+			Log.Information(
+				"Running SANDBOX seed pipeline");
+
+			Log.Information(
+				"Resetting sandbox database");
+
+			// seeders can sometimes use random data generators,
+			// so we set a fixed seed for consistency across runs
+			Randomizer.Seed = new Random(12345);
+			
+			await SandboxDatabaseReset.ResetAsync(context);
+
+			Log.Information(
+				"Sandbox database reset complete");
+
+			await SandboxSeeder.SeedAsync(context);
+		}
+	}
+	catch (Exception ex)
+	{
+		var logger =
+			services.GetRequiredService<ILogger<Program>>();
+
+		logger.LogError(
+			ex,
+			"An error occurred during database initialization");
+	}
 }
+
 
 // MIDDLEWARE
 

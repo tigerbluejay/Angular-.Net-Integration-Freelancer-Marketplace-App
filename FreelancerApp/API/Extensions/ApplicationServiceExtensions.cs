@@ -33,57 +33,60 @@ public static class ApplicationServiceExtensions
 			 opt.EnableDetailedErrors();
 			 opt.EnableSensitiveDataLogging();
 
-			 opt.LogTo((message) =>
+			 if (!config.GetValue<bool>("DisableEfSqlLogging"))
 			 {
-				 if (message.Contains("Executed DbCommand"))
+				 opt.LogTo((message) =>
 				 {
-					 var context =
-						 httpContextAccessor.HttpContext;
-
-					 var queryCount = 0;
-
-					 if (context != null)
+					 if (message.Contains("Executed DbCommand"))
 					 {
-						 if (context.Items.ContainsKey("QueryCount"))
+						 var context =
+							 httpContextAccessor.HttpContext;
+
+						 var queryCount = 0;
+
+						 if (context != null)
 						 {
-							 context.Items["QueryCount"] =
-								 (int)context.Items["QueryCount"] + 1;
+							 if (context.Items.ContainsKey("QueryCount"))
+							 {
+								 context.Items["QueryCount"] =
+									 (int)context.Items["QueryCount"] + 1;
 
-							 queryCount =
-								 (int)context.Items["QueryCount"];
+								 queryCount =
+									 (int)context.Items["QueryCount"];
+							 }
 						 }
-					 }
 
-					 var match =
-						 Regex.Match(message, @"\((\d+)ms\)");
+						 var match =
+							 Regex.Match(message, @"\((\d+)ms\)");
 
-					 if (match.Success)
-					 {
-						 var duration =
-							 int.Parse(match.Groups[1].Value);
-
-						 if (duration > 100)
+						 if (match.Success)
 						 {
-							 Debug.WriteLine(
-								 $"🐢 SLOW QUERY: {duration}ms");
+							 var duration =
+								 int.Parse(match.Groups[1].Value);
 
-							 Log.Warning(
-								 "Slow EF query detected | DurationMs: {DurationMs} | QueryCount: {QueryCount}",
-								 duration,
-								 queryCount);
+							 if (duration > 100)
+							 {
+								 Debug.WriteLine(
+									 $"🐢 SLOW QUERY: {duration}ms");
+
+								 Log.Warning(
+									 "Slow EF query detected | DurationMs: {DurationMs} | QueryCount: {QueryCount}",
+									 duration,
+									 queryCount);
+							 }
 						 }
+
+						 Debug.WriteLine("──── EF CORE SQL ────");
+						 Debug.WriteLine(message);
+						 Debug.WriteLine("─────────────────────");
+
+						 Log.Information(
+							 "EF Core SQL executed | QueryCount: {QueryCount} | SqlMessage: {SqlMessage}",
+							 queryCount,
+							 message);
 					 }
-
-					 Debug.WriteLine("──── EF CORE SQL ────");
-					 Debug.WriteLine(message);
-					 Debug.WriteLine("─────────────────────");
-
-					 Log.Information(
-						 "EF Core SQL executed | QueryCount: {QueryCount} | SqlMessage: {SqlMessage}",
-						 queryCount,
-						 message);
-				 }
-			 }, LogLevel.Information);
+				 }, LogLevel.Information);
+			 }
 		 });
 		services.AddCors();
 
