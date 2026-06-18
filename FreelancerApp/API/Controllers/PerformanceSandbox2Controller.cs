@@ -76,15 +76,70 @@ public class PerformanceSandbox2Controller : ControllerBase
 		var data = await _context.Projects
 			.Include(p => p.Client)
 			.Include(p => p.Freelancer)
-			.Include(p => p.Proposals)
-				.ThenInclude(pr => pr.Freelancer)
 			.Include(p => p.Conversations)
-				.ThenInclude(c => c.Messages)
+			.AsNoTracking()
 			.ToListAsync();
 
-		return Ok(data);
-	}
+		return Ok(data.Select(p => new
+		{
+			p.Id,
+			p.Title,
 
+			Client = p.Client == null ? null : new
+			{
+				p.Client.Id,
+				p.Client.KnownAs,
+				p.Client.FirstName,
+				p.Client.LastName,
+				p.Client.Bio,
+				p.Client.Website,
+				p.Client.LinkedIn,
+				p.Client.GitHub,
+
+				// Artificially duplicated 100x
+				BioCopies = Enumerable.Repeat(p.Client.Bio, 500).ToList()
+			},
+
+			Freelancer = p.Freelancer == null ? null : new
+			{
+				p.Freelancer.Id,
+				p.Freelancer.KnownAs,
+				p.Freelancer.Bio,
+
+				BioCopies = Enumerable.Repeat(p.Freelancer.Bio, 500).ToList()
+			},
+
+			// Duplicate proposal collection many times
+			Proposals = Enumerable.Range(0, 50)
+				.SelectMany(_ => p.Proposals)
+				.ToList(),
+
+			Conversations = p.Conversations.Select(c => new
+			{
+				c.Id,
+
+				// Duplicate entire message collection 500x
+				Messages = Enumerable.Range(0, 500)
+					.SelectMany(_ => c.Messages)
+					.Select(m => new
+					{
+						m.Id,
+						m.Content
+					})
+					.ToList()
+			}),
+
+			// Duplicate conversations themselves
+			ConversationCopies = Enumerable.Range(0, 100)
+				.SelectMany(_ => p.Conversations)
+				.Select(c => new
+				{
+					c.Id,
+					MessageCount = c.Messages.Count
+				})
+				.ToList()
+		}));
+	}
 	// 🔴 5. Bad Filtering (Index NOT used)
 	[HttpGet("bad-filter")]
 	public async Task<IActionResult> BadFilter()

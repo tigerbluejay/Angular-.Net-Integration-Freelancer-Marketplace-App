@@ -8,7 +8,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProjectSandbox3Controller(DataContext context) : ControllerBase
+public class PerformanceSandbox3Controller(DataContext context) : ControllerBase
 {
 	////////////////////////////////////////////////////////////
 	// 1. STRING CONCATENATION
@@ -26,7 +26,10 @@ public class ProjectSandbox3Controller(DataContext context) : ControllerBase
 
 		foreach (var project in projects)
 		{
-			result += project.Title + " | ";
+			for (int i = 0; i < 500; i++)
+			{
+				result += project.Title + i + " | ";
+			}
 		}
 
 		return Ok(result);
@@ -48,8 +51,12 @@ public class ProjectSandbox3Controller(DataContext context) : ControllerBase
 
 		foreach (var project in projects)
 		{
-			sb.Append(project.Title);
-			sb.Append(" | ");
+			for (int i = 0; i < 500; i++)
+			{
+				sb.Append(project.Title);
+				sb.Append(i);
+				sb.Append(" | ");
+			}
 		}
 
 		return Ok(sb.ToString());
@@ -117,6 +124,56 @@ public class ProjectSandbox3Controller(DataContext context) : ControllerBase
 			.CountAsync() > 0;
 
 		return Ok(hasProjects);
+	}
+
+	/// <summary>
+	///  Additional Artificial Method to Simulate an Amplified N+1 Scenario with existing db data.
+	/// </summary>
+	/// <returns></returns>
+
+
+	[HttpGet("nplus1-amplified")]
+	public async Task<ActionResult> NPlus1Amplified()
+	{
+		int queryCount = 0;
+
+		var result = new List<object>();
+
+		for (int repeat = 0; repeat < 100; repeat++)
+		{
+			var projects = await context.Projects.ToListAsync();
+			queryCount++;
+
+			foreach (var project in projects)
+			{
+				var proposals = await context.Proposals
+					.Where(p => p.ProjectId == project.Id)
+					.ToListAsync();
+
+				queryCount++;
+
+				foreach (var proposal in proposals)
+				{
+					var freelancer = await context.Users
+						.FirstOrDefaultAsync(u => u.Id == proposal.FreelancerUserId);
+
+					queryCount++;
+
+					result.Add(new
+					{
+						ProjectId = project.Id,
+						ProposalId = proposal.Id,
+						FreelancerName = freelancer?.KnownAs
+					});
+				}
+			}
+		}
+
+		return Ok(new
+		{
+			QueryCount = queryCount,
+			ResultCount = result.Count
+		});
 	}
 }
 
