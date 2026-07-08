@@ -1,7 +1,8 @@
-using System.Text.Json;
 using API.DTOs;
 using API.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace API.Data;
 
@@ -25,15 +26,20 @@ public class Seed
 		await context.SaveChangesAsync();
 
 
-		// Delete existing users and roles
-		foreach (var user in userManager.Users.ToList())
-            await userManager.DeleteAsync(user);
+		//// Delete existing users and roles
+		//foreach (var user in userManager.Users.ToList())
+		//          await userManager.DeleteAsync(user);
 
-        foreach (var role in roleManager.Roles.ToList())
-            await roleManager.DeleteAsync(role);
+		//      foreach (var role in roleManager.Roles.ToList())
+		//          await roleManager.DeleteAsync(role);
 
-        // Seed roles
-        var roles = new[] { "Freelancer", "Client", "Admin" }.Select(r => new AppRole { Name = r });
+		// Delete Identity tables in bulk
+		await context.Database.ExecuteSqlRawAsync("DELETE FROM [AspNetUserRoles]");
+		await context.Database.ExecuteSqlRawAsync("DELETE FROM [AspNetUsers]");
+		await context.Database.ExecuteSqlRawAsync("DELETE FROM [AspNetRoles]");
+
+		// Seed roles
+		var roles = new[] { "Freelancer", "Client", "Admin" }.Select(r => new AppRole { Name = r });
         foreach (var role in roles)
             await roleManager.CreateAsync(role);
 

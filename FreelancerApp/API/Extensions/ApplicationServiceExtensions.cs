@@ -98,6 +98,7 @@ public static class ApplicationServiceExtensions
 		// Good for lightweight services
 		// - AddScoped - Created once per client request (HTTP request)
 		services.AddScoped<ITokenService, TokenService>();
+		services.AddScoped<BulkSeedService>();
 		services.AddScoped<IUserRepository, UserRepository>();
 		services.AddScoped<IPortfolioItemRepository, PortfolioItemRepository>();
 		services.AddScoped<IProjectRepository, ProjectRepository>();
