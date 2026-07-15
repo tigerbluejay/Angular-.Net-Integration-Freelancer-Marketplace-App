@@ -238,81 +238,82 @@ Log.Information(
 	builder.Configuration.GetConnectionString("DefaultConnection"));
 
 // DATABASE MIGRATION AND SEEDING
-
-using (var scope = app.Services.CreateScope())
+if (!app.Environment.IsEnvironment("Testing"))
 {
-	var services = scope.ServiceProvider;
-
-	try
+	using (var scope = app.Services.CreateScope())
 	{
-		var context =
-			services.GetRequiredService<DataContext>();
+		var services = scope.ServiceProvider;
 
-		var userManager =
-			services.GetRequiredService<UserManager<AppUser>>();
-
-		var roleManager =
-			services.GetRequiredService<RoleManager<AppRole>>();
-
-		// =====================================================
-		// APPLY MIGRATIONS
-		// =====================================================
-
-		await context.Database.MigrateAsync();
-
-		// =====================================================
-		// DEVELOPMENT ENVIRONMENT
-		// =====================================================
-
-		if (app.Environment.IsDevelopment())
+		try
 		{
-			Log.Information(
-				"Running DEVELOPMENT seed pipeline");
+			var context =
+				services.GetRequiredService<DataContext>();
 
-			await context.Database.ExecuteSqlRawAsync(
-				"DELETE FROM [Connections]");
+			var userManager =
+				services.GetRequiredService<UserManager<AppUser>>();
 
-			await Seed.SeedUsers(
-				userManager,
-				roleManager,
-				context);
+			var roleManager =
+				services.GetRequiredService<RoleManager<AppRole>>();
+
+			// =====================================================
+			// APPLY MIGRATIONS
+			// =====================================================
+
+			await context.Database.MigrateAsync();
+
+			// =====================================================
+			// DEVELOPMENT ENVIRONMENT
+			// =====================================================
+
+			if (app.Environment.IsDevelopment())
+			{
+				Log.Information(
+					"Running DEVELOPMENT seed pipeline");
+
+				await context.Database.ExecuteSqlRawAsync(
+					"DELETE FROM [Connections]");
+
+				await Seed.SeedUsers(
+					userManager,
+					roleManager,
+					context);
+			}
+
+			// =====================================================
+			// SANDBOX ENVIRONMENT
+			// =====================================================
+
+			else if (app.Environment.IsEnvironment("Sandbox"))
+			{
+				Log.Information(
+					"Running SANDBOX seed pipeline");
+
+				Log.Information(
+					"Resetting sandbox database");
+
+				// seeders can sometimes use random data generators,
+				// so we set a fixed seed for consistency across runs
+				Randomizer.Seed = new Random(12345);
+
+				await SandboxDatabaseReset.ResetAsync(context);
+
+				Log.Information(
+					"Sandbox database reset complete");
+
+				await SandboxSeeder.SeedAsync(context);
+			}
 		}
-
-		// =====================================================
-		// SANDBOX ENVIRONMENT
-		// =====================================================
-
-		else if (app.Environment.IsEnvironment("Sandbox"))
+		catch (Exception ex)
 		{
-			Log.Information(
-				"Running SANDBOX seed pipeline");
+			var logger =
+				services.GetRequiredService<ILogger<Program>>();
 
-			Log.Information(
-				"Resetting sandbox database");
-
-			// seeders can sometimes use random data generators,
-			// so we set a fixed seed for consistency across runs
-			Randomizer.Seed = new Random(12345);
-			
-			await SandboxDatabaseReset.ResetAsync(context);
-
-			Log.Information(
-				"Sandbox database reset complete");
-
-			await SandboxSeeder.SeedAsync(context);
+			logger.LogError(
+				ex,
+				"An error occurred during database initialization");
 		}
-	}
-	catch (Exception ex)
-	{
-		var logger =
-			services.GetRequiredService<ILogger<Program>>();
-
-		logger.LogError(
-			ex,
-			"An error occurred during database initialization");
 	}
 }
-
 
 // MIDDLEWARE
 
@@ -398,3 +399,7 @@ app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
 
 app.Run();
+
+public partial class Program
+{
+}
