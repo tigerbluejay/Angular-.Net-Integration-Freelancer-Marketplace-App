@@ -11,7 +11,7 @@ namespace API.Controllers
 	{
 		private readonly ILogger<PerformanceSandbox9Controller> _logger;
 		private static readonly ActivitySource ActivitySource =
-			new("PerformanceSandbox.Custom");
+		new("PerformanceSandbox.Api");
 		private readonly DataContext _context;
 
 		public PerformanceSandbox9Controller(

@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using API.Data;
+using System.Diagnostics;
 
 namespace API.Controllers;
 
@@ -9,7 +10,8 @@ namespace API.Controllers;
 public class PerformanceSandbox2Controller : ControllerBase
 {
 	private readonly DataContext _context;
-
+	private static readonly ActivitySource ActivitySource =
+	new("PerformanceSandbox.Api");
 	public PerformanceSandbox2Controller(DataContext context)
 	{
 		_context = context;
@@ -31,9 +33,13 @@ public class PerformanceSandbox2Controller : ControllerBase
 	[HttpGet("n-plus-one")]
 	public async Task<IActionResult> NPlusOne()
 	{
+		using var activity = ActivitySource.StartActivity("TestNPlusOne");
+
 		var projects = await _context.Projects.ToListAsync();
 
 		var result = new List<object>();
+		
+		var totalProposals = 0;
 
 		foreach (var project in projects)
 		{
@@ -41,12 +47,18 @@ public class PerformanceSandbox2Controller : ControllerBase
 				.Where(p => p.ProjectId == project.Id)
 				.ToListAsync();
 
+			totalProposals += proposals.Count;
+
 			result.Add(new
 			{
 				project.Id,
 				project.Title,
 				ProposalCount = proposals.Count
 			});
+			
+		activity?.SetTag("projects.count", projects.Count);
+		activity?.SetTag("proposals.total", totalProposals);
+
 		}
 
 		return Ok(result);
