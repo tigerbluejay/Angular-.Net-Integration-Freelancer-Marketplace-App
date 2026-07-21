@@ -234,11 +234,17 @@ builder.Services.AddOpenTelemetry()
 		tracing
 			.SetResourceBuilder(
 				ResourceBuilder.CreateDefault()
-					.AddService("PerformanceSandbox.Api"))
+					.AddService(
+						serviceName: "PerformanceSandbox.Api",
+						serviceVersion: "1.0.0")
+					.AddAttributes(new[]
+						{
+						new KeyValuePair<string, object>("deployment.environment", "Development")
+						}))
 			.AddAspNetCoreInstrumentation()
 			.AddOtlpExporter(options =>
 			{
-				options.Endpoint = new Uri("http://localhost:4317");
+				options.Endpoint = new Uri("http://localhost:4319");
 			});
 	});
 
