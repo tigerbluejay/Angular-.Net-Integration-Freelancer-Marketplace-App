@@ -23,6 +23,8 @@ using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -223,6 +225,24 @@ builder.Services.AddStackExchangeRedisCache(options =>
 	options.Configuration = "localhost:6379";
 });
 // =========================================================
+// CONFIGURE TRACING
+// =========================================================
+
+builder.Services.AddOpenTelemetry()
+	.WithTracing(tracing =>
+	{
+		tracing
+			.SetResourceBuilder(
+				ResourceBuilder.CreateDefault()
+					.AddService("PerformanceSandbox.Api"))
+			.AddAspNetCoreInstrumentation()
+			.AddOtlpExporter(options =>
+			{
+				options.Endpoint = new Uri("http://localhost:4317");
+			});
+	});
+
+// =========================================================
 // BACKGROUND SERVICE
 // =========================================================
 
@@ -397,6 +417,11 @@ app.UseSwaggerUI(options =>
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
+
+app.MapGet("/hello", () =>
+{
+	return "Hello OpenTelemetry!";
+});
 
 app.Run();
 
