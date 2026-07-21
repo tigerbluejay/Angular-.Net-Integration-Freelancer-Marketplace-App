@@ -228,6 +228,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 // CONFIGURE TRACING
 // =========================================================
 
+builder.Services.AddHttpClient();
 builder.Services.AddOpenTelemetry()
 	.WithTracing(tracing =>
 	{
@@ -242,11 +243,15 @@ builder.Services.AddOpenTelemetry()
 						new KeyValuePair<string, object>("deployment.environment", "Development")
 						}))
 			.AddAspNetCoreInstrumentation()
+			.AddHttpClientInstrumentation()
+			.AddEntityFrameworkCoreInstrumentation()
 			.AddOtlpExporter(options =>
 			{
 				options.Endpoint = new Uri("http://localhost:4319");
-			});
+			})
+			.AddSource("PerformanceSandbox.Custom");
 	});
+
 
 // =========================================================
 // BACKGROUND SERVICE
