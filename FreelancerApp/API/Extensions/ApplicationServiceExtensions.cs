@@ -1,10 +1,12 @@
 using API.Data;
+using API.Filters;
 using API.Helpers;
 using API.Interfaces;
 using API.Middleware;
 using API.Repository;
 using API.Services;
 using API.SignalR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Serilog;
@@ -113,6 +115,10 @@ public static class ApplicationServiceExtensions
 		services.AddStackExchangeRedisCache(options =>
 		{
 			options.Configuration = "localhost:6379";
+		});
+		services.Configure<MvcOptions>(options =>
+		{
+			options.Filters.Add<NPlusOneClassicLoggingFilter>();
 		});
 		return services;
 

@@ -250,13 +250,13 @@ builder.Services.AddOpenTelemetry()
 				options.Endpoint = new Uri("http://localhost:4319");
 			})
 			.AddSource("PerformanceSandbox.Api");
+	});
 
+// =========================================================
+// BACKGROUND SERVICE
+// =========================================================
 
-	// =========================================================
-	// BACKGROUND SERVICE
-	// =========================================================
-
-	builder.Services.AddHostedService<CleanupService>();
+builder.Services.AddHostedService<CleanupService>();
 var app = builder.Build();
 
 Log.Information(
