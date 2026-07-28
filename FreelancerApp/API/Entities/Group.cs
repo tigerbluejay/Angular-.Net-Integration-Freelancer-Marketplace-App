@@ -1,3 +1,4 @@
+// Hello from the hook test, 2026-07-28
 using System.ComponentModel.DataAnnotations;
 
 namespace API.Entities;

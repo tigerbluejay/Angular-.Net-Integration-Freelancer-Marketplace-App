@@ -11,177 +11,177 @@ namespace API.UnitTests.Services;
 
 public class TokenServiceTests
 {
-	private readonly Mock<IConfiguration> _configuration;
-	private readonly Mock<UserManager<AppUser>> _userManager;
+    private readonly Mock<IConfiguration> _configuration;
+    private readonly Mock<UserManager<AppUser>> _userManager;
 
-	public TokenServiceTests()
-	{
-		_configuration = new Mock<IConfiguration>();
+    public TokenServiceTests()
+    {
+        _configuration = new Mock<IConfiguration>();
 
-		var userStore = new Mock<IUserStore<AppUser>>();
+        var userStore = new Mock<IUserStore<AppUser>>();
 
-		_userManager = new Mock<UserManager<AppUser>>(
-			userStore.Object,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-			null);
-	}
+        _userManager = new Mock<UserManager<AppUser>>(
+            userStore.Object,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null);
+    }
 
-	[Fact]
-	public async Task CreateToken_ReturnsJwt_WhenUserHasNoRoles()
-	{
-		// Arrange
+    [Fact]
+    public async Task CreateToken_ReturnsJwt_WhenUserHasNoRoles()
+    {
+        // Arrange
 
-		var tokenKey = new string('A', 64);
+        var tokenKey = new string('A', 64);
 
-		_configuration
-			.Setup(c => c["TokenKey"])
-			.Returns(tokenKey);
+        _configuration
+            .Setup(c => c["TokenKey"])
+            .Returns(tokenKey);
 
-		_userManager
-			.Setup(u => u.GetRolesAsync(It.IsAny<AppUser>()))
-			.ReturnsAsync(new List<string>());
+        _userManager
+            .Setup(u => u.GetRolesAsync(It.IsAny<AppUser>()))
+            .ReturnsAsync(new List<string>());
 
-		var service =
-			new TokenService(
-				_configuration.Object,
-				_userManager.Object);
+        var service =
+            new TokenService(
+                _configuration.Object,
+                _userManager.Object);
 
-		var user = new AppUser
-		{
-			UserName = "jose",
-			KnownAs = "Jose"
-		};
+        var user = new AppUser
+        {
+            UserName = "jose",
+            KnownAs = "Jose"
+        };
 
-		// Act
+        // Act
 
-		var token = await service.CreateToken(user);
+        var token = await service.CreateToken(user);
 
-		// Assert
+        // Assert
 
-		Assert.False(string.IsNullOrWhiteSpace(token));
+        Assert.False(string.IsNullOrWhiteSpace(token));
 
-		var handler = new JwtSecurityTokenHandler();
+        var handler = new JwtSecurityTokenHandler();
 
-		Assert.True(handler.CanReadToken(token));
-	}
+        Assert.True(handler.CanReadToken(token));
+    }
 
-	[Fact]
-	public async Task CreateToken_IncludesRoleClaims()
-	{
-		// Arrange
+    [Fact]
+    public async Task CreateToken_IncludesRoleClaims()
+    {
+        // Arrange
 
-		var tokenKey = new string('A', 64);
+        var tokenKey = new string('A', 64);
 
-		_configuration
-			.Setup(c => c["TokenKey"])
-			.Returns(tokenKey);
+        _configuration
+            .Setup(c => c["TokenKey"])
+            .Returns(tokenKey);
 
-		_userManager
-			.Setup(u => u.GetRolesAsync(It.IsAny<AppUser>()))
-			.ReturnsAsync(new List<string>
-			{
-				"Admin",
-				"Developer"
-			});
+        _userManager
+            .Setup(u => u.GetRolesAsync(It.IsAny<AppUser>()))
+            .ReturnsAsync(new List<string>
+            {
+                "Admin",
+                "Developer"
+            });
 
-		var service =
-			new TokenService(
-				_configuration.Object,
-				_userManager.Object);
+        var service =
+            new TokenService(
+                _configuration.Object,
+                _userManager.Object);
 
-		var user = new AppUser
-		{
-			UserName = "jose",
-			KnownAs = "Jose"
-		};
+        var user = new AppUser
+        {
+            UserName = "jose",
+            KnownAs = "Jose"
+        };
 
-		// Act
+        // Act
 
-		var token = await service.CreateToken(user);
+        var token = await service.CreateToken(user);
 
-		// Assert
+        // Assert
 
-		var jwt =
-			new JwtSecurityTokenHandler()
-				.ReadJwtToken(token);
+        var jwt =
+            new JwtSecurityTokenHandler()
+                .ReadJwtToken(token);
 
-		var roles = jwt.Claims
-			   .Where(c => c.Value == "Admin" ||
-						   c.Value == "Developer")
-			   .Select(c => c.Value)
-			   .ToList();
+        var roles = jwt.Claims
+               .Where(c => c.Value == "Admin" ||
+                           c.Value == "Developer")
+               .Select(c => c.Value)
+               .ToList();
 
-		Assert.Contains("Admin", roles);
-		Assert.Contains("Developer", roles);
-	}
+        Assert.Contains("Admin", roles);
+        Assert.Contains("Developer", roles);
+    }
 
-	[Fact]
-	public async Task CreateToken_Throws_WhenTokenKeyTooShort()
-	{
-		// Arrange
+    [Fact]
+    public async Task CreateToken_Throws_WhenTokenKeyTooShort()
+    {
+        // Arrange
 
-		_configuration
-			.Setup(c => c["TokenKey"])
-			.Returns("abc");
+        _configuration
+            .Setup(c => c["TokenKey"])
+            .Returns("abc");
 
-		var service =
-			new TokenService(
-				_configuration.Object,
-				_userManager.Object);
+        var service =
+            new TokenService(
+                _configuration.Object,
+                _userManager.Object);
 
-		var user = new AppUser
-		{
-			UserName = "jose",
-			KnownAs = "Jose"
-		};
+        var user = new AppUser
+        {
+            UserName = "jose",
+            KnownAs = "Jose"
+        };
 
-		// Act / Assert
+        // Act / Assert
 
-		var ex =
-			await Assert.ThrowsAsync<Exception>(
-				() => service.CreateToken(user));
+        var ex =
+            await Assert.ThrowsAsync<InvalidOperationException>(
+                () => service.CreateToken(user));
 
-		Assert.Equal(
-			"Your tokenKey needs to be longer",
-			ex.Message);
-	}
+        Assert.Equal(
+            "Your tokenKey needs to be longer",
+            ex.Message);
+    }
 
-	[Fact]
-	public async Task CreateToken_Throws_WhenUsernameIsNull()
-	{
-		// Arrange
+    [Fact]
+    public async Task CreateToken_Throws_WhenUsernameIsNull()
+    {
+        // Arrange
 
-		var tokenKey = new string('A', 64);
+        var tokenKey = new string('A', 64);
 
-		_configuration
-			.Setup(c => c["TokenKey"])
-			.Returns(tokenKey);
+        _configuration
+            .Setup(c => c["TokenKey"])
+            .Returns(tokenKey);
 
-		var service =
-			new TokenService(
-				_configuration.Object,
-				_userManager.Object);
+        var service =
+            new TokenService(
+                _configuration.Object,
+                _userManager.Object);
 
-		var user = new AppUser
-		{
-			UserName = null,
-			KnownAs = null
-		};
+        var user = new AppUser
+        {
+            UserName = null,
+            KnownAs = null
+        };
 
-		// Act / Assert
+        // Act / Assert
 
-		var ex =
-			await Assert.ThrowsAsync<Exception>(
-				() => service.CreateToken(user));
+        var ex =
+            await Assert.ThrowsAsync<ArgumentException>(
+                () => service.CreateToken(user));
 
-		Assert.Equal(
-			"No username for user",
-			ex.Message);
-	}
+        Assert.Equal(
+            "No username for user",
+            ex.Message);
+    }
 }

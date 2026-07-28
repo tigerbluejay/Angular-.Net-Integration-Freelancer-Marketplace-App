@@ -16,10 +16,10 @@ public class TokenService : ITokenService
     private readonly IConfiguration _config;
     private readonly UserManager<AppUser> _userManager;
 
-        /// <summary>
-        /// Creates the service with the configuration (for <c>TokenKey</c>) and user manager (for role lookups) it depends on.
-        /// </summary>
-        public TokenService(IConfiguration config, UserManager<AppUser> userManager)
+    /// <summary>
+    /// Creates the service with the configuration (for <c>TokenKey</c>) and user manager (for role lookups) it depends on.
+    /// </summary>
+    public TokenService(IConfiguration config, UserManager<AppUser> userManager)
     {
         _config = config;
         _userManager = userManager;
@@ -31,19 +31,21 @@ public class TokenService : ITokenService
     /// </summary>
     /// <param name="user">The user to issue a token for.</param>
     /// <returns>A compact JWT string, signed with HMAC-SHA512 using the configured <c>TokenKey</c>, valid for 7 days.</returns>
-    /// <exception cref="Exception">
-    /// Thrown if the <c>TokenKey</c> configuration value is missing or shorter than 64 characters,
-    /// or if <paramref name="user"/> has no username.
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the <c>TokenKey</c> configuration value is missing or shorter than 64 characters.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="user"/> has no username.
     /// </exception>
     public async Task<string> CreateToken(AppUser user)
     {
-        var tokenKey = _config["TokenKey"] ?? throw new Exception("Cannot access token key from appsettings");
+        var tokenKey = _config["TokenKey"] ?? throw new InvalidOperationException("Cannot access token key from appsettings");
 
-        if (tokenKey.Length < 64) throw new Exception("Your tokenKey needs to be longer");
+        if (tokenKey.Length < 64) throw new InvalidOperationException("Your tokenKey needs to be longer");
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
-        if (user.UserName == null) throw new Exception("No username for user");
+        if (user.UserName == null) throw new ArgumentException("No username for user");
 
         // populate claims contained in the JWT token
         var claims = new List<Claim>

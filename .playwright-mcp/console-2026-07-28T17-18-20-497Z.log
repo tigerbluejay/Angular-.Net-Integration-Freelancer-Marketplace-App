@@ -1,0 +1,7 @@
+[     343ms] [LOG] Angular is running in development mode. @ https://localhost:4200/@fs/C:/Users/josem/Desktop/Repositories/Angular-.Net-Integration-Freelancer-Marketplace-App/FreelancerApp/client/.angular/cache/18.2.21/client/vite/deps/chunk-XJWY5VUV.js?v=1223abab:19325
+[     364ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ https://localhost:4200/:0
+[   27106ms] [LOG] [PresenceService] Creating Hub Connection for: freelancer001 @ https://localhost:4200/main.js:123
+[   27477ms] [INFO] [2026-07-28T17:18:47.973Z] Information: WebSocket connected to wss://localhost:5001/hubs/presence?id=JaZFbyRUpwA1M-6nXy8yOw&access_token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJmcmVlbGFuY2VyMDAxIiwicm9sZSI6IkZyZWVsYW5jZXIiLCJuYmYiOjE3ODUyNTkxMjYsImV4cCI6MTc4NTg2MzkyNiwiaWF0IjoxNzg1MjU5MTI2fQ.Kr67szt-Dn2eleAJj4uqEdctmltzpOZLgv3DT0DX3rfiU103u-ocBxw5MLTJox2fO2hq9KhN55kU8tYjYGMoeA. @ https://localhost:4200/@fs/C:/Users/josem/Desktop/Repositories/Angular-.Net-Integration-Freelancer-Marketplace-App/FreelancerApp/client/.angular/cache/18.2.21/client/vite/deps/@microsoft_signalr.js?v=1223abab:300
+[   27481ms] [LOG] [PresenceService] GetOnlineUsers event: [freelancer001] @ https://localhost:4200/main.js:146
+[   27482ms] [LOG] [PresenceService] onlineUsers updated: [freelancer001] @ https://localhost:4200/main.js:148
+[   27482ms] [LOG] [PresenceService] Hub connected @ https://localhost:4200/main.js:127

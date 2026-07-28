@@ -1,0 +1,21 @@
+- generic [ref=e2]:
+  - generic [ref=e3]: "isLoggedIn: false | userRole:"
+  - navigation [ref=e4]:
+    - generic [ref=e5]:
+      - link "Freelancer Marketplace" [ref=e6] [cursor=pointer]:
+        - /url: "#"
+      - list [ref=e7]:
+        - listitem [ref=e8]:
+          - link "Errors" [ref=e9] [cursor=pointer]:
+            - /url: /errors
+      - generic [ref=e10]:
+        - textbox "Username" [ref=e11]: freelancer001
+        - textbox "Password" [ref=e12]: Pa$$w0rd
+        - button "Login" [active] [ref=e13] [cursor=pointer]
+  - generic [ref=e16]:
+    - heading "Find your match" [level=1] [ref=e17]
+    - paragraph [ref=e18]: Come on in to offer your services or hire a freelancer...
+    - paragraph [ref=e19]: All you need to do is sign up!
+    - generic [ref=e20]:
+      - button "Register" [ref=e21] [cursor=pointer]
+      - button "Learn more" [ref=e22] [cursor=pointer]

@@ -1,0 +1,13 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "./scripts/dotnet-format-hook.sh" },
+          { "type": "command", "command": "./scripts/dotnet-build-hook.sh" }
+        ]
+      }
+    ]
+  }
+}

@@ -1,3 +1,5 @@
+// Hello from the hook test, 2026-07-28
+// And a trivial second comment for good measure
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Entities;
